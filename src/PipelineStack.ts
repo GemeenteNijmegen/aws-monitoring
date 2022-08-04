@@ -6,15 +6,18 @@ import { Statics } from './statics';
 export interface PipelineStackProps extends StackProps{
   branchName: string;
   deployToEnvironment: Environment;
+  environmentName: string;
 }
 
 export class PipelineStack extends Stack {
   branchName: string;
+  environmentName: string;
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     this.branchName = props.branchName;
+    this.environmentName = props.environmentName;
 
     const connectionArn = new CfnParameter(this, 'connectionArn');
     const source = this.connectionSource(connectionArn);
@@ -36,8 +39,8 @@ export class PipelineStack extends Stack {
       ],
     });
 
-    const pipeline = new pipelines.CodePipeline(this, `mijnnijmegen-${this.branchName}`, {
-      pipelineName: `mijnnijmegen-${this.branchName}`,
+    const pipeline = new pipelines.CodePipeline(this, `monitoring-${this.environmentName}`, {
+      pipelineName: `monitoring-${this.environmentName}`,
       dockerEnabledForSelfMutation: true,
       dockerEnabledForSynth: true,
       crossAccountKeys: true,
@@ -47,7 +50,7 @@ export class PipelineStack extends Stack {
   }
 
   private connectionSource(connectionArn: CfnParameter): pipelines.CodePipelineSource {
-    return pipelines.CodePipelineSource.connection('GemeenteNijmegen/mijn-nijmegen', this.branchName, {
+    return pipelines.CodePipelineSource.connection('GemeenteNijmegen/aws-monitoring', this.branchName, {
       connectionArn: connectionArn.valueAsString,
     });
   }
