@@ -23,7 +23,7 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
-    pipeline.addStage(new MonitoringTargetStage(this, 'monitoring-parameters', { env: props.deployToEnvironment }));
+    pipeline.addStage(new MonitoringTargetStage(this, 'monitoring-stack', { env: props.deployToEnvironment }));
   }
 
   pipeline(source: pipelines.CodePipelineSource): pipelines.CodePipeline {

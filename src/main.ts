@@ -24,7 +24,7 @@ const sandboxEnvironment = {
 
 const app = new App();
 if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
-  new PipelineStack(app, 'mijnuitkering-pipeline-development',
+  new PipelineStack(app, 'aws-monitoring-pipeline-development',
     {
       env: deploymentEnvironment,
       branchName: 'development',
