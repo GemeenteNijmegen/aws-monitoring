@@ -29,6 +29,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'develop
       env: deploymentEnvironment,
       branchName: 'development',
       deployToEnvironment: sandboxEnvironment,
+			environmentName: 'sandbox'
     },
   );
 }
