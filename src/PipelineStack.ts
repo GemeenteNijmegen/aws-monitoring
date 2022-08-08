@@ -5,7 +5,7 @@ import { Statics } from './statics';
 
 export interface PipelineStackProps extends StackProps{
   branchName: string;
-  deployToEnvironment: Environment;
+  deployToEnvironments: { name: string; env: Environment }[];
   environmentName: string;
 }
 
@@ -23,7 +23,7 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
-    pipeline.addStage(new MonitoringTargetStage(this, 'monitoring-stack', { env: props.deployToEnvironment }));
+    pipeline.addStage(new MonitoringTargetStage(this, 'monitoring-stack', { deployToEnvironments: props.deployToEnvironments }));
   }
 
   pipeline(source: pipelines.CodePipelineSource): pipelines.CodePipeline {

@@ -1,10 +1,14 @@
 import path from 'path';
-import { aws_sns, aws_ssm, Duration, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
+
+export interface MonitoringTargetStageProps extends StageProps {
+  deployToEnvironments: { name: string; env: Environment }[];
+}
 
 export class MonitoringTargetStage extends Stage {
   /**
@@ -12,7 +16,7 @@ export class MonitoringTargetStage extends Stage {
 	 * a monitoring topic, which can be used account-wide as a target
 	 * for monitoring notifications.
 	 */
-  constructor(scope: Construct, id: string, props: StageProps) {
+  constructor(scope: Construct, id: string, props: MonitoringTargetStageProps) {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);

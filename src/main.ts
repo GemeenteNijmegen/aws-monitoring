@@ -23,18 +23,12 @@ const sandboxEnvironment = {
 // };
 
 const app = new App();
-if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
-  new PipelineStack(app, 'aws-monitoring-pipeline-development',
-    {
-      env: deploymentEnvironment,
-      branchName: 'development',
-      deployToEnvironment: sandboxEnvironment,
-      environmentName: 'sandbox',
-    },
-  );
-}
 
 
+/**
+ * List all environments for which which a monitoring
+ * pipeline should be deployed in prod
+ */
 const deploymentEnvironments = [
   {
     name: 'auth-accp',
@@ -45,26 +39,24 @@ const deploymentEnvironments = [
   },
 ];
 
-if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'main') {
+if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
   new PipelineStack(app, 'aws-monitoring-pipeline-development',
     {
       env: deploymentEnvironment,
       branchName: 'development',
-      deployToEnvironment: sandboxEnvironment,
+      deployToEnvironments: [{ name: 'sandbox', env: sandboxEnvironment }],
       environmentName: 'sandbox',
     },
   );
 } else if ( process.env.BRANCH_NAME == 'main') {
-  deploymentEnvironments.forEach(environment => {
-    new PipelineStack(app, `aws-monitoring-pipeline-${environment.name}`,
-      {
-        env: deploymentEnvironment,
-        branchName: 'main',
-        deployToEnvironment: environment.env,
-        environmentName: environment.name,
-      },
-    );
-  });
+  new PipelineStack(app, 'aws-monitoring-pipeline-prod',
+    {
+      env: deploymentEnvironment,
+      branchName: 'main',
+      deployToEnvironments: deploymentEnvironments,
+      environmentName: 'production',
+    },
+  );
 }
 
 app.synth();
