@@ -23,13 +23,40 @@ const sandboxEnvironment = {
 // };
 
 const app = new App();
+
+
+/**
+ * List all environments for which which a monitoring
+ * pipeline should be deployed in prod
+ */
+const deploymentEnvironments = [
+  {
+    name: 'auth-accp',
+    env: {
+      account: '315037222840',
+      region: 'eu-west-1',
+    },
+  },
+];
+
 if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
-  new PipelineStack(app, 'mijnuitkering-pipeline-development',
+  new PipelineStack(app, 'aws-monitoring-pipeline-development',
     {
       env: deploymentEnvironment,
       branchName: 'development',
-      deployToEnvironment: sandboxEnvironment,
+      deployToEnvironments: [{ name: 'sandbox', env: sandboxEnvironment }],
+      environmentName: 'sandbox',
+    },
+  );
+} else if ( process.env.BRANCH_NAME == 'main') {
+  new PipelineStack(app, 'aws-monitoring-pipeline-prod',
+    {
+      env: deploymentEnvironment,
+      branchName: 'main',
+      deployToEnvironments: deploymentEnvironments,
+      environmentName: 'production',
     },
   );
 }
+
 app.synth();
