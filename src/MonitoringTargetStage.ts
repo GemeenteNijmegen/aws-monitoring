@@ -21,8 +21,8 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     props.deployToEnvironments.forEach(environment => {
-      new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env});
-    })
+      new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env });
+    });
   }
 }
 
