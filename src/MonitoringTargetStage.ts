@@ -7,7 +7,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
-import { Construct, IDependable } from 'constructs';
+import { Construct } from 'constructs';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -25,7 +25,9 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     props.deployToEnvironments.forEach(environment => {
-      new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env });
+      const paramsStack = new ParameterStack(this, `parameters-${environment.name}`, { env: environment.env });
+      const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env });
+      monitoringStack.addDependency(paramsStack, 'SSM Parameters must exist before lambda using it is created.');
     });
   }
 }
@@ -44,13 +46,11 @@ export class MonitoringTargetStack extends Stack {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
-    const parameters = new Parameters(this, 'parameters');
-
     const key = this.kmskey();
     const topic = this.topic(key);
 
     new AlarmRuleSubscription(this, 'alarm-rule', { topic, topicKey: key });
-    this.AddLambdaSubscriber(topic, [parameters]);
+    this.AddLambdaSubscriber(topic);
 
     this.suppressNagging();
   }
@@ -97,9 +97,8 @@ export class MonitoringTargetStack extends Stack {
    *
    * @param topic the SNS topic the lambda should be subscribed to
    */
-  AddLambdaSubscriber(topic: aws_sns.Topic, dependsOn: IDependable[]) {
+  AddLambdaSubscriber(topic: aws_sns.Topic) {
     const monitoringLambda = new MonitoringLambda(this, 'log-lambda');
-    dependsOn.forEach(dependency => monitoringLambda.node.addDependency(dependency));
     topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
   }
 
@@ -184,9 +183,9 @@ class MonitoringLambda extends Construct {
   }
 }
 
-class Parameters extends Construct {
-  constructor(scope: Construct, id: string) {
-    super(scope, id);
+export class ParameterStack extends Stack {
+  constructor(scope: Construct, id: string, props: StackProps) {
+    super(scope, id, props);
 
     new aws_ssm.StringParameter(this, 'ssm_slack_1', {
       stringValue: '-',
