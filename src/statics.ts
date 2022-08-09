@@ -1,12 +1,11 @@
 export abstract class Statics {
-  static readonly projectName: string = 'mijn-nijmegen';
-  static readonly sessionTableName: string = 'mijn-nijmegen-sessions';
+  static readonly projectName: string = 'aws-monitoring';
 
   /**
    * Repo information
    */
 
-  static readonly repository: string = 'mijn-nijmegen';
+  static readonly repository: string = 'aws-monitoring';
   static readonly repositoryOwner: string = 'GemeenteNijmegen';
 
   /**
