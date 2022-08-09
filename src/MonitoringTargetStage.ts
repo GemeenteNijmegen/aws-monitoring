@@ -1,6 +1,7 @@
 import path from 'path';
 import { aws_events_targets, aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Rule } from 'aws-cdk-lib/aws-events';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -8,7 +9,6 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: { name: string; env: Environment }[];
@@ -44,12 +44,12 @@ export class MonitoringTargetStack extends Stack {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
+    new Parameters(this, 'parameters');
+
     const key = this.kmskey();
     const topic = this.topic(key);
+
     new AlarmRuleSubscription(this, 'alarm-rule', { topic, topicKey: key });
-
-    
-
     this.AddLambdaSubscriber(topic);
 
     this.suppressNagging();
@@ -64,10 +64,10 @@ export class MonitoringTargetStack extends Stack {
 
     //Grant access to eventbridge for publishing to SNS
     key.grant(new ServicePrincipal('events.amazonaws.com'),
-      "kms:Decrypt",
-      "kms:Encrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*"
+      'kms:Decrypt',
+      'kms:Encrypt',
+      'kms:ReEncrypt*',
+      'kms:GenerateDataKey*',
     );
     return key;
   }
@@ -154,7 +154,7 @@ class AlarmRuleSubscription extends Construct {
     });
 
     this.principal = new ServicePrincipal('events.amazonaws.com', {
-      conditions: {"StringEquals": { "sns:Endpoint": alarmRule.ruleArn }}
+      conditions: { StringEquals: { 'sns:Endpoint': alarmRule.ruleArn } },
     });
 
     props.topic.grantPublish(this.principal);
@@ -174,9 +174,22 @@ class MonitoringLambda extends Construct {
       timeout: Duration.seconds(5),
       runtime: Runtime.NODEJS_16_X,
       handler: 'handler',
-      entry: path.join(__dirname, 'LogLambda/index.js'),
+      entry: path.join(__dirname, 'LogLambda/index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
+      environment: {
+        SLACK_WEBHOOK_URL: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
+      },
     });
   }
+}
 
+class Parameters extends Construct {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
+
+    new aws_ssm.StringParameter(this, 'ssm_slack_1', {
+      stringValue: '-',
+      parameterName: Statics.ssmSlackWebhookUrl,
+    });
+  }
 }
