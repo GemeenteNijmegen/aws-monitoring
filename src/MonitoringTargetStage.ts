@@ -1,5 +1,6 @@
 import path from 'path';
-import { aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_events_targets, aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { Rule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -38,9 +39,16 @@ export class MonitoringTargetStack extends Stack {
 	 */
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
+
+    Tags.of(this).add('cdkManaged', 'yes');
+    Tags.of(this).add('Project', Statics.projectName);
+
     const key = this.kmskey();
     const topic = this.topic(key);
+
+    this.subscribeToAccountwideAlarmEvents(topic);
     this.AddLambdaSubscriber(topic);
+
     this.suppressNagging();
   }
 
@@ -79,8 +87,19 @@ export class MonitoringTargetStack extends Stack {
 	 * @param topic the SNS topic the lambda should be subscribed to
 	 */
   AddLambdaSubscriber(topic: aws_sns.Topic) {
-    const lambdaConstruct = new MonitoringLambda(this, 'log-lambda');
-    topic.addSubscription(new LambdaSubscription(lambdaConstruct.function));
+    const monitoringLambda = new MonitoringLambda(this, 'log-lambda');
+    topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
+  }
+
+  private subscribeToAccountwideAlarmEvents(topic: aws_sns.Topic) {
+    new Rule(this, 'alarm-state-changed', {
+      description: 'Send all alarm state change notifications to SNS',
+      targets: [new aws_events_targets.SnsTopic(topic)],
+      eventPattern: {
+        source: ['aws.cloudwatch'],
+        detailType: ['CloudWatch Alarm State Change'],
+      },
+    });
   }
 
   private suppressNagging() {
@@ -119,6 +138,10 @@ class MonitoringLambda extends Construct {
   function: aws_lambda.Function;
   constructor(scope: Construct, id: string) {
     super(scope, id);
+
+    Tags.of(this).add('cdkManaged', 'yes');
+    Tags.of(this).add('Project', Statics.projectName);
+
     this.function = new NodejsFunction(this, 'log-lambda', {
       memorySize: 256,
       timeout: Duration.seconds(5),
