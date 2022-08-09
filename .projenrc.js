@@ -2,12 +2,15 @@ const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/modules-projen');
 const project = new GemeenteNijmegenCdkApp({
   cdkVersion: '2.1.0',
   defaultReleaseBranch: 'main',
-  devDeps: ['@gemeentenijmegen/modules-projen'],
+  devDeps: [
+    '@gemeentenijmegen/modules-projen',
+  ],
   name: 'aws-monitoring',
 
   deps: [
     'aws-cdk-lib',
     'constructs',
+    'cdk-nag',
   ],
   /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */

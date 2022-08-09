@@ -1,8 +1,10 @@
 import path from 'path';
-import { aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
+import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
 
@@ -36,8 +38,19 @@ export class MonitoringTargetStack extends Stack {
 	 */
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
-    const topic = this.topic();
+    const key = this.kmskey();
+    const topic = this.topic(key);
     this.AddLambdaSubscriber(topic);
+    this.suppressNagging();
+  }
+
+  kmskey() {
+    const key = new aws_kms.Key(this, 'kmskey', {
+      enableKeyRotation: true,
+      description: 'encryption key for monitoring stack for this account',
+      alias: 'account/kms/monitoring-key',
+    });
+    return key;
   }
 
   /**
@@ -45,9 +58,10 @@ export class MonitoringTargetStack extends Stack {
 	 *
 	 * @returns aws_sns.Topic the newly created topic
 	 */
-  topic() {
+  topic(key: aws_kms.Key) {
     const topic = new aws_sns.Topic(this, 'sns-topic', {
       displayName: 'Account-wide monitoring topic',
+      masterKey: key,
     });
     new aws_ssm.StringParameter(this, 'topic-arn', {
       stringValue: topic.topicArn,
@@ -65,13 +79,54 @@ export class MonitoringTargetStack extends Stack {
 	 * @param topic the SNS topic the lambda should be subscribed to
 	 */
   AddLambdaSubscriber(topic: aws_sns.Topic) {
-    const logLambda = new NodejsFunction(this, 'log-lambda', {
+    const lambdaConstruct = new MonitoringLambda(this, 'log-lambda');
+    topic.addSubscription(new LambdaSubscription(lambdaConstruct.function));
+  }
+
+  private suppressNagging() {
+    NagSuppressions.addResourceSuppressions(
+      this,
+      [
+        {
+          id: 'AwsSolutions-IAM4',
+          reason: 'Lambda needs to be able to create and write to a log group',
+          appliesTo: ['Policy::arn:<AWS::Partition>:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'],
+        },
+      ],
+      true,
+    );
+
+    /**
+		 * Deze is eigenlijk te breed, accepteert nu alle resources met wildcard in de stack. Voor zover ik kan vinden is
+		 * het niet specifieker in te richten. Ander nadeel van deze suppression is dat het op alle resources met wildcard
+		 * dit als metadata toevoegt.
+		 */
+    NagSuppressions.addResourceSuppressions(
+      this,
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason: 'Setting a log retention policy on a lambda creates a log group via a custom resource, which has a wildcard permission for creating log groups.',
+          appliesTo: ['Resource::*'],
+        },
+      ],
+      true,
+    );
+  }
+}
+
+class MonitoringLambda extends Construct {
+  function: aws_lambda.Function;
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
+    this.function = new NodejsFunction(this, 'log-lambda', {
       memorySize: 256,
       timeout: Duration.seconds(5),
       runtime: Runtime.NODEJS_16_X,
       handler: 'handler',
       entry: path.join(__dirname, 'LogLambda/index.js'),
+      logRetention: RetentionDays.ONE_MONTH,
     });
-    topic.addSubscription(new LambdaSubscription(logLambda));
   }
+
 }
