@@ -7,7 +7,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
-import { Construct } from 'constructs';
+import { Construct, IDependable } from 'constructs';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -44,13 +44,13 @@ export class MonitoringTargetStack extends Stack {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
-    new Parameters(this, 'parameters');
+    const parameters = new Parameters(this, 'parameters');
 
     const key = this.kmskey();
     const topic = this.topic(key);
 
     new AlarmRuleSubscription(this, 'alarm-rule', { topic, topicKey: key });
-    this.AddLambdaSubscriber(topic);
+    this.AddLambdaSubscriber(topic, [parameters]);
 
     this.suppressNagging();
   }
@@ -97,8 +97,9 @@ export class MonitoringTargetStack extends Stack {
    *
    * @param topic the SNS topic the lambda should be subscribed to
    */
-  AddLambdaSubscriber(topic: aws_sns.Topic) {
+  AddLambdaSubscriber(topic: aws_sns.Topic, dependsOn: IDependable[]) {
     const monitoringLambda = new MonitoringLambda(this, 'log-lambda');
+    dependsOn.forEach(dependency => monitoringLambda.node.addDependency(dependency));
     topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
   }
 
