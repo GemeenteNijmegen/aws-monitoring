@@ -12,6 +12,11 @@ const project = new GemeenteNijmegenCdkApp({
     'constructs',
     'cdk-nag',
   ],
+  scripts: {
+    'install:logLambda': 'cd src/LogLambda && npm install',
+    'postinstall': 'npm run install:logLambda',
+    'post-upgrade': 'cd src/LogLambda &&  npx npm-check-updates --upgrade --target=minor',
+  },
   /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // packageName: undefined,  /* The "name" in package.json. */

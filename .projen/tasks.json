@@ -138,6 +138,14 @@
         }
       ]
     },
+    "install:logLambda": {
+      "name": "install:logLambda",
+      "steps": [
+        {
+          "exec": "cd src/LogLambda && npm install"
+        }
+      ]
+    },
     "lint": {
       "name": "lint",
       "steps": [
@@ -161,7 +169,19 @@
     },
     "post-upgrade": {
       "name": "post-upgrade",
-      "description": "Runs after upgrading dependencies"
+      "steps": [
+        {
+          "exec": "cd src/LogLambda &&  npx npm-check-updates --upgrade --target=minor"
+        }
+      ]
+    },
+    "postinstall": {
+      "name": "postinstall",
+      "steps": [
+        {
+          "exec": "npm run install:logLambda"
+        }
+      ]
     },
     "pre-compile": {
       "name": "pre-compile",
