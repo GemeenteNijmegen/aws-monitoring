@@ -4,6 +4,7 @@ const project = new GemeenteNijmegenCdkApp({
   defaultReleaseBranch: 'main',
   devDeps: [
     '@gemeentenijmegen/modules-projen',
+    'esbuild',
   ],
   name: 'aws-monitoring',
 
@@ -13,7 +14,7 @@ const project = new GemeenteNijmegenCdkApp({
     'cdk-nag',
   ],
   scripts: {
-    'install:logLambda': 'cd src/LogLambda && npm install',
+    'install:logLambda': 'cd src/LogLambda && npm install && esbuild index.ts --bundle --platform=node --outfile=index.js',
     'postinstall': 'npm run install:logLambda',
     'post-upgrade': 'cd src/LogLambda &&  npx npm-check-updates --upgrade --target=minor',
   },
