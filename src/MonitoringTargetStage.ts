@@ -173,7 +173,7 @@ class MonitoringLambda extends Construct {
       memorySize: 256,
       timeout: Duration.seconds(5),
       runtime: Runtime.NODEJS_16_X,
-      handler: 'index.handler',
+      handler: 'handler',
       entry: path.join(__dirname, 'LogLambda', 'index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
       bundling: {
