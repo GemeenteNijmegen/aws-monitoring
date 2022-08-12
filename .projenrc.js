@@ -19,7 +19,7 @@ const project = new GemeenteNijmegenCdkApp({
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // packageName: undefined,  /* The "name" in package.json. */
   gitignore: [
-    'src/LogLambda/index.js'
-  ]
+    'src/LogLambda/index.js',
+  ],
 });
 project.synth();
