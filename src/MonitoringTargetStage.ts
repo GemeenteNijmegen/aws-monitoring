@@ -176,17 +176,18 @@ class MonitoringLambda extends Construct {
       handler: 'handler',
       entry: path.join(__dirname, 'LogLambda', 'index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
+      depsLockFilePath: path.join(__dirname, 'LogLambda', 'package-lock.json'),
       bundling: {
         commandHooks: {
           beforeBundling(_inputDir, _outputDir) {
-            return [];
+            return ['npm install'];
           },
           beforeInstall(_inputDir, _outputDir) {
             return [];
           },
           // Copy a file so that it will be included in the bundled asset
           afterBundling(inputDir: string, outputDir: string): string[] {
-            return [`cp ${inputDir}/src/LogLambda/template.json ${outputDir}`];
+            return [`cp ${inputDir}/template.json ${outputDir}`];
           },
         },
       },

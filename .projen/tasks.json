@@ -138,14 +138,6 @@
         }
       ]
     },
-    "install:logLambda": {
-      "name": "install:logLambda",
-      "steps": [
-        {
-          "exec": "cd src/LogLambda && npm install && esbuild index.ts --bundle --platform=node --outfile=index.js"
-        }
-      ]
-    },
     "lint": {
       "name": "lint",
       "steps": [
@@ -172,14 +164,6 @@
       "steps": [
         {
           "exec": "cd src/LogLambda &&  npx npm-check-updates --upgrade --target=minor"
-        }
-      ]
-    },
-    "postinstall": {
-      "name": "postinstall",
-      "steps": [
-        {
-          "exec": "npm run install:logLambda"
         }
       ]
     },
