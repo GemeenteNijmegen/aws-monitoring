@@ -161,7 +161,11 @@
     },
     "post-upgrade": {
       "name": "post-upgrade",
-      "description": "Runs after upgrading dependencies"
+      "steps": [
+        {
+          "exec": "cd src/LogLambda &&  npx npm-check-updates --upgrade --target=minor"
+        }
+      ]
     },
     "pre-compile": {
       "name": "pre-compile",
