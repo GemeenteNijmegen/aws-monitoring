@@ -30,6 +30,7 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
+src/LogLambda/index.js
 test-reports/junit.xml
 test/__snapshots__/*
 .env
