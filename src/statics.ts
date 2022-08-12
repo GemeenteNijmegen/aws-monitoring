@@ -9,9 +9,10 @@ export abstract class Statics {
   static readonly repositoryOwner: string = 'GemeenteNijmegen';
 
   /**
-   * Arn for account-wide monitoring topic
+   * Arn for account-wide monitoring topic and encryption key
    */
   static readonly ssmMonitoringTopicArn: string = '/account/sns/monitoring-topic-arn';
+  static readonly ssmMonitoringKeyArn: string = '/account/kms/monitoring-key-arn';
 
   /**
    * Slack webhook url for monitoring lambda
