@@ -29,7 +29,7 @@
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "<<URL>|<URL_TEXT>"
+                "text": "<<URL>|<URL_TEXT>>"
             }
         }
     ]

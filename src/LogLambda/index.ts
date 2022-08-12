@@ -5,6 +5,9 @@ import axios from 'axios';
 export async function handler(event:any, _context: any) {
   console.log(JSON.stringify(event));
   const message = parseMessageFromEvent(event);
+  if (!messageShouldTriggerAlert(message)) {
+    return;
+  }
   try {
     const params = slackParamsFromMessage(message);
     await sendMessageToSlack(createMessage(params));
@@ -25,6 +28,30 @@ export function parseMessageFromEvent(event: any): any {
  */
 export function getEventType(message: any): string {
   return message?.['detail-type'];
+}
+
+export function messageShouldTriggerAlert(message: any): boolean {
+  const eventType = getEventType(message);
+  if (eventType == 'CloudWatch Alarm State Change') {
+    return cloudwatchAlarmEventShouldTriggerAlert(message);
+  }
+  console.log('unhandled event, will not notify');
+  return false;
+}
+
+/**
+ * Only alerts from or to state ALARM should notify. From insufficient data to
+ * OK or vice versa is not a relevant alert. New or ended alarms should report.
+ *
+ * @param message an SNS message containing a cloudwatch state changed event
+ */
+function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
+  const state = message?.detail?.state?.value;
+  const previousState = message?.detail?.previousState?.value;
+  if (state == 'ALARM' || previousState == 'ALARM') {
+    return true;
+  }
+  return false;
 }
 
 /**

@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { getEventType, parseMessageFromEvent, slackParamsFromMessage, createMessage } from '../index';
+import { getEventType, parseMessageFromEvent, slackParamsFromMessage, createMessage, messageShouldTriggerAlert } from '../index';
 
 describe('Test unknown message', () => {
-  // This test doesn't run in CI by default, depends on unavailable secrets
   test('Parse event type', async () => {
     const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'unknown-event.json'));
     const event = JSON.parse(sampleAlarmEventJson);
@@ -12,9 +11,30 @@ describe('Test unknown message', () => {
   });
 });
 
+describe('Test only alerting on state change FROM or TO ALARM', () => {
+  test('PreviousState ALARM should report', async () => {
+    const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'from-alarm.json'));
+    const event = JSON.parse(sampleAlarmEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(messageShouldTriggerAlert(message)).toBe(true);
+  });
+
+  test('State ALARM should report', async () => {
+    const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'alarm.json'));
+    const event = JSON.parse(sampleAlarmEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(messageShouldTriggerAlert(message)).toBe(true);
+  });
+
+  test('State OK should not report if previousstate is not ALARM', async () => {
+    const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'alarm-from-ok-to-insufficient-data.json'));
+    const event = JSON.parse(sampleAlarmEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(messageShouldTriggerAlert(message)).toBe(false);
+  });
+});
 
 describe('Test alarm state changes', () => {
-  // This test doesn't run in CI by default, depends on unavailable secrets
   test('Parse event type', async () => {
     const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'alarm.json'));
     const event = JSON.parse(sampleAlarmEventJson);

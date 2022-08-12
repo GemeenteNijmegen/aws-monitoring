@@ -3,6 +3,7 @@ import { aws_events_targets, aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, En
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
@@ -168,13 +169,27 @@ class MonitoringLambda extends Construct {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
-    this.function = new aws_lambda.Function(this, 'log-lambda', {
+    this.function = new NodejsFunction(this, 'log-lambda', {
       memorySize: 256,
       timeout: Duration.seconds(5),
       runtime: Runtime.NODEJS_16_X,
       handler: 'index.handler',
-      code: aws_lambda.Code.fromAsset(path.join(__dirname, 'LogLambda')),
+      entry: path.join(__dirname, 'LogLambda', 'index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
+      bundling: {
+        commandHooks: {
+          beforeBundling(_inputDir, _outputDir) {
+            return [];
+          },
+          beforeInstall(_inputDir, _outputDir) {
+            return [];
+          },
+          // Copy a file so that it will be included in the bundled asset
+          afterBundling(inputDir: string, outputDir: string): string[] {
+            return [`cp ${inputDir}/src/LogLambda/template.json ${outputDir}`];
+          },
+        },
+      },
       environment: {
         SLACK_WEBHOOK_URL: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
       },
