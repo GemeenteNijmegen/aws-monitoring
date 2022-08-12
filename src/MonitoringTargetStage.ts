@@ -69,6 +69,12 @@ export class MonitoringTargetStack extends Stack {
       'kms:ReEncrypt*',
       'kms:GenerateDataKey*',
     );
+
+    new aws_ssm.StringParameter(this, 'key-arn', {
+      stringValue: key.keyArn,
+      parameterName: Statics.ssmMonitoringKeyArn,
+    });
+
     return key;
   }
 
