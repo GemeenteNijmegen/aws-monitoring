@@ -1,5 +1,5 @@
 import path from 'path';
-import { aws_events_targets, aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_devopsguru, aws_events_targets, aws_iam, aws_kms, aws_lambda, aws_sns, aws_ssm, Duration, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -50,12 +50,16 @@ export class MonitoringTargetStack extends Stack {
     const topic = this.topic(key);
 
     new AlarmRuleSubscription(this, 'alarm-rule', { topic, topicKey: key });
-    this.AddLambdaSubscriber(topic);
+    new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
 
+    this.AddLambdaSubscriber(topic);
     this.suppressNagging();
   }
 
-  kmskey() {
+  /**
+   * Create a kms key for use with the SNS topic. Allow eventbridge to use this key
+   */
+  kmskey(): aws_kms.Key {
     const key = new aws_kms.Key(this, 'kmskey', {
       enableKeyRotation: true,
       description: 'encryption key for monitoring stack for this account',
@@ -146,7 +150,6 @@ interface AlarmRuleSubscriptionProps {
 }
 
 class AlarmRuleSubscription extends Construct {
-  principal: ServicePrincipal;
 
   constructor(scope: Construct, id: string, props: AlarmRuleSubscriptionProps) {
     super(scope, id);
@@ -159,11 +162,54 @@ class AlarmRuleSubscription extends Construct {
       },
     });
 
-    this.principal = new ServicePrincipal('events.amazonaws.com', {
+    const principal = new ServicePrincipal('events.amazonaws.com', {
       conditions: { StringEquals: { 'sns:Endpoint': alarmRule.ruleArn } },
     });
 
-    props.topic.grantPublish(this.principal);
+    props.topic.grantPublish(principal);
+  }
+}
+
+interface DevopsGuruNotificationsProps {
+  topic: aws_sns.Topic;
+  topicKey: aws_kms.Key;
+}
+
+class DevopsGuruNotifications extends Construct {
+  /**
+   * Add a notification channel to devopsguru which sends notifications to the
+   * provided SNS topic.
+   */
+  constructor(scope: Construct, id: string, props: DevopsGuruNotificationsProps) {
+    super(scope, id);
+
+    // Enable when we've removed the stack from webformulieren
+    // new aws_devopsguru.CfnResourceCollection(this, 'MyCfnResourceCollection', {
+    //   resourceCollectionFilter: {
+    //     cloudFormation: {
+    //       stackNames: ['*'],
+    //     },
+    //   },
+    // },
+    // );
+
+    new aws_devopsguru.CfnNotificationChannel(this, 'devopsGuru-notification-channel', {
+      config: {
+        sns: {
+          topicArn: props.topic.topicArn,
+        },
+      },
+    });
+
+    props.topicKey.addToResourcePolicy(new aws_iam.PolicyStatement({
+      effect: aws_iam.Effect.ALLOW,
+      principals: [new aws_iam.ServicePrincipal('eu-west-1.devops-guru.amazonaws.com')],
+      actions: [
+        'kms:GenerateDataKey*',
+        'kms:Decrypt',
+      ],
+      resources: ['*'], // Wildcard '*' required
+    }));
   }
 }
 
