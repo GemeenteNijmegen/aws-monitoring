@@ -183,17 +183,17 @@ class DevopsGuruNotifications extends Construct {
   constructor(scope: Construct, id: string, props: DevopsGuruNotificationsProps) {
     super(scope, id);
 
-    // Enable when we've removed the stack from webformulieren
-    // new aws_devopsguru.CfnResourceCollection(this, 'MyCfnResourceCollection', {
-    //   resourceCollectionFilter: {
-    //     cloudFormation: {
-    //       stackNames: ['*'],
-    //     },
-    //   },
-    // },
+    //Enable when we've removed the stack from webformulieren
+    new aws_devopsguru.CfnResourceCollection(this, 'CfnResourceCollection', {
+      resourceCollectionFilter: {
+        cloudFormation: {
+          stackNames: ['*'],
+        },
+      },
+    });
     // );
 
-    new aws_devopsguru.CfnNotificationChannel(this, 'devopsGuru-notification-channel', {
+    new aws_devopsguru.CfnNotificationChannel(this, 'notification-channel', {
       config: {
         sns: {
           topicArn: props.topic.topicArn,
