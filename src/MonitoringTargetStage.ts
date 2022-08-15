@@ -191,6 +191,7 @@ class DevopsGuruNotifications extends Construct {
         },
       },
     });
+    // );
 
     new aws_devopsguru.CfnNotificationChannel(this, 'notification-channel', {
       config: {
