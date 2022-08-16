@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:122467643252:monitoring-stack-monitoring-sandbox-snstopic2C4AE3C1-WVTYOT4WAN5E:6a158dd8-47f2-43bf-8d73-281ba03fb428",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "962bfd01-41c8-5874-ad81-a6750f80f4e4",
+                "TopicArn": "arn:aws:sns:eu-west-1:122467643252:monitoring-stack-monitoring-sandbox-snstopic2C4AE3C1-WVTYOT4WAN5E",
+                "Subject": "Notification Channel Test",
+                "Message": "This is an automated notification channel test.",
+                "Timestamp": "2022-08-15T13:37:12.416Z",
+                "SignatureVersion": "1",
+                "Signature": "1nFpnAjHwgptiOYAcqjc30hTNawW9vE/blBFLd/M3G4Riqa6jJ75g6ODlUQOitVHKESkLf3NrX2WbXMKNX3wsVADXDJYMQIvnDqsvygJneL62bh2L3hab6i5VK4bCAQAVwAuwn6X0Eeees8piuJMiiZaHs5tqn56Jl1gevyM0ipA3NUciPkqyQ2dFLTlounxuJ4k4CFQvMn5RAt3HGK1TCwFSc9pUyg98q+vxLSFL1ZoTVmA0xuJpPvhPht7CbmkAWvSJypmVoXPiMw08t7V+L7XenJUF9AjrbaohzRsYrqOECyaYtkZceWTFwNyR0YhcNgf1z6S6JCUpl4MNXqXRA==",
+                "SigningCertUrl": "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:122467643252:monitoring-stack-monitoring-sandbox-snstopic2C4AE3C1-WVTYOT4WAN5E:6a158dd8-47f2-43bf-8d73-281ba03fb428",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}
