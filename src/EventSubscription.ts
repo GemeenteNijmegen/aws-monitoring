@@ -5,7 +5,6 @@ import { Construct } from 'constructs';
 
 interface EventSubscriptionProps {
   topic: aws_sns.Topic;
-  topicKey: aws_kms.Key;
   pattern: EventPattern;
   ruleDescription: string;
 }
