@@ -8,6 +8,9 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
+import { DevopsGuruNotifications } from './DevopsGuruNotifications';
+import { EventSubscription } from './EventSubscription';
+import { MonitoringLambda } from './MonitoringLambda';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -24,6 +27,7 @@ export class MonitoringTargetStage extends Stage {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
+
     props.deployToEnvironments.forEach(environment => {
       const paramsStack = new ParameterStack(this, `parameters-${environment.name}`, { env: environment.env });
       const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env });
@@ -49,11 +53,46 @@ export class MonitoringTargetStack extends Stack {
     const key = this.kmskey();
     const topic = this.topic(key);
 
-    new AlarmRuleSubscription(this, 'alarm-rule', { topic, topicKey: key });
+    this.addEventSubscriptions(topic);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
 
     this.AddLambdaSubscriber(topic);
     this.suppressNagging();
+  }
+
+  /**
+   * Add Eventbridge rules and send notifications to SNS for triggered events.
+   *
+   * Used for alarm notifications (all in account/region) and ECS task state
+   * changes (all in region).
+   *
+   * @param {topic} topic the rule will send event notifications to this topic
+   */
+  private addEventSubscriptions(topic: aws_sns.Topic) {
+    const eventSubscriptions = [
+      {
+        id: 'alarms',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+        },
+        ruleDescription: 'Send all alarm state change notifications to SNS',
+      },
+      {
+        id: 'ecs-state-change',
+        pattern: {
+          source: ['aws.ecs'],
+          detailType: ['ECS Task State Change'],
+        },
+        ruleDescription: 'Send all ECS state change notifications to SNS',
+      },
+    ];
+
+    eventSubscriptions.forEach(subscription =>
+      new EventSubscription(this, subscription.id, {
+        topic, pattern: subscription.pattern, ruleDescription: subscription.ruleDescription,
+      }),
+    );
   }
 
   /**
