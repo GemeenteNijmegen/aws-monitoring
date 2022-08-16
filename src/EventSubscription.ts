@@ -1,4 +1,4 @@
-import { aws_events_targets, aws_kms, aws_sns } from 'aws-cdk-lib';
+import { aws_events_targets, aws_sns } from 'aws-cdk-lib';
 import { EventPattern, Rule } from 'aws-cdk-lib/aws-events';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';

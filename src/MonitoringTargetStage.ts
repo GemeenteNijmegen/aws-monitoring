@@ -57,10 +57,10 @@ export class MonitoringTargetStack extends Stack {
 
   /**
    * Add Eventbridge rules and send notifications to SNS for triggered events.
-   * 
-   * Used for alarm notifications (all in account/region) and ECS task state 
+   *
+   * Used for alarm notifications (all in account/region) and ECS task state
    * changes (all in region).
-   * 
+   *
    * @param {topic} topic the rule will send event notifications to this topic
    */
   private addEventSubscriptions(topic: aws_sns.Topic) {
