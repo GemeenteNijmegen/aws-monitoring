@@ -2,8 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import { getEventType, parseMessageFromEvent, slackParamsFromMessage, createMessage, messageShouldTriggerAlert } from '../index';
 
-describe('Test unknown message', () => {
-  test('Parse event type', async () => {
+describe('Test message types', () => {
+  test('ECS Task state change', async () => {
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    const type = getEventType(message);
+    expect(type).toBe('ECS Task State Change');
+  });
+
+  test('Unknown message', async () => {
     const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'unknown-event.json'));
     const event = JSON.parse(sampleAlarmEventJson);
     const message = parseMessageFromEvent(event);
@@ -11,7 +19,7 @@ describe('Test unknown message', () => {
   });
 });
 
-describe('Test only alerting on state change FROM or TO ALARM', () => {
+describe('Alarms: Test only alerting on state change FROM or TO ALARM', () => {
   test('PreviousState ALARM should report', async () => {
     const sampleAlarmEventJson = await getStringFromFilePath(path.join('samples', 'from-alarm.json'));
     const event = JSON.parse(sampleAlarmEventJson);
@@ -61,6 +69,29 @@ describe('Test alarm state changes', () => {
     };
     const message = createMessage(messageObject);
     expect(message.blocks).toHaveLength(4);
+  });
+});
+
+describe('ECS State changes', () => {
+  test('All changes should report', async () => {
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(messageShouldTriggerAlert(message)).toBe(true);
+  });
+
+  test('All changes should report', async () => {
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(messageShouldTriggerAlert(message)).toBe(true);
+  });
+
+  test('Get slack message object', async () => {
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    expect(slackParamsFromMessage(message).message).toBe('Containers involved:\n    test-sleep (PENDING)');
   });
 });
 
