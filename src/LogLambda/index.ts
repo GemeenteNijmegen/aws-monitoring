@@ -55,6 +55,14 @@ export function messageShouldTriggerAlert(message: any): boolean {
  * @param message an SNS message containing a cloudwatch state changed event
  */
 function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
+  // List of alarms that are too noisy for immediate notifications
+  const excludedAlarms = [
+    'CIS-Unauthorized Activity Attempt',
+    'CIS-Unauthorized Activity Attempt (Custom)',
+  ];
+  if (excludedAlarms.includes(message?.detail?.alarmName)) {
+    return false;
+  }
   const state = message?.detail?.state?.value;
   const previousState = message?.detail?.previousState?.value;
   if (state == 'ALARM' || previousState == 'ALARM') {
