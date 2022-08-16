@@ -150,8 +150,13 @@ export function createMessage(messageObject: { title: any; context: any; message
   blockString = blockString.replace('<MESSAGE>', messageObject.message);
   blockString = blockString.replace('<URL>', messageObject.url);
   blockString = blockString.replace('<URL_TEXT>', messageObject.url_text);
-  const message = JSON.parse(blockString);
-  return message;
+  try {
+    const message = JSON.parse(blockString);
+    return message;
+  } catch (error: any) {
+    console.debug(error);
+    console.debug(blockString);
+  }
 }
 
 /**
