@@ -58,6 +58,7 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
   // List of alarms that are too noisy for immediate notifications
   const excludedAlarms = [
     'CIS-Unauthorized Activity Attempt',
+    'CIS-Unauthorized Activity Attempt (Custom)',
   ];
   if (excludedAlarms.includes(message?.detail?.alarmName)) {
     return false;
