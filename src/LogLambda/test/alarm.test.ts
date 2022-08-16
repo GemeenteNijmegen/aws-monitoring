@@ -91,7 +91,16 @@ describe('ECS State changes', () => {
     const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
     const event = JSON.parse(sampleEventJson);
     const message = parseMessageFromEvent(event);
-    expect(slackParamsFromMessage(message).message).toBe('Containers involved:\n    test-sleep (PENDING)');
+    expect(slackParamsFromMessage(message).message).toBe('Containers involved: \\n - test-sleep (PENDING)');
+  });
+
+  test('Get slack message object', async () => {
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ecs-task-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    const params = slackParamsFromMessage(message);
+    const slackMessage = createMessage(params);
+    expect(slackMessage.blocks).toHaveLength(4);
   });
 });
 

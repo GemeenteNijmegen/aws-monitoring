@@ -113,13 +113,11 @@ function slackParamsFromAlarmMessage(message: any): any {
  * @returns {object} a message object
  */
 function slackParamsFromEcsMessage(message: any): any {
-  const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join(`
-  - `);
+  const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
   const clusterName = message?.detail?.clusterArn.split('/').pop();
   let messageObject = {
     title: '',
-    message: `Containers involved:
-    ${containerString}`,
+    message: `Containers involved: \\n - ${containerString}`,
     context: `${getEventType(message)}, cluster ${clusterName}`,
     url: `https://${message?.region}.console.aws.amazon.com/ecs/home?region=${message?.region}#/clusters/${clusterName}/services`,
     url_text: 'Bekijk cluster',
