@@ -56,10 +56,14 @@ export function messageShouldTriggerAlert(message: any): boolean {
  */
 function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
   // List of alarms that are too noisy for immediate notifications
+  
   const excludedAlarms = [
     'CIS-Unauthorized Activity Attempt',
     'CIS-Unauthorized Activity Attempt (Custom)',
+    'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/ECS/ContainerInsights/NetworkRxBytes/eform-cluster/',
+    'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/ECS/ContainerInsights/NetworkTxBytes/eform-cluster/'
   ];
+
   if (excludedAlarms.includes(message?.detail?.alarmName)) {
     return false;
   }
