@@ -37,6 +37,13 @@ const deploymentEnvironments = [
       region: 'eu-west-1',
     },
   },
+  {
+    name: 'auth-prod',
+    env: {
+      account: '196212984627',
+      region: 'eu-west-1',
+    },
+  },
 ];
 
 if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
