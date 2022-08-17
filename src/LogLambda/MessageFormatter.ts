@@ -78,7 +78,7 @@ export class EcsMessageFormatter extends MessageFormatter {
 
   messageParameters(): messageParameters {
     const message = this.message;
-    const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any; }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
+    const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
     const clusterName = message?.detail?.clusterArn.split('/').pop();
     let messageObject = {
       title: '',
