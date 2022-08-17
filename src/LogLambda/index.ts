@@ -1,6 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import axios from 'axios';
+import { MessageFormatter, AlarmMessageFormatter, EcsMessageFormatter } from './MessageFormatter';
 
 export async function handler(event:any, _context: any) {
   console.log(JSON.stringify(event));
@@ -9,8 +8,8 @@ export async function handler(event:any, _context: any) {
     return;
   }
   try {
-    const params = slackParamsFromMessage(message);
-    await sendMessageToSlack(createMessage(params));
+    const params = slackMessageFromSNSMessage(message);
+    await sendMessageToSlack(params);
   } catch (error) {
     console.error(error);
   }
@@ -80,7 +79,7 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
  * @param message SNS event message
  * @returns {object} a message object
  */
-export function slackParamsFromMessage(message: any): any {
+export function slackMessageFromSNSMessage(message: any): any {
   const eventType = getEventType(message);
   let formatter: MessageFormatter;
   if (eventType == 'CloudWatch Alarm State Change') {
@@ -90,32 +89,7 @@ export function slackParamsFromMessage(message: any): any {
   } else {
     throw Error('Unknown event type');
   }
-  return formatter.messageParameters();
-}
-
-/**
- * Generate a message object for slack
- *
- * Based on a json template file and provided values
- *
- * @param messageObject the values for message template
- * @returns {object} an object formatted for slack (see https://app.slack.com/block-kit-builder/)
- */
-export function createMessage(messageObject: { title: any; context: any; message: any; url: any; url_text: any }): any {
-  const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.json'));
-  const templateString = templateBuffer.toString();
-  let blockString = templateString.replace('<HEADER>', messageObject.title);
-  blockString = blockString.replace('<CONTEXT>', messageObject.context);
-  blockString = blockString.replace('<MESSAGE>', messageObject.message);
-  blockString = blockString.replace('<URL>', messageObject.url);
-  blockString = blockString.replace('<URL_TEXT>', messageObject.url_text);
-  try {
-    const message = JSON.parse(blockString);
-    return message;
-  } catch (error: any) {
-    console.debug(error);
-    console.debug(blockString);
-  }
+  return formatter.formattedMessage();
 }
 
 /**
@@ -124,106 +98,10 @@ export function createMessage(messageObject: { title: any; context: any; message
  * @param message the message
  * @returns axios response
  */
-async function sendMessageToSlack(message: any) {
+export async function sendMessageToSlack(message: any) {
   if (!process.env.SLACK_WEBHOOK_URL) {
     throw Error('No slack webhook url defined');
   }
   return axios.post(process.env.SLACK_WEBHOOK_URL, message);
 }
 
-interface messageParameters {
-  title: string;
-  message: string;
-  context: string;
-  url: string;
-  url_text: string;
-}
-
-class MessageFormatter {
-  message: any;
-  constructor(message: any) {
-    this.message = message;
-  }
-
-  formattedMessage(): any {
-    const parameters = this.messageParameters();
-    const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.json'));
-    const templateString = templateBuffer.toString();
-    let blockString = templateString.replace('<HEADER>', parameters.title);
-    blockString = blockString.replace('<CONTEXT>', parameters.context);
-    blockString = blockString.replace('<MESSAGE>', parameters.message);
-    blockString = blockString.replace('<URL>', parameters.url);
-    blockString = blockString.replace('<URL_TEXT>', parameters.url_text);
-    try {
-      const message = JSON.parse(blockString);
-      return message;
-    } catch (error: any) {
-      console.debug(error);
-      console.debug(blockString);
-    }
-  }
-
-  messageParameters(): messageParameters {
-    return {
-      title: '',
-      message: '',
-      context: '',
-      url: '',
-      url_text: '',
-    };
-  }
-}
-
-
-class AlarmMessageFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
-  }
-
-  messageParameters(): messageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: '',
-      message: message?.detail.state.reason,
-      context: getEventType(message),
-      url: `https:/${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
-      url_text: 'Bekijk alarm',
-    };
-    if (message?.detail?.state?.value == 'ALARM') {
-      messageObject.title = `❗️ Alarm: ${message.detail.alarmName}`;
-    } else if (message?.detail?.state?.value == 'OK') {
-      messageObject.title = `✅ Alarm ended: ${message.detail.alarmName}`;
-    } else if (message?.detail?.state?.value == 'INSUFFICIENT_DATA') {
-      messageObject.title = `Insufficient data: ${message.detail.alarmName}`;
-    }
-    return messageObject;
-  }
-}
-
-
-class EcsMessageFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
-  }
-
-  messageParameters(): messageParameters {
-    const message = this.message;
-    const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
-    const clusterName = message?.detail?.clusterArn.split('/').pop();
-    let messageObject = {
-      title: '',
-      message: `Containers involved: \\n - ${containerString}`,
-      context: `${getEventType(message)}, cluster ${clusterName}`,
-      url: `https://${message?.region}.console.aws.amazon.com/ecs/home?region=${message?.region}#/clusters/${clusterName}/services`,
-      url_text: 'Bekijk cluster',
-    };
-    const status = message?.detail?.lastStatus;
-    const desiredStatus = message?.detail?.desiredStatus;
-    if (status != desiredStatus) {
-      messageObject.title = `❗️ ECS Task not in desired state (state ${status}, desired ${desiredStatus})`;
-    } else {
-      messageObject.title = `✅ ECS Task in desired state (${status})`;
-    }
-    return messageObject;
-  }
-}
