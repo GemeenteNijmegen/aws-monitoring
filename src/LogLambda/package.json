@@ -13,5 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.21.2"
   }
 }
