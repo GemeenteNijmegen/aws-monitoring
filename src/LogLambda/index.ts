@@ -1,7 +1,31 @@
 import axios from 'axios';
-import { MessageFormatter, AlarmMessageFormatter, EcsMessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter } from './MessageFormatter';
 
-export async function handler(event:any, _context: any) {
+/**
+ * This maps the type of notifications this lambda can handle. Not all notifications should trigger
+ * a notification, and different messages get formatted differently. Notifications that can't be mapped
+ * will be processed as an 'unhandledEvent'.
+ */
+const events = {
+  'CloudWatch Alarm State Change': {
+    shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
+    formatter: AlarmMessageFormatter,
+  },
+  'ECS Task State Change': {
+    shouldTriggerAlert: () => true,
+    formatter: EcsMessageFormatter,
+  },
+  'EC2 Instance State-change Notification': {
+    shouldTriggerAlert: () => true,
+    formatter: Ec2MessageFormatter,
+  },
+  'unhandledEvent': {
+    shouldTriggerAlert: () => false,
+    formatter: UnhandledEventFormatter,
+  },
+};
+
+export async function handler(event: any, _context: any) {
   console.log(JSON.stringify(event));
   const message = parseMessageFromEvent(event);
   if (!messageShouldTriggerAlert(message)) {
@@ -26,25 +50,25 @@ export function parseMessageFromEvent(event: any): any {
 /**
  * Get the event type from event
  *
- * Can be used to format specific messages
+ * Can be used to format specific messages. This checks if the event type
+ * is found in 'eventTypes', if not it returns the special case 'unhandledEvent',
+ * which guarantees it can always be mapped to one of the vallues in eventTypes.
+ *
  * @returns {string} event type
  */
-export function getEventType(message: any): string {
-  return message?.['detail-type'];
+export function getEventType(message: any): keyof typeof events {
+  const type = message?.['detail-type'];
+  if (!type) return 'unhandledEvent';
+  if (Object.keys(events).includes(type) !== undefined) {
+    return type;
+  } else {
+    return 'unhandledEvent';
+  }
 }
 
 export function messageShouldTriggerAlert(message: any): boolean {
   const eventType = getEventType(message);
-  if (eventType == 'CloudWatch Alarm State Change') {
-    return cloudwatchAlarmEventShouldTriggerAlert(message);
-  }
-
-  if (eventType == 'ECS Task State Change') {
-    return true;
-  }
-
-  console.log('unhandled event, will not notify');
-  return false;
+  return events[eventType].shouldTriggerAlert(message);
 }
 
 /**
@@ -81,14 +105,16 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
  */
 export function slackMessageFromSNSMessage(message: any): any {
   const eventType = getEventType(message);
-  let formatter: MessageFormatter;
-  if (eventType == 'CloudWatch Alarm State Change') {
-    formatter = new AlarmMessageFormatter(message);
-  } else if (eventType == 'ECS Task State Change') {
-    formatter = new EcsMessageFormatter(message);
-  } else {
-    throw Error('Unknown event type');
-  }
+  const formatter = new events[eventType].formatter(message);
+  // if (eventType == 'CloudWatch Alarm State Change') {
+  //   formatter = new AlarmMessageFormatter(message);
+  // } else if (eventType == 'ECS Task State Change') {
+  //   formatter = new EcsMessageFormatter(message);
+  // } else if (eventType == 'EC2 Instance State-change Notification') {
+  //   formatter = new Ec2MessageFormatter(message);
+  // } else {
+  //   throw Error('Unknown event type');
+  // }
   return formatter.formattedMessage();
 }
 

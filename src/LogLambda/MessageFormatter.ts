@@ -56,7 +56,7 @@ export class AlarmMessageFormatter extends MessageFormatter {
       title: '',
       message: message?.detail.state.reason,
       context: getEventType(message),
-      url: `https:/${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
+      url: `https://${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
       url_text: 'Bekijk alarm',
     };
     if (message?.detail?.state?.value == 'ALARM') {
@@ -94,6 +94,43 @@ export class EcsMessageFormatter extends MessageFormatter {
     } else {
       messageObject.title = `✅ ECS Task in desired state (${status})`;
     }
+    return messageObject;
+  }
+}
+
+
+export class Ec2MessageFormatter extends MessageFormatter {
+  constructor(message: string) {
+    super(message);
+  }
+
+  messageParameters(): messageParameters {
+    const message = this.message;
+    const status = message?.detail?.state;
+    let messageObject = {
+      title: `EC2 instance ${status}`,
+      message: `Instance id: ${message?.detail?.instanceId}`,
+      context: `${getEventType(message)}`,
+      url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.instanceId}`,
+      url_text: 'Bekijk instance',
+    };
+    return messageObject;
+  }
+}
+
+export class UnhandledEventFormatter extends MessageFormatter {
+  constructor(message: string) {
+    super(message);
+  }
+
+  messageParameters(): messageParameters {
+    let messageObject = {
+      title: 'Unhandled event',
+      message: `Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.message)}\`\`\` `,
+      context: 'unhandled event from SNS topic',
+      url: 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1',
+      url_text: 'Open CloudWatch',
+    };
     return messageObject;
   }
 }
