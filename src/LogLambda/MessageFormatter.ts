@@ -56,7 +56,7 @@ export class AlarmMessageFormatter extends MessageFormatter {
       title: '',
       message: message?.detail.state.reason,
       context: getEventType(message),
-      url: `https:/${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
+      url: `https://${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
       url_text: 'Bekijk alarm',
     };
     if (message?.detail?.state?.value == 'ALARM') {
