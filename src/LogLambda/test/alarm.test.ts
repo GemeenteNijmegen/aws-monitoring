@@ -112,6 +112,18 @@ describe('ECS State changes', () => {
 });
 
 
+describe('EC2 State changes', () => {
+  test('Running', async () => {
+    axiosMock.onPost().reply(200, {});
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'ec2-instance-state-change.json'));
+    const event = JSON.parse(sampleEventJson);
+    const message = parseMessageFromEvent(event);
+    await sendMessageToSlack(slackMessageFromSNSMessage(message));
+    const data = JSON.parse(axiosMock.history.post[0].data);
+    expect(data?.blocks[2].text.text).toContain('i-0482279efaef0935a');
+  });
+});
+
 async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
     fs.readFile(path.join(__dirname, filePath), (err, data) => {
