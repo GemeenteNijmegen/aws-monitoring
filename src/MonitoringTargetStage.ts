@@ -81,6 +81,14 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send all ECS state change notifications to SNS',
       },
+      {
+        id: 'certificates',
+        pattern: {
+          source: ['aws.acm'],
+          detailType: ['ACM Certificate Approaching Expiration'],
+        },
+        ruleDescription: 'Send certificate expiration notifications to SNS',
+      },
     ];
 
     eventSubscriptions.forEach(subscription =>

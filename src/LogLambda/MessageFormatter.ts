@@ -109,9 +109,9 @@ export class Ec2MessageFormatter extends MessageFormatter {
     const status = message?.detail?.state;
     let messageObject = {
       title: `EC2 instance ${status}`,
-      message: `Instance id: ${message?.detail?.instanceId}`,
+      message: `Instance id: ${message?.detail?.['instance-id']}`,
       context: `${getEventType(message)}`,
-      url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.instanceId}`,
+      url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.['instance-id']}`,
       url_text: 'Bekijk instance',
     };
     return messageObject;
