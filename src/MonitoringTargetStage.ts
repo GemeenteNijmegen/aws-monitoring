@@ -1,15 +1,17 @@
-import { aws_kms, aws_sns, aws_ssm, Environment, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_kms, aws_sns, aws_ssm, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
+import { AssumedRoleAlarms } from './AssumedRoleAlarms';
+import { DeploymentEnvironment } from './DeploymentEnvironment';
 import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
 import { MonitoringLambda } from './MonitoringLambda';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
-  deployToEnvironments: { name: string; env: Environment }[];
+  deployToEnvironments: DeploymentEnvironment[];
 }
 
 export class MonitoringTargetStage extends Stage {
@@ -24,8 +26,8 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
 
     props.deployToEnvironments.forEach(environment => {
-      const paramsStack = new ParameterStack(this, `parameters-${environment.name}`, { env: environment.env });
-      const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.name}`, { env: environment.env });
+      const paramsStack = new ParameterStack(this, `parameters-${environment.accountName}`, environment);
+      const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.accountName}`, environment);
       monitoringStack.addDependency(paramsStack, 'SSM Parameters must exist before lambda using it is created.');
     });
   }
@@ -39,7 +41,7 @@ export class MonitoringTargetStack extends Stack {
    * The monitoring topic has a lambda subscriber responsible for
    * formatting and sending relevant notifications to a slack channel.
    */
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
+  constructor(scope: Construct, id: string, props: DeploymentEnvironment) {
     super(scope, id, props);
 
     Tags.of(this).add('cdkManaged', 'yes');
@@ -50,10 +52,15 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
-
     this.AddLambdaSubscriber(topic);
+
+    if (props.assumedRolesToAlarmOn) {
+      new AssumedRoleAlarms(this, 'assumed-roles', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`, roles: props.assumedRolesToAlarmOn });
+    }
+
     this.suppressNagging();
   }
+
 
   /**
    * Add Eventbridge rules and send notifications to SNS for triggered events.
@@ -196,3 +203,4 @@ export class ParameterStack extends Stack {
     });
   }
 }
+
