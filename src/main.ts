@@ -46,7 +46,7 @@ const deploymentEnvironments: DeploymentEnvironment[] = [
     },
   },
   {
-    accountName: 'gemeentenijmegen-dns',
+    accountName: 'dns',
     env: {
       account: '108197740505',
       region: 'eu-west-1',
