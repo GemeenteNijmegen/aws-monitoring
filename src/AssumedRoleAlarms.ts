@@ -36,7 +36,7 @@ export class AssumedRoleAlarms extends Construct {
         evaluationPeriods: 1,
         threshold: 1,
         alarmName: `Role ${role} was assumed`,
-        alarmDescription: `This alarm triggers if the role ${role} is assumed by any user. This role has more priviliges than normal use require, so when it is assumed it's use should be logged and explained.`
+        alarmDescription: `This alarm triggers if the role ${role} is assumed by any user. This role has more priviliges than normal use require, so when it is assumed it's use should be logged and explained.`,
       });
       alarm.applyRemovalPolicy(RemovalPolicy.DESTROY);
     });

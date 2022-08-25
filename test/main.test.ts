@@ -24,7 +24,6 @@ describe('cdk-nag AwsSolutions Pack', () => {
 
   // THEN
   test('No unsuppressed Warnings', () => {
-    console.error(stack);
     const warnings = Annotations.fromStack(stack).findWarning(
       '*',
       Match.stringLikeRegexp('AwsSolutions-.*'),

@@ -45,6 +45,14 @@ const deploymentEnvironments: DeploymentEnvironment[] = [
       region: 'eu-west-1',
     },
   },
+  {
+    accountName: 'gemeentenijmegen-dns',
+    env: {
+      account: '108197740505',
+      region: 'eu-west-1',
+    },
+    assumedRolesToAlarmOn: 'nijmegen-operator',
+  },
 ];
 
 if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
