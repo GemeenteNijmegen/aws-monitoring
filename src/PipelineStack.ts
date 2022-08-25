@@ -1,11 +1,12 @@
-import { Stack, StackProps, Tags, pipelines, CfnParameter, Environment } from 'aws-cdk-lib';
+import { Stack, StackProps, Tags, pipelines, CfnParameter } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { DeploymentEnvironment } from './DeploymentEnvironment';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
 import { Statics } from './statics';
 
 export interface PipelineStackProps extends StackProps{
   branchName: string;
-  deployToEnvironments: { name: string; env: Environment }[];
+  deployToEnvironments: DeploymentEnvironment[];
   environmentName: string;
 }
 

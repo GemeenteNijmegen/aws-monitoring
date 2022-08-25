@@ -1,4 +1,5 @@
 import { App } from 'aws-cdk-lib';
+import { DeploymentEnvironment } from './DeploymentEnvironment';
 import { PipelineStack } from './PipelineStack';
 
 // for development, use sandbox account
@@ -29,20 +30,28 @@ const app = new App();
  * List all environments for which which a monitoring
  * pipeline should be deployed in prod
  */
-const deploymentEnvironments = [
+const deploymentEnvironments: DeploymentEnvironment[] = [
   {
-    name: 'auth-accp',
+    accountName: 'auth-accp',
     env: {
       account: '315037222840',
       region: 'eu-west-1',
     },
   },
   {
-    name: 'auth-prod',
+    accountName: 'auth-prod',
     env: {
       account: '196212984627',
       region: 'eu-west-1',
     },
+  },
+  {
+    accountName: 'gemeentenijmegen-dns',
+    env: {
+      account: '108197740505',
+      region: 'eu-west-1',
+    },
+    assumedRolesToAlarmOn: 'nijmegen-operator',
   },
 ];
 
@@ -51,7 +60,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'develop
     {
       env: deploymentEnvironment,
       branchName: 'development',
-      deployToEnvironments: [{ name: 'sandbox', env: sandboxEnvironment }],
+      deployToEnvironments: [{ accountName: 'sandbox', env: sandboxEnvironment, assumedRolesToAlarmOn: 'Developers' }],
       environmentName: 'sandbox',
     },
   );
