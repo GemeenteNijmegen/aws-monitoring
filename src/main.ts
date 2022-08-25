@@ -52,7 +52,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'develop
     {
       env: deploymentEnvironment,
       branchName: 'development',
-      deployToEnvironments: [{ accountName: 'sandbox', env: sandboxEnvironment }],
+      deployToEnvironments: [{ accountName: 'sandbox', env: sandboxEnvironment, assumedRolesToAlarmOn: 'Developers' }],
       environmentName: 'sandbox',
     },
   );

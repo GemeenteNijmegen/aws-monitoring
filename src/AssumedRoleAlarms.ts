@@ -1,3 +1,5 @@
+import { RemovalPolicy } from 'aws-cdk-lib';
+import { Alarm } from 'aws-cdk-lib/aws-cloudwatch';
 import { FilterPattern, LogGroup, MetricFilter } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
@@ -18,13 +20,23 @@ export class AssumedRoleAlarms extends Construct {
     const rolesArray = this.arrayWrappedString(roles);
 
     rolesArray.forEach(role => {
-      new MetricFilter(this, `assume-${role}-metric`, {
+      const filter = new MetricFilter(this, `assume-${role}-metric`, {
         logGroup,
         metricNamespace: 'Monitoring',
-        metricName: 'OperatorRoleAssumed',
+        metricName: `${role}RoleAssumed`,
         filterPattern: FilterPattern.literal(`{ ($.eventName="AssumeRole") && ($.requestParameters.roleArn = "*${role}") }`),
         metricValue: '1',
       });
+      filter.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
+      const alarm = new Alarm(this, `assume-${role}-alarm`, {
+        metric: filter.metric({ 
+          statistic: "sum"
+        }),
+        evaluationPeriods: 1,
+        threshold: 1,
+      });
+      alarm.applyRemovalPolicy(RemovalPolicy.DESTROY);
     });
   }
 
