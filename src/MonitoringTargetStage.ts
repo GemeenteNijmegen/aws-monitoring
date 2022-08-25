@@ -1,4 +1,4 @@
-import { aws_kms, aws_sns, aws_ssm, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_kms, aws_sns, aws_ssm, RemovalPolicy, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
@@ -197,10 +197,11 @@ export class ParameterStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
 
-    new aws_ssm.StringParameter(this, 'ssm_slack_1', {
+    const slackParam = new aws_ssm.StringParameter(this, 'ssm_slack_1', {
       stringValue: '-',
       parameterName: Statics.ssmSlackWebhookUrl,
     });
+    slackParam.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
 }
 
