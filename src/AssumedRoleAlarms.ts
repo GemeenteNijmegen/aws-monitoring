@@ -30,8 +30,8 @@ export class AssumedRoleAlarms extends Construct {
       filter.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
       const alarm = new Alarm(this, `assume-${role}-alarm`, {
-        metric: filter.metric({ 
-          statistic: "sum"
+        metric: filter.metric({
+          statistic: 'sum',
         }),
         evaluationPeriods: 1,
         threshold: 1,
