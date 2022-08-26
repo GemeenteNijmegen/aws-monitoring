@@ -7,6 +7,7 @@ import { getEventType, parseMessageFromEvent, messageShouldTriggerAlert, sendMes
 let axiosMock: MockAdapter;
 beforeAll(() => {
   process.env.SLACK_WEBHOOK_URL = 'http://nothing.test';
+  process.env.ACCOUNT_NAME = 'Test-account';
   axiosMock = new MockAdapter(axios);
 });
 
