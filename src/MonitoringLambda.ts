@@ -6,9 +6,19 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
 
+export interface MonitoringLambdaProps {
+  accountName: string;
+}
+
 export class MonitoringLambda extends Construct {
   function: aws_lambda.Function;
-  constructor(scope: Construct, id: string) {
+
+  /**
+   * Creates a lambda function, this function can receive SNS events
+   * and formats them for processing in Slack. The account name is necessary
+   * to be able to distinguish messages from multiple accounts in the same Slack channel.
+   */
+  constructor(scope: Construct, id: string, props: MonitoringLambdaProps) {
     super(scope, id);
 
     Tags.of(this).add('cdkManaged', 'yes');
@@ -37,6 +47,7 @@ export class MonitoringLambda extends Construct {
         },
       },
       environment: {
+        ACCOUNT_NAME: props.accountName,
         SLACK_WEBHOOK_URL: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
       },
     });

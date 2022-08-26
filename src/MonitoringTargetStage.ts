@@ -52,7 +52,7 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
-    this.AddLambdaSubscriber(topic);
+    this.AddLambdaSubscriber(topic, props.accountName);
 
     if (props.assumedRolesToAlarmOn) {
       new AssumedRoleAlarms(this, 'assumed-roles', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`, roles: props.assumedRolesToAlarmOn });
@@ -156,8 +156,8 @@ export class MonitoringTargetStack extends Stack {
    *
    * @param topic the SNS topic the lambda should be subscribed to
    */
-  AddLambdaSubscriber(topic: aws_sns.Topic) {
-    const monitoringLambda = new MonitoringLambda(this, 'log-lambda');
+  AddLambdaSubscriber(topic: aws_sns.Topic, accountName: string) {
+    const monitoringLambda = new MonitoringLambda(this, 'log-lambda', { accountName });
     topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
   }
 

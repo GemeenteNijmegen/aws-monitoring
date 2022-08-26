@@ -104,17 +104,12 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
  * @returns {object} a message object
  */
 export function slackMessageFromSNSMessage(message: any): any {
+  const account = process.env.ACCOUNT_NAME;
+  if (!account) {
+    throw Error('No account name defined in environment');
+  }
   const eventType = getEventType(message);
-  const formatter = new events[eventType].formatter(message);
-  // if (eventType == 'CloudWatch Alarm State Change') {
-  //   formatter = new AlarmMessageFormatter(message);
-  // } else if (eventType == 'ECS Task State Change') {
-  //   formatter = new EcsMessageFormatter(message);
-  // } else if (eventType == 'EC2 Instance State-change Notification') {
-  //   formatter = new Ec2MessageFormatter(message);
-  // } else {
-  //   throw Error('Unknown event type');
-  // }
+  const formatter = new events[eventType].formatter(message, account);
   return formatter.formattedMessage();
 }
 

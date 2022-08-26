@@ -5,14 +5,19 @@ import { getEventType } from './index';
 interface messageParameters {
   title: string;
   message: string;
-  context: string;
+  context: {
+    type: string;
+    account: string;
+  };
   url: string;
   url_text: string;
 }
 export class MessageFormatter {
   message: any;
-  constructor(message: any) {
+  account: string;
+  constructor(message: any, account: string) {
     this.message = message;
+    this.account = account;
   }
 
   formattedMessage(): any {
@@ -20,7 +25,8 @@ export class MessageFormatter {
     const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.json'));
     const templateString = templateBuffer.toString();
     let blockString = templateString.replace('<HEADER>', parameters.title);
-    blockString = blockString.replace('<CONTEXT>', parameters.context);
+    blockString = blockString.replace('<CONTEXT_ACCOUNT>', parameters.context.account);
+    blockString = blockString.replace('<CONTEXT_TYPE>', parameters.context.type);
     blockString = blockString.replace('<MESSAGE>', parameters.message);
     blockString = blockString.replace('<URL>', parameters.url);
     blockString = blockString.replace('<URL_TEXT>', parameters.url_text);
@@ -37,7 +43,10 @@ export class MessageFormatter {
     return {
       title: '',
       message: '',
-      context: '',
+      context: {
+        type: '',
+        account: this.account,
+      },
       url: '',
       url_text: '',
     };
@@ -46,8 +55,8 @@ export class MessageFormatter {
 
 
 export class AlarmMessageFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, account: string) {
+    super(message, account);
   }
 
   messageParameters(): messageParameters {
@@ -55,7 +64,10 @@ export class AlarmMessageFormatter extends MessageFormatter {
     let messageObject = {
       title: '',
       message: message?.detail.state.reason,
-      context: getEventType(message),
+      context: {
+        type: getEventType(message),
+        account: this.account,
+      },
       url: `https://${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
       url_text: 'Bekijk alarm',
     };
@@ -72,8 +84,8 @@ export class AlarmMessageFormatter extends MessageFormatter {
 
 
 export class EcsMessageFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, account: string) {
+    super(message, account);
   }
 
   messageParameters(): messageParameters {
@@ -83,7 +95,10 @@ export class EcsMessageFormatter extends MessageFormatter {
     let messageObject = {
       title: '',
       message: `Containers involved: \\n - ${containerString}`,
-      context: `${getEventType(message)}, cluster ${clusterName}`,
+      context: {
+        type: `${getEventType(message)}, cluster ${clusterName}`,
+        account: this.account,
+      },
       url: `https://${message?.region}.console.aws.amazon.com/ecs/home?region=${message?.region}#/clusters/${clusterName}/services`,
       url_text: 'Bekijk cluster',
     };
@@ -100,8 +115,8 @@ export class EcsMessageFormatter extends MessageFormatter {
 
 
 export class Ec2MessageFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, account: string) {
+    super(message, account);
   }
 
   messageParameters(): messageParameters {
@@ -110,7 +125,10 @@ export class Ec2MessageFormatter extends MessageFormatter {
     let messageObject = {
       title: `EC2 instance ${status}`,
       message: `Instance id: ${message?.detail?.['instance-id']}`,
-      context: `${getEventType(message)}`,
+      context: {
+        type: `${getEventType(message)}`,
+        account: '',
+      },
       url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.['instance-id']}`,
       url_text: 'Bekijk instance',
     };
@@ -119,15 +137,18 @@ export class Ec2MessageFormatter extends MessageFormatter {
 }
 
 export class UnhandledEventFormatter extends MessageFormatter {
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, account: string) {
+    super(message, account);
   }
 
   messageParameters(): messageParameters {
     let messageObject = {
       title: 'Unhandled event',
       message: `Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.message)}\`\`\` `,
-      context: 'unhandled event from SNS topic',
+      context: {
+        type: 'unhandled event from SNS topic',
+        account: this.account,
+      },
       url: 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1',
       url_text: 'Open CloudWatch',
     };
