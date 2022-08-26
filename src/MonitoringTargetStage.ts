@@ -1,4 +1,4 @@
-import { aws_kms, aws_sns, aws_ssm, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { aws_kms, aws_sns, aws_ssm, RemovalPolicy, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
@@ -52,7 +52,7 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
-    this.AddLambdaSubscriber(topic);
+    this.AddLambdaSubscriber(topic, props.accountName);
 
     if (props.assumedRolesToAlarmOn) {
       new AssumedRoleAlarms(this, 'assumed-roles', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`, roles: props.assumedRolesToAlarmOn });
@@ -156,8 +156,8 @@ export class MonitoringTargetStack extends Stack {
    *
    * @param topic the SNS topic the lambda should be subscribed to
    */
-  AddLambdaSubscriber(topic: aws_sns.Topic) {
-    const monitoringLambda = new MonitoringLambda(this, 'log-lambda');
+  AddLambdaSubscriber(topic: aws_sns.Topic, accountName: string) {
+    const monitoringLambda = new MonitoringLambda(this, 'log-lambda', { accountName });
     topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
   }
 
@@ -197,10 +197,11 @@ export class ParameterStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
 
-    new aws_ssm.StringParameter(this, 'ssm_slack_1', {
+    const slackParam = new aws_ssm.StringParameter(this, 'ssm_slack_1', {
       stringValue: '-',
       parameterName: Statics.ssmSlackWebhookUrl,
     });
+    slackParam.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
 }
 
