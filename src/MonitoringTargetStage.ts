@@ -4,7 +4,7 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { AssumedRoleAlarms } from './AssumedRoleAlarms';
-import { DeploymentEnvironment } from './DeploymentEnvironment';
+import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
 import { MonitoringLambda } from './MonitoringLambda';
