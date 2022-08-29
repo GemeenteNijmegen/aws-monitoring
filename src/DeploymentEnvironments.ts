@@ -36,7 +36,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   {
     accountName: 'production',
     env: {
-      account: '344742907452',
+      account: '799049117469',
       region: 'eu-west-1',
     },
   },
