@@ -1,6 +1,6 @@
 import { Stack, StackProps, Tags, pipelines, CfnParameter } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { DeploymentEnvironment } from './DeploymentEnvironment';
+import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
 import { Statics } from './statics';
 
