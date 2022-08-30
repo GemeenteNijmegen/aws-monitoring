@@ -4,6 +4,7 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { AssumedRoleAlarms } from './AssumedRoleAlarms';
+import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
@@ -52,6 +53,7 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
+    new DefaultAlarms(this, 'default-alarms');
     this.AddLambdaSubscriber(topic, props.accountName);
 
     if (props.assumedRolesToAlarmOn) {
