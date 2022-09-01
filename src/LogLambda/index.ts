@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -18,6 +18,10 @@ const events = {
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
     formatter: Ec2MessageFormatter,
+  },
+  'DevOps Guru New Insight Open': {
+    shouldTriggerAlert: () => true,
+    formatter: DevopsGuruMessageFormatter,
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
