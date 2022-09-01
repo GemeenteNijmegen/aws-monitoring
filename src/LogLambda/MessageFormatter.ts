@@ -140,7 +140,7 @@ export class CertificateExpiryFormatter extends MessageFormatter {
         type: `${getEventType(message)}`,
         account: this.account,
       },
-      url: `https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1`,
+      url: 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1',
       url_text: 'Bekijk certificaten',
     };
 
