@@ -98,6 +98,14 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send certificate expiration notifications to SNS',
       },
+      {
+        id: 'devopsguru-events',
+        pattern: {
+          'source': ['aws.devops-guru'],
+          'detail-type': ['DevOps Guru New Insight Open'],
+        },
+        ruleDescription: 'Devopsguru New insights + increased severity to SNS',
+      },
     ];
 
     eventSubscriptions.forEach(subscription =>
