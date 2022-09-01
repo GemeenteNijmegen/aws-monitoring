@@ -32,6 +32,16 @@ describe('Test message types', () => {
     const data = JSON.parse(axiosMock.history.post[0].data);
     expect(data?.blocks[0].text.text).toBe('❗️ DevopsGuru Insight');
   });
+  
+  test('Certificate expiry event', async () => {
+    axiosMock.onPost().reply(200, {});
+    const sampleEventJson = await getStringFromFilePath(path.join('samples', 'messages', 'certificate-approaching-expiry.json'));
+    const message = JSON.parse(sampleEventJson);
+    await sendMessageToSlack(slackMessageFromSNSMessage(message));
+    expect(axiosMock.history.post.length).toBe(1);
+    const data = JSON.parse(axiosMock.history.post[0].data);
+    expect(data?.blocks[0].text.text).toBe('Certificate nearing expiration');
+  });
 });
 
 async function getStringFromFilePath(filePath: string): Promise<string> {

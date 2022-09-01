@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -22,6 +22,10 @@ const events = {
   'DevOps Guru New Insight Open': {
     shouldTriggerAlert: () => true,
     formatter: DevopsGuruMessageFormatter,
+  },
+  'ACM Certificate Approaching Expiration': {
+    shouldTriggerAlert: () => true,
+    formatter: CertificateExpiryFormatter,
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,

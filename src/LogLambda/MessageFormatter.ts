@@ -130,6 +130,28 @@ export class DevopsGuruMessageFormatter extends MessageFormatter {
 }
 
 
+export class CertificateExpiryFormatter extends MessageFormatter {
+  messageParameters(): messageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: 'Certificate nearing expiration',
+      message: `${message?.detail?.CommonName} verloopt over *${message?.detail?.DaysToExpiry} dagen.`,
+      context: {
+        type: `${getEventType(message)}`,
+        account: this.account,
+      },
+      url: `https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1`,
+      url_text: 'Bekijk certificaten',
+    };
+
+    if (message?.detail?.insightSeverity == 'high') {
+      messageObject.title = `❗️ ${messageObject.title}`;
+    }
+    return messageObject;
+  }
+}
+
+
 export class Ec2MessageFormatter extends MessageFormatter {
 
   messageParameters(): messageParameters {
