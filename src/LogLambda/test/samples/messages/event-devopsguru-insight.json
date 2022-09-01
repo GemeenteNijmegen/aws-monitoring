@@ -1,0 +1,42 @@
+{
+  "version": "0",
+  "id": "08108845-ef90-00b8-1ad6-2ee5570ac6c4",
+  "detail-type": "DevOps Guru New Insight Open",
+  "source": "aws.devops-guru",
+  "account": "123456789012",
+  "time": "2021-11-01T17:06:10Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "insightSeverity": "high",
+    "insightDescription": "ApiGateway 5XXError Anomalous In Stack ApigwLambdaDdbStack-0017",
+    "insightType": "REACTIVE",
+    "anomalies": [{
+      "startTime": "1635786000000",
+      "id": "AL41JDFFQPYlZlXD8cpREkAAAAF83HGGgC9TmTr9lbfJ7sCiISlWMeFCbHY_XXXX",
+      "sourceDetails": [{
+        "dataSource": "CW_METRICS",
+        "dataIdentifiers": {
+          "period": "60",
+          "stat": "Average",
+          "unit": "None",
+          "name": "5XXError",
+          "namespace": "AWS/ApiGateway",
+          "dimensions": [{
+            "name": "ApiName",
+            "value": "ApigwLambdaDdbStack-0017 Items Service"
+          }, {
+            "name": "Stage",
+            "value": "prod"
+          }]
+        }
+      }]
+    }],
+    "accountId": "123456789012",
+    "messageType": "NEW_INSIGHT",
+    "insightUrl": "https://us-east-1.console.aws.amazon.com/devops-guru/#/insight/reactive/AIYH6JxdbgkcG0xJmypiL4MAAAAAAAAAL0SLEjkxiNProXWcsTJbLU07EZ7XXXX",
+    "startTime": "1635786120000",
+    "insightId": "AIYH6JxdbgkcG0xJmypiL4MAAAAAAAAAL0SLEjkxiNProXWcsTJbLU07EZ7XXXX",
+    "region": "us-east-1"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": "0",
+  "id": "08108845-ef91-00b8-1ac6-2ee5570ac6c4",
+  "detail-type": "DevOps Guru Insight Severity Upgraded",
+  "source": "aws.devops-guru",
+  "account": "123456789012",
+  "time": "2021-11-01T17:06:10Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "insightSeverity": "high",
+    "insightType": "REACTIVE",
+    "accountId": "123456789012",
+    "messageType": "SEVERITY_UPGRADED",
+    "insightId": "AIYH6JxdbgkcG0xJmypiL4MAAAAAAAAAL0SLEjkxiNProXWcsTJbLU07EZ7NXXXX",
+    "region": "us-east-1"
+  }
+}

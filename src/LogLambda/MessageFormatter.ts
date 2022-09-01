@@ -55,9 +55,6 @@ export class MessageFormatter {
 
 
 export class AlarmMessageFormatter extends MessageFormatter {
-  constructor(message: string, account: string) {
-    super(message, account);
-  }
 
   messageParameters(): messageParameters {
     const message = this.message;
@@ -84,9 +81,6 @@ export class AlarmMessageFormatter extends MessageFormatter {
 
 
 export class EcsMessageFormatter extends MessageFormatter {
-  constructor(message: string, account: string) {
-    super(message, account);
-  }
 
   messageParameters(): messageParameters {
     const message = this.message;
@@ -113,11 +107,52 @@ export class EcsMessageFormatter extends MessageFormatter {
   }
 }
 
+export class DevopsGuruMessageFormatter extends MessageFormatter {
+
+  messageParameters(): messageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: 'DevopsGuru Insight',
+      message: '$message?.detail?.insightDescription',
+      context: {
+        type: `${getEventType(message)}`,
+        account: this.account,
+      },
+      url: `https://${message?.insightUrl}`,
+      url_text: 'Bekijk insight',
+    };
+
+    if (message?.detail?.insightSeverity == 'high') {
+      messageObject.title = `❗️ ${messageObject.title}`;
+    }
+    return messageObject;
+  }
+}
+
+
+export class CertificateExpiryFormatter extends MessageFormatter {
+  messageParameters(): messageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: 'Certificate nearing expiration',
+      message: `${message?.detail?.CommonName} verloopt over *${message?.detail?.DaysToExpiry} dagen.`,
+      context: {
+        type: `${getEventType(message)}`,
+        account: this.account,
+      },
+      url: 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1',
+      url_text: 'Bekijk certificaten',
+    };
+
+    if (message?.detail?.insightSeverity == 'high') {
+      messageObject.title = `❗️ ${messageObject.title}`;
+    }
+    return messageObject;
+  }
+}
+
 
 export class Ec2MessageFormatter extends MessageFormatter {
-  constructor(message: string, account: string) {
-    super(message, account);
-  }
 
   messageParameters(): messageParameters {
     const message = this.message;
@@ -137,9 +172,6 @@ export class Ec2MessageFormatter extends MessageFormatter {
 }
 
 export class UnhandledEventFormatter extends MessageFormatter {
-  constructor(message: string, account: string) {
-    super(message, account);
-  }
 
   messageParameters(): messageParameters {
     let messageObject = {
