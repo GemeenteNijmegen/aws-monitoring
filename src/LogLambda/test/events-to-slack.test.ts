@@ -32,7 +32,7 @@ describe('Test message types', () => {
     const data = JSON.parse(axiosMock.history.post[0].data);
     expect(data?.blocks[0].text.text).toBe('❗️ DevopsGuru Insight');
   });
-  
+
   test('Certificate expiry event', async () => {
     axiosMock.onPost().reply(200, {});
     const sampleEventJson = await getStringFromFilePath(path.join('samples', 'messages', 'certificate-approaching-expiry.json'));
