@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getEventType } from './index';
 
-interface messageParameters {
+interface MessageParameters {
   title: string;
   message: string;
   context: {
@@ -20,8 +20,21 @@ export class MessageFormatter {
     this.account = account;
   }
 
+  /**
+   * Do some cleanup / validation of the MessageParameters object.
+   *
+   * @param parameters {Messageparameters} the filled params
+   * @returns {Messageparameters} the cleaned params
+   */
+  cleanParameters(parameters: MessageParameters): MessageParameters {
+    // Slack header block allows text to be max 151 chars long.
+    const maxHeaderLength = 151;
+    parameters.title = parameters.title.substring(0, maxHeaderLength - 1);
+    return parameters;
+  }
+
   formattedMessage(): any {
-    const parameters = this.messageParameters();
+    const parameters = this.cleanParameters(this.messageParameters());
     const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.json'));
     const templateString = templateBuffer.toString();
     let blockString = templateString.replace('<HEADER>', parameters.title);
@@ -39,7 +52,7 @@ export class MessageFormatter {
     }
   }
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     return {
       title: '',
       message: '',
@@ -56,7 +69,7 @@ export class MessageFormatter {
 
 export class AlarmMessageFormatter extends MessageFormatter {
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     const message = this.message;
     let messageObject = {
       title: '',
@@ -82,7 +95,7 @@ export class AlarmMessageFormatter extends MessageFormatter {
 
 export class EcsMessageFormatter extends MessageFormatter {
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     const message = this.message;
     const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
     const clusterName = message?.detail?.clusterArn.split('/').pop();
@@ -109,7 +122,7 @@ export class EcsMessageFormatter extends MessageFormatter {
 
 export class DevopsGuruMessageFormatter extends MessageFormatter {
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     const message = this.message;
     let messageObject = {
       title: 'DevopsGuru Insight',
@@ -131,7 +144,7 @@ export class DevopsGuruMessageFormatter extends MessageFormatter {
 
 
 export class CertificateExpiryFormatter extends MessageFormatter {
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     const message = this.message;
     let messageObject = {
       title: 'Certificate nearing expiration',
@@ -154,7 +167,7 @@ export class CertificateExpiryFormatter extends MessageFormatter {
 
 export class Ec2MessageFormatter extends MessageFormatter {
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     const message = this.message;
     const status = message?.detail?.state;
     let messageObject = {
@@ -173,7 +186,7 @@ export class Ec2MessageFormatter extends MessageFormatter {
 
 export class UnhandledEventFormatter extends MessageFormatter {
 
-  messageParameters(): messageParameters {
+  messageParameters(): MessageParameters {
     let messageObject = {
       title: 'Unhandled event',
       message: `Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.message)}\`\`\` `,
