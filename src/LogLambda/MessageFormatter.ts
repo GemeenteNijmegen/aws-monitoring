@@ -118,7 +118,7 @@ export class DevopsGuruMessageFormatter extends MessageFormatter {
         type: `${getEventType(message)}`,
         account: this.account,
       },
-      url: `https://${message?.detail?.insightUrl}`,
+      url: message?.detail?.insightUrl,
       url_text: 'Bekijk insight',
     };
 
