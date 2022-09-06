@@ -113,12 +113,12 @@ export class DevopsGuruMessageFormatter extends MessageFormatter {
     const message = this.message;
     let messageObject = {
       title: 'DevopsGuru Insight',
-      message: '$message?.detail?.insightDescription',
+      message: message?.detail?.insightDescription,
       context: {
         type: `${getEventType(message)}`,
         account: this.account,
       },
-      url: `https://${message?.insightUrl}`,
+      url: message?.detail?.insightUrl,
       url_text: 'Bekijk insight',
     };
 
