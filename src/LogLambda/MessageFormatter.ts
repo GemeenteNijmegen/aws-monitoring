@@ -195,10 +195,10 @@ export class CodePipelineFormatter extends MessageFormatter {
         type: getEventType(message),
         account: this.account,
       },
-      url: `https://eu-west-1.console.aws.amazon.com/codesuite/codepipeline/pipelines/${message?.detail?.pipeline}/view`,
+      url: `https://${message?.region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${message?.detail?.pipeline}/view`,
       url_text: 'Bekijk codepipeline',
     };
-    switch (message?.detail?.state?.state) {
+    switch (message?.detail?.state) {
       case 'STARTED':
         messageObject.title = `⏳ Pipeline succeeded: ${message.detail.pipeline}`;
         break;
