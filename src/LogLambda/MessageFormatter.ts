@@ -200,7 +200,7 @@ export class CodePipelineFormatter extends MessageFormatter {
     };
     switch (message?.detail?.state) {
       case 'STARTED':
-        messageObject.title = `⏳ Pipeline succeeded: ${message.detail.pipeline}`;
+        messageObject.title = `⏳ Pipeline started: ${message.detail.pipeline}`;
         break;
       case 'FAILED':
         messageObject.title = `❗️ Codepipeline failed: ${message.detail.pipeline}`;
