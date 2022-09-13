@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -26,6 +26,10 @@ const events = {
   'ACM Certificate Approaching Expiration': {
     shouldTriggerAlert: () => true,
     formatter: CertificateExpiryFormatter,
+  },
+  'CodePipeline Pipeline Execution State Change': {
+    shouldTriggerAlert: () => true,
+    formatter: CodePipelineFormatter,
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,

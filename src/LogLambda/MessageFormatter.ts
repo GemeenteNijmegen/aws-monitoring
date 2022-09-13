@@ -184,6 +184,44 @@ export class Ec2MessageFormatter extends MessageFormatter {
   }
 }
 
+export class CodePipelineFormatter extends MessageFormatter {
+
+  messageParameters(): MessageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: '',
+      message: '',
+      context: {
+        type: getEventType(message),
+        account: this.account,
+      },
+      url: `https://eu-west-1.console.aws.amazon.com/codesuite/codepipeline/pipelines/${message?.detail?.pipeline}/view`,
+      url_text: 'Bekijk codepipeline',
+    };
+    switch (message?.detail?.state?.state) {
+      case 'STARTED':
+        messageObject.title = `⏳ Pipeline succeeded: ${message.detail.pipeline}`;
+        break;
+      case 'FAILED':
+        messageObject.title = `❗️ Codepipeline failed: ${message.detail.pipeline}`;
+        break;
+      case 'STOPPED':
+        messageObject.title = `❌ Codepipeline stopped: ${message.detail.pipeline}`;
+        break;
+      case 'SUCCEEDED':
+        messageObject.title = `✅ Pipeline succeeded: ${message.detail.pipeline}`;
+        break;
+      case 'SUPERSEDED':
+        messageObject.title = `🔁 Pipeline superseded: ${message.detail.pipeline}`;
+        break;
+      default:
+        messageObject.title = `Pipeline ${message.detail.state}: ${message.detail.pipeline}`;
+        break;
+    }
+    return messageObject;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter {
 
   messageParameters(): MessageParameters {

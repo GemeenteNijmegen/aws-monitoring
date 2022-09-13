@@ -106,6 +106,17 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Devopsguru New insights + increased severity to SNS',
       },
+      {
+        id: 'codepipeline-events',
+        pattern: {
+          source: ['aws.codepipeline'],
+          detailType: ['CodePipeline Pipeline Execution State Change'],
+          detail: {
+            state: ['STARTED', 'FAILED', 'STOPPED', 'SUCCEEDED', 'SUPERSEDED'],
+          },
+        },
+        ruleDescription: 'Send codepipeline state change to SNS',
+      },
     ];
 
     eventSubscriptions.forEach(subscription =>
