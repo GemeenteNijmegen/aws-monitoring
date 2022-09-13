@@ -4,6 +4,8 @@ export interface DeploymentEnvironment {
   accountName: string;
   env: Environment;
   assumedRolesToAlarmOn?: string|string[];
+  includeMonitoringRules?: string[];
+  excludeMonitoringRules?: string[];
 }
 
 /**
@@ -46,5 +48,15 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: '774916747470',
       region: 'eu-west-1',
     },
+  },
+  {
+    accountName: 'deployment',
+    env: {
+      account: '418648875085',
+      region: 'eu-west-1',
+    },
+    includeMonitoringRules: [
+      'codepipeline-events',
+    ],
   },
 ];

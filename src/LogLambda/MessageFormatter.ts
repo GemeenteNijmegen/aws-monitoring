@@ -190,7 +190,7 @@ export class CodePipelineFormatter extends MessageFormatter {
     const message = this.message;
     let messageObject = {
       title: '',
-      message: '',
+      message: 'Codepipeline state changed',
       context: {
         type: getEventType(message),
         account: this.account,
