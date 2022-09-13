@@ -212,7 +212,7 @@ export class CodePipelineFormatter extends MessageFormatter {
         messageObject.title = `✅ Pipeline succeeded: ${message.detail.pipeline}`;
         break;
       case 'SUPERSEDED':
-        messageObject.title = `✅ Pipeline succeeded: ${message.detail.pipeline}`;
+        messageObject.title = `🔁 Pipeline superseded: ${message.detail.pipeline}`;
         break;
       default:
         messageObject.title = `Pipeline ${message.detail.state}: ${message.detail.pipeline}`;
