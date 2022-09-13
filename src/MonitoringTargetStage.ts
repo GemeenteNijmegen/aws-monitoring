@@ -124,7 +124,7 @@ export class MonitoringTargetStack extends Stack {
     };
     const excludeFilter = (sub: { id: string }) => {
       return props.excludeMonitoringRules ? !props.excludeMonitoringRules.includes(sub.id) : true;
-    };  
+    };
 
     eventSubscriptions.filter(includeFilter)
       .filter(excludeFilter)
