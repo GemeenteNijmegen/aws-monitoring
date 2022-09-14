@@ -4,8 +4,17 @@ export interface DeploymentEnvironment {
   accountName: string;
   env: Environment;
   assumedRolesToAlarmOn?: string|string[];
-  includeMonitoringRules?: string[];
-  excludeMonitoringRules?: string[];
+
+  /**
+   * If set, only event subscriptions matching ids in this array
+   * will be included in the account. No other rules will be added.
+   */
+  includedEventSubscriptions?: string[];
+  /**
+   * if set, event subscriptions matching ids in this array
+   * will be excluded from the default list in the account.
+   */
+  excludedEventSubscriptions?: string[];
 }
 
 /**
@@ -55,7 +64,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: '418648875085',
       region: 'eu-west-1',
     },
-    includeMonitoringRules: [
+    includedEventSubscriptions: [
       'codepipeline-events',
     ],
   },

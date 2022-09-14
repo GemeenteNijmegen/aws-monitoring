@@ -120,13 +120,14 @@ export class MonitoringTargetStack extends Stack {
     ];
 
     const includeFilter = (sub: { id: string }) => {
-      return props.includeMonitoringRules ? props.includeMonitoringRules.includes(sub.id) : true;
+      return props.includedEventSubscriptions ? props.includedEventSubscriptions.includes(sub.id) : true;
     };
     const excludeFilter = (sub: { id: string }) => {
-      return props.excludeMonitoringRules ? !props.excludeMonitoringRules.includes(sub.id) : true;
+      return props.excludedEventSubscriptions ? !props.excludedEventSubscriptions.includes(sub.id) : true;
     };
 
-    eventSubscriptions.filter(includeFilter)
+    eventSubscriptions
+      .filter(includeFilter)
       .filter(excludeFilter)
       .forEach(subscription =>
         new EventSubscription(this, subscription.id, {
