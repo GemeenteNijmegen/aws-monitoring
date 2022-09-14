@@ -141,7 +141,7 @@ export async function sendMessageToSlack(message: any) {
 
 /**
  * Check if a string (case insensitive, regex allowed) is included in an array of strings.
- * 
+ *
  * @param array an array of lowercased strings
  * @param string the string to match in the array
  * @returns boolean
