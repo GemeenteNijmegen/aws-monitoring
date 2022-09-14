@@ -96,6 +96,7 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
     'CIS-Unauthorized Activity Attempt (Custom)',
     'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/ECS/ContainerInsights/NetworkRxBytes/eform-cluster/',
     'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/ECS/ContainerInsights/NetworkTxBytes/eform-cluster/',
+    'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/AWS/ApplicationELB/TargetResponseTime.*',
   ];
 
   if (stringMatchesPatternInArray(excludedAlarms, message?.detail?.alarmName)) {
@@ -139,16 +140,21 @@ export async function sendMessageToSlack(message: any) {
 }
 
 /**
- * Check if a string (case insensitive) is includded in an array of strings.
+ * Check if a string (case insensitive, regex allowed) is included in an array of strings.
  * 
  * @param array an array of lowercased strings
  * @param string the string to match in the array
- * @returns 
+ * @returns boolean
  */
-export function stringMatchesPatternInArray(array: string[], string: string) {
-  const regExp = new RegExp(string.toLowerCase());
+export function stringMatchesPatternInArray(array: string[], string: string): boolean {
+  const lowerCasedString = string.toLowerCase();
   const match = array.find((potentialMatch) => {
-    return regExp.test(potentialMatch.toLowerCase());
+    const regExp = new RegExp(potentialMatch.toLowerCase());
+    return regExp.test(escapeRegExp(lowerCasedString));
   });
   return match !== undefined;
+}
+
+function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
