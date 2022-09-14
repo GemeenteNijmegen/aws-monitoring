@@ -146,5 +146,9 @@ export async function sendMessageToSlack(message: any) {
  * @returns 
  */
 export function stringMatchesPatternInArray(array: string[], string: string) {
-  return array.includes(string.toLowerCase());
+  const regExp = new RegExp(string.toLowerCase());
+  const match = array.find((potentialMatch) => {
+    return regExp.test(potentialMatch.toLowerCase());
+  });
+  return match !== undefined;
 }

@@ -20,4 +20,13 @@ describe('Test patterns', () => {
     expect(stringMatchesPatternInArray(pattern, string)).toBe(true);
   });
 
+
+  test('regex strings', () => {
+    const string = 'This should match .*';
+    const pattern = [
+      'this should match the full string'
+    ];
+    expect(stringMatchesPatternInArray(pattern, string)).toBe(true);
+  });
+
 });
