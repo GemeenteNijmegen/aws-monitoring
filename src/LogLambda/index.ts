@@ -98,7 +98,7 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
     'ApplicationInsights/ApplicationInsights-ContainerInsights-ECS_CLUSTER-eform-cluster/ECS/ContainerInsights/NetworkTxBytes/eform-cluster/',
   ];
 
-  if (excludedAlarms.includes(message?.detail?.alarmName)) {
+  if (stringMatchesPatternInArray(excludedAlarms, message?.detail?.alarmName)) {
     return false;
   }
   const state = message?.detail?.state?.value;
@@ -138,3 +138,13 @@ export async function sendMessageToSlack(message: any) {
   return axios.post(process.env.SLACK_WEBHOOK_URL, message);
 }
 
+/**
+ * Check if a string (case insensitive) is includded in an array of strings.
+ * 
+ * @param array an array of lowercased strings
+ * @param string the string to match in the array
+ * @returns 
+ */
+export function stringMatchesPatternInArray(array: string[], string: string) {
+  return array.includes(string.toLowerCase());
+}
