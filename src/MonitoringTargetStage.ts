@@ -51,7 +51,7 @@ export class MonitoringTargetStack extends Stack {
     const key = this.kmskey();
     const topic = this.topic(key);
 
-    this.addEventSubscriptions(topic);
+    this.addEventSubscriptions(topic, props);
     new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key });
     new DefaultAlarms(this, 'default-alarms');
     this.AddLambdaSubscriber(topic, props.accountName);
@@ -72,7 +72,7 @@ export class MonitoringTargetStack extends Stack {
    *
    * @param {topic} topic the rule will send event notifications to this topic
    */
-  private addEventSubscriptions(topic: aws_sns.Topic) {
+  private addEventSubscriptions(topic: aws_sns.Topic, props: DeploymentEnvironment) {
     const eventSubscriptions = [
       {
         id: 'alarms',
@@ -106,13 +106,34 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Devopsguru New insights + increased severity to SNS',
       },
+      {
+        id: 'codepipeline-events',
+        pattern: {
+          source: ['aws.codepipeline'],
+          detailType: ['CodePipeline Pipeline Execution State Change'],
+          detail: {
+            state: ['STARTED', 'FAILED', 'STOPPED', 'SUCCEEDED', 'SUPERSEDED'],
+          },
+        },
+        ruleDescription: 'Send codepipeline state change to SNS',
+      },
     ];
 
-    eventSubscriptions.forEach(subscription =>
-      new EventSubscription(this, subscription.id, {
-        topic, pattern: subscription.pattern, ruleDescription: subscription.ruleDescription,
-      }),
-    );
+    const includeFilter = (sub: { id: string }) => {
+      return props.includeMonitoringRules ? props.includeMonitoringRules.includes(sub.id) : true;
+    };
+    const excludeFilter = (sub: { id: string }) => {
+      return props.excludeMonitoringRules ? !props.excludeMonitoringRules.includes(sub.id) : true;
+    };
+
+    eventSubscriptions.filter(includeFilter)
+      .filter(excludeFilter)
+      .forEach(subscription =>
+        new EventSubscription(this, subscription.id, {
+          topic, pattern: subscription.pattern, ruleDescription: subscription.ruleDescription,
+        }),
+      );
+
   }
 
   /**
