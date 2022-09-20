@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -30,6 +30,10 @@ const events = {
   'CodePipeline Pipeline Execution State Change': {
     shouldTriggerAlert: () => true,
     formatter: CodePipelineFormatter,
+  },
+  'AWS Health Event': {
+    shouldTriggerAlert: () => true,
+    formatter: HealthDashboardFormatter,
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,

@@ -117,6 +117,14 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send codepipeline state change to SNS',
       },
+      {
+        id: 'health-events',
+        pattern: {
+          source: ['aws.health'],
+          detailType: ['AWS Health Event'],
+        },
+        ruleDescription: 'Send Health Dashboard alerts to SNS',
+      },
     ];
 
     const includeFilter = (sub: { id: string }) => {
