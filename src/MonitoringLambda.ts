@@ -49,6 +49,7 @@ export class MonitoringLambda extends Construct {
       environment: {
         ACCOUNT_NAME: props.accountName,
         SLACK_WEBHOOK_URL: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
+        SLACK_WEBHOOK_URL_LOW_PRIO: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
       },
     });
   }
