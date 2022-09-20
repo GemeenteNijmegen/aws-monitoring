@@ -18,4 +18,8 @@ export abstract class Statics {
    * Slack webhook url for monitoring lambda
    */
   static readonly ssmSlackWebhookUrl: string = '/cdk/aws-monitoring/slack-webhook-url';
+  /**
+   * Slack webhook url for low priority notifications
+   */
+  static readonly ssmSlackWebhookUrlLowPriority: string = '/cdk/aws-monitoring/slack-webhook-url-low-prio';
 }
