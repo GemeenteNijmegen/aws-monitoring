@@ -222,6 +222,24 @@ export class CodePipelineFormatter extends MessageFormatter {
   }
 }
 
+export class HealthDashboardFormatter extends MessageFormatter {
+  messageParameters(): MessageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: `Health Dashboard alert: ${message?.detail?.eventTypeCode}`,
+      message: `${message?.detail?.eventDescription.map((event: { latestDescription: any }) => `${event.latestDescription}`)}`,
+      context: {
+        type: `${getEventType(message)}`,
+        account: this.account,
+      },
+      url: 'https://health.aws.amazon.com/health/home#/account/dashboard/',
+      url_text: 'Bekijk Health Dashboard',
+    };
+
+    return messageObject;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter {
 
   messageParameters(): MessageParameters {
