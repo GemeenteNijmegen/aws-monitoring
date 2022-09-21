@@ -1,12 +1,19 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, MessageFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
  * a notification, and different messages get formatted differently. Notifications that can't be mapped
  * will be processed as an 'unhandledEvent'.
  */
-const events = {
+
+interface Event {
+  shouldTriggerAlert: (message?: any) => boolean;
+  formatter: typeof MessageFormatter;
+  low_priority?: boolean;
+}
+
+const events: Record<string, Event> = {
   'CloudWatch Alarm State Change': {
     shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
     formatter: AlarmMessageFormatter,
@@ -30,6 +37,7 @@ const events = {
   'CodePipeline Pipeline Execution State Change': {
     shouldTriggerAlert: () => true,
     formatter: CodePipelineFormatter,
+    low_priority: true,
   },
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
@@ -49,7 +57,8 @@ export async function handler(event: any, _context: any) {
   }
   try {
     const params = slackMessageFromSNSMessage(message);
-    await sendMessageToSlack(params);
+    const eventType = getEventType(message);
+    await sendMessageToSlack(params, events[eventType]?.low_priority);
   } catch (error) {
     console.error(error);
   }
@@ -136,11 +145,12 @@ export function slackMessageFromSNSMessage(message: any): any {
  * @param message the message
  * @returns axios response
  */
-export async function sendMessageToSlack(message: any) {
-  if (!process.env.SLACK_WEBHOOK_URL) {
+export async function sendMessageToSlack(message: any, low_priority?: boolean) {
+  const url = low_priority ? process.env?.SLACK_WEBHOOK_URL_LOW_PRIO : process.env?.SLACK_WEBHOOK_URL;
+  if (!url) {
     throw Error('No slack webhook url defined');
   }
-  return axios.post(process.env.SLACK_WEBHOOK_URL, message);
+  return axios.post(url, message);
 }
 
 /**

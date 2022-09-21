@@ -242,6 +242,12 @@ export class ParameterStack extends Stack {
       parameterName: Statics.ssmSlackWebhookUrl,
     });
     slackParam.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
+    const slackParamLowPriority = new aws_ssm.StringParameter(this, 'ssm_slack_2', {
+      stringValue: '-',
+      parameterName: Statics.ssmSlackWebhookUrlLowPriority,
+    });
+    slackParamLowPriority.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
 }
 
