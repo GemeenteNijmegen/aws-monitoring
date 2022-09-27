@@ -8,8 +8,8 @@ const project = new GemeenteNijmegenCdkApp({
   name: 'aws-monitoring',
   depsUpgradeOptions: {
     workflowOptions: {
-      branches: ['development']
-    }
+      branches: ['development'],
+    },
   },
   deps: [
     'aws-cdk-lib',
