@@ -68,4 +68,18 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       'codepipeline-events',
     ],
   },
+  {
+    accountName: 'generiek-accp',
+    env: {
+      account: '229631103712',
+      region: 'eu-west-1',
+    },
+  },
+  {
+    accountName: 'generiek-prod',
+    env: {
+      account: '487749583954',
+      region: 'eu-west-1',
+    },
+  },
 ];
