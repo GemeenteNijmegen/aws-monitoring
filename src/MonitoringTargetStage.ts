@@ -125,6 +125,17 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send Health Dashboard alerts to SNS',
       },
+      {
+        id: 'inspector-finding-events',
+        pattern: {
+          source: ['aws.inspector2'],
+          detailType: ['Inspector2 Finding'],
+          detail: {
+            severity: ['CRITICAL'],
+          },
+        },
+        ruleDescription: 'Send Inspector2 Finding notifications to SNS',
+      },
     ];
 
     const includeFilter = (sub: { id: string }) => {

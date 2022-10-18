@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, MessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter } from './MessageFormatter';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -42,6 +42,10 @@ const events: Record<string, Event> = {
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
     formatter: HealthDashboardFormatter,
+  },
+  'Inspector2 Finding': {
+    shouldTriggerAlert: () => true,
+    formatter: InspectorFindingFormatter,
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,

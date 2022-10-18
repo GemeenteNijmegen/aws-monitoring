@@ -240,6 +240,24 @@ export class HealthDashboardFormatter extends MessageFormatter {
   }
 }
 
+export class InspectorFindingFormatter extends MessageFormatter {
+  messageParameters(): MessageParameters {
+    const message = this.message;
+    let messageObject = {
+      title: `Inspector Finding alert: ${message?.detail?.title}`,
+      message: `${message?.detail?.description}`,
+      context: {
+        type: `${getEventType(message)}`,
+        account: this.account,
+      },
+      url: 'https://eu-west-1.console.aws.amazon.com/securityhub/home?region=eu-west-1',
+      url_text: 'Bekijk Inspector Finding in Security Hub',
+    };
+
+    return messageObject;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter {
 
   messageParameters(): MessageParameters {
