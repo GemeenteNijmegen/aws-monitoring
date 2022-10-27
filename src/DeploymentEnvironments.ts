@@ -15,6 +15,11 @@ export interface DeploymentEnvironment {
    * will be excluded from the default list in the account.
    */
   excludedEventSubscriptions?: string[];
+
+  /**
+   *
+   */
+  enableDevopsGuru?: boolean;
 }
 
 /**
@@ -28,6 +33,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: '315037222840',
       region: 'eu-west-1',
     },
+    enableDevopsGuru: true,
   },
   {
     accountName: 'auth-prod',
@@ -35,6 +41,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: '196212984627',
       region: 'eu-west-1',
     },
+    enableDevopsGuru: true,
   },
   {
     accountName: 'dns',
@@ -43,6 +50,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       region: 'eu-west-1',
     },
     assumedRolesToAlarmOn: 'nijmegen-operator',
+    enableDevopsGuru: true,
   },
   {
     accountName: 'production',
