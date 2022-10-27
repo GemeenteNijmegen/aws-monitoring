@@ -17,7 +17,7 @@ export interface DeploymentEnvironment {
   excludedEventSubscriptions?: string[];
 
   /**
-   * 
+   *
    */
   enableDevopsGuru?: boolean;
 }

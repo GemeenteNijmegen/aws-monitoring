@@ -52,7 +52,7 @@ export class MonitoringTargetStack extends Stack {
     const topic = this.topic(key);
 
     this.addEventSubscriptions(topic, props);
-    if(props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
+    if (props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
     new DefaultAlarms(this, 'default-alarms');
     this.AddLambdaSubscriber(topic, props.accountName);
 
