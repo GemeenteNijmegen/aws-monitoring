@@ -142,7 +142,7 @@ export class MonitoringTargetStack extends Stack {
           source: ['aws.ec2'],
           detailType: ['EC2 Instance State-change Notification'],
           detail: {
-            state: ['pending', 'running'],
+            state: ['pending', 'running', 'stopped', 'stopping', 'terminated'],
           },
         },
         ruleDescription: 'Send EC2 instance start events to SNS',
