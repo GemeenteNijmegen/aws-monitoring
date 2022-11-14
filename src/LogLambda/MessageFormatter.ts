@@ -175,7 +175,7 @@ export class Ec2MessageFormatter extends MessageFormatter {
       message: `Instance id: ${message?.detail?.['instance-id']}`,
       context: {
         type: `${getEventType(message)}`,
-        account: '',
+        account: this.account,
       },
       url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.['instance-id']}`,
       url_text: 'Bekijk instance',
