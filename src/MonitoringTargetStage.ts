@@ -136,6 +136,17 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send Inspector2 Finding notifications to SNS',
       },
+      {
+        id: 'ec2-start-events',
+        pattern: {
+          source: ['aws.ec2'],
+          detailType: ['EC2 Instance State-change Notification'],
+          detail: {
+            state: ['pending', 'running', 'stopped', 'stopping', 'terminated'],
+          },
+        },
+        ruleDescription: 'Send EC2 instance start events to SNS',
+      },
     ];
 
     const includeFilter = (sub: { id: string }) => {
