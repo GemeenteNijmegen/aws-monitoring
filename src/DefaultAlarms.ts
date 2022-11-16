@@ -3,16 +3,19 @@ import { Alarm, Metric } from 'aws-cdk-lib/aws-cloudwatch';
 import { FilterPattern, LogGroup, MetricFilter } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
+export interface AssumedRoleAlarmsProps {
+  cloudTrailLogGroupName: string;
+}
 
 export class DefaultAlarms extends Construct {
   /**
    * Setup alarms for metrics we want to monitor in each account.
    */
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, props: AssumedRoleAlarmsProps) {
     super(scope, id);
 
     this.addConcurrentExecutionsAlarm();
-    this.addAccessDeniedAlarm();
+    this.addAccessDeniedAlarm(props.cloudTrailLogGroupName);
   }
 
   /**
@@ -41,7 +44,7 @@ export class DefaultAlarms extends Construct {
    * Filtern pattern checks on errorCode UnauthorizedOperation and AccessDenied.
    * Users from Oblivion and Nijmegen are excluded.
    */
-  private addAccessDeniedAlarm() {
+  private addAccessDeniedAlarm(cloudTrailLogGroupName: string) {
 
     const pattern = FilterPattern.all(
       FilterPattern.any(
@@ -58,7 +61,7 @@ export class DefaultAlarms extends Construct {
     );
 
     new MetricFilter(this, 'MetricFilter', {
-      logGroup: LogGroup.fromLogGroupArn(this, 'cloudtrail-loggroup', 'arn:aws:logs:eu-west-1:196212984627:log-group:gemeentenijmegen-auth-prod/cloudtrail:*'),
+      logGroup: LogGroup.fromLogGroupName(this, 'cloudtrail', cloudTrailLogGroupName),
       metricName: 'AccessDeniedCustom',
       metricNamespace: 'CloudTrailMetrics',
       filterPattern: pattern,

@@ -53,7 +53,7 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic, props);
     if (props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
-    new DefaultAlarms(this, 'default-alarms');
+    new DefaultAlarms(this, 'default-alarms', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail` });
     this.AddLambdaSubscriber(topic, props.accountName);
 
     if (props.assumedRolesToAlarmOn) {
