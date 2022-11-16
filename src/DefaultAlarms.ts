@@ -60,13 +60,13 @@ export class DefaultAlarms extends Construct {
     new MetricFilter(this, 'MetricFilter', {
       logGroup: LogGroup.fromLogGroupName(this, 'cloudtrail-loggroup', 'gemeentenijmegen-auth-prod/cloudtrail'),
       metricName: 'AccessDeniedCustom',
-      metricNamespace: 'AWS/CloudTrailMetrics',
+      metricNamespace: 'CloudTrailMetrics',
       filterPattern: pattern,
     });
 
     const metric = new Metric({
       metricName: 'AccessDeniedCustom',
-      namespace: 'AWS/CloudTrailMetrics',
+      namespace: 'CloudTrailMetrics',
       statistic: 'Maximum',
       period: Duration.minutes(5),
     });
