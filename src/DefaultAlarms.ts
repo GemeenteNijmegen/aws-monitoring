@@ -58,7 +58,7 @@ export class DefaultAlarms extends Construct {
     );
 
     new MetricFilter(this, 'MetricFilter', {
-      logGroup: LogGroup.fromLogGroupName(this, 'cloudtrail-loggroup', 'gemeentenijmegen-auth-prod/cloudtrail'),
+      logGroup: LogGroup.fromLogGroupArn(this, 'cloudtrail-loggroup', 'arn:aws:logs:eu-west-1:196212984627:log-group:gemeentenijmegen-auth-prod/cloudtrail:*'),
       metricName: 'AccessDeniedCustom',
       metricNamespace: 'CloudTrailMetrics',
       filterPattern: pattern,
