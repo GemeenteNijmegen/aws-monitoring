@@ -147,6 +147,20 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send EC2 instance start events to SNS',
       },
+      {
+        id: 'cloudformation-stack-drift-events',
+        pattern: {
+          source: ['aws.cloudformation'],
+          detailType: ['CloudFormation Drift Detection Status Change'],
+          detail: {
+            'status-details': {
+              'stack-drift-status': 'DRIFTED',
+              'detection-status': 'DETECTION_COMPLETE',
+            },
+          },
+        },
+        ruleDescription: 'Send EC2 instance start events to SNS',
+      },
     ];
 
     const includeFilter = (sub: { id: string }) => {
