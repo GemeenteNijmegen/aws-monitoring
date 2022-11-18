@@ -154,8 +154,8 @@ export class MonitoringTargetStack extends Stack {
           detailType: ['CloudFormation Drift Detection Status Change'],
           detail: {
             'status-details': {
-              'stack-drift-status': 'DRIFTED',
-              'detection-status': 'DETECTION_COMPLETE',
+              'stack-drift-status': ['DRIFTED'],
+              'detection-status': ['DETECTION_COMPLETE'],
             },
           },
         },
