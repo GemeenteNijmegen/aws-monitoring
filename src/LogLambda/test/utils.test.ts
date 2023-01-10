@@ -1,4 +1,4 @@
-import { stringMatchesPatternInArray } from '../index';
+import { stringMatchesPatternInArray } from '../SnsEventHandler';
 
 beforeAll(() => {
 });
