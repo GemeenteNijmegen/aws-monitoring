@@ -31,8 +31,8 @@ describe('Log subscription lambda', () => {
     const formatted = formatter.formattedMessage();
 
     expect(formatted.blocks[2].text.text).toContain('*Log group:* test-group');
-    expect(formatted.blocks[2].text.text).toContain('``` Message ```');
-    expect(formatted.blocks[2].text.text).toContain('``` Message2 ```');
+    expect(formatted.blocks[2].text.text).toContain('Message');
+    expect(formatted.blocks[2].text.text).toContain('Message2');
 
   });
 

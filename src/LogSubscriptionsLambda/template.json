@@ -27,13 +27,6 @@
                 "type": "mrkdwn",
                 "text": "<MESSAGE>"
             }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "<<URL>|<URL_TEXT>>"
-            }
         }
     ]
 }
