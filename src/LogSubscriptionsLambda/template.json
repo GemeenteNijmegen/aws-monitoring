@@ -1,0 +1,39 @@
+{
+    "blocks": [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "<HEADER>",
+                "emoji": true
+            }
+        },
+        {
+            "type": "context",
+            "elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Account: *<CONTEXT_ACCOUNT>*"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Type: *<CONTEXT_TYPE>*"
+				}
+			]
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "<MESSAGE>"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "<<URL>|<URL_TEXT>>"
+            }
+        }
+    ]
+}

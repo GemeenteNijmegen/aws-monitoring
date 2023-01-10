@@ -8,6 +8,7 @@ import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
+import { LogSubscriptionLambda } from './LogSubscriptionLambda';
 import { MonitoringLambda } from './MonitoringLambda';
 import { Statics } from './statics';
 
@@ -53,7 +54,14 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic, props);
     if (props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
-    new DefaultAlarms(this, 'default-alarms', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail` });
+
+    const logSubscriptionLambda = new LogSubscriptionLambda(this, 'log-subscription-lambda', { accountName: props.accountName });
+
+    new DefaultAlarms(this, 'default-alarms', {
+      cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`,
+      logSubscriptionLambdaArn: logSubscriptionLambda.function.functionArn,
+    });
+
     this.AddLambdaSubscriber(topic, props.accountName);
 
     if (props.assumedRolesToAlarmOn) {
