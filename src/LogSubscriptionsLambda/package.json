@@ -1,0 +1,21 @@
+{
+  "name": "loglambda",
+  "version": "1.0.0",
+  "description": "lambda for processing SNS events",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "@types/aws-lambda": "^8.10.109"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.21.2"
+  }
+}
