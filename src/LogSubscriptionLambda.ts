@@ -1,5 +1,6 @@
 import path from 'path';
 import { aws_lambda, aws_ssm, Duration, Tags } from 'aws-cdk-lib';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -52,5 +53,10 @@ export class LogSubscriptionLambda extends Construct {
         SLACK_WEBHOOK_URL_LOW_PRIO: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
       },
     });
+
+    this.function.addPermission('log-subscription-allow-invoke', {
+      principal: new ServicePrincipal('logs.amazonaws.com'),
+    });
+
   }
 }
