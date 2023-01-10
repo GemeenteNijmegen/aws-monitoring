@@ -15,30 +15,30 @@ export class LogsMessageFormatter {
   formattedMessage(): any {
 
     const message = new SlackMessage();
-    message.addHeader("Log subscription");
+    message.addHeader('Log subscription');
     message.addContext({
-      account: this.account,
-      "log group": this.message.logGroup,
+      'account': this.account,
+      'log group': this.message.logGroup,
     });
 
     this.message.logEvents.forEach(log => {
-      const text = `${codeBlock}${this.escapeJson(log.message)}${codeBlock}`;
+      const text = `${codeBlock}${log.message}${codeBlock}`;
       message.addSection(text);
     });
 
     return message.getSlackMessage();
   }
 
-  private escapeJson(json: string) {
-    return json.replace(/\n/g, '\\n')
-      .replace(/'/g, "\\'")
-      .replace(/"/g, '\\"')
-      .replace(/&/g, '\\&')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t')
-      .replace(/\\b/g, '\\b')
-      .replace(/\f/g, '\\f');
-  }
+  // private escapeJson(json: string) {
+  //   return json.replace(/\n/g, '\\n')
+  //     .replace(/'/g, "\\'")
+  //     .replace(/"/g, '\\"')
+  //     .replace(/&/g, '\\&')
+  //     .replace(/\r/g, '\\r')
+  //     .replace(/\t/g, '\\t')
+  //     .replace(/\\b/g, '\\b')
+  //     .replace(/\f/g, '\\f');
+  // }
 
 }
 
@@ -48,46 +48,46 @@ class SlackMessage {
 
   addHeader(text: string) {
     this.blocks.push({
-      "type": "header",
-      "text": {
-        "type": "plain_text",
-        "text": text,
-        "emoji": true
-      }
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: text,
+        emoji: true,
+      },
     });
   }
 
   addContext(context: { [name: string]: string }) {
     const elements = Object.entries(context).map((entry) => {
       return {
-        "type": "mrkdwn",
-        "text": `${entry[0]}: *${entry[1]}*`,
-      }
+        type: 'mrkdwn',
+        text: `${entry[0]}: *${entry[1]}*`,
+      };
     });
     this.blocks.push({
-      type: "context",
-      elements: elements
+      type: 'context',
+      elements: elements,
     });
   }
 
-  addSection(text: string){
-    if(!text || text.length > 3000){
-      console.log("Message is empty or too long, max 3000", text);
-      text = '(message ommited)'
+  addSection(text: string) {
+    if (!text || text.length > 3000) {
+      console.log('Message is empty or too long, max 3000', text);
+      text = '(message ommited)';
     }
     this.blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": text,
-      }
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: text,
+      },
     });
   }
 
-  getSlackMessage(){
+  getSlackMessage() {
     return {
       blocks: this.blocks,
-    }
+    };
   }
 
 }
