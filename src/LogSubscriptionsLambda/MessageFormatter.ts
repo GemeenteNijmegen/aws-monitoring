@@ -11,8 +11,6 @@ interface MessageParameters {
     type: string;
     account: string;
   };
-  url: string;
-  url_text: string;
 }
 
 export class MessageFormatter<T> {
@@ -44,8 +42,7 @@ export class MessageFormatter<T> {
     blockString = blockString.replace('<CONTEXT_ACCOUNT>', parameters.context.account);
     blockString = blockString.replace('<CONTEXT_TYPE>', parameters.context.type);
     blockString = blockString.replace('<MESSAGE>', parameters.message);
-    blockString = blockString.replace('<URL>', parameters.url);
-    blockString = blockString.replace('<URL_TEXT>', parameters.url_text);
+
     try {
       const message = JSON.parse(blockString);
       return message;
@@ -63,8 +60,6 @@ export class MessageFormatter<T> {
         type: '',
         account: this.account,
       },
-      url: '',
-      url_text: '',
     };
   }
 }
@@ -74,20 +69,33 @@ export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecoded
 
   messageParameters(): MessageParameters {
     let messageObject = {
-      title: '',
+      title: 'Log subscription',
       message: `*Log group:* ${this.message.logGroup} `,
       context: {
-        type: '',
+        type: 'logs',
         account: this.account,
       },
-      url: '',
-      url_text: '',
     };
 
+    messageObject.message += codeBlock;
     this.message.logEvents.forEach(log => {
-      messageObject.message += `${codeBlock} ${log.message} ${codeBlock}`;
+      messageObject.message += this.escapeJson(log.message + '\n');
     });
+    messageObject.message += codeBlock;
 
     return messageObject;
   }
+
+  private escapeJson(json: string) {
+    return json.replace(/\n/g, '\\n')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '\\&')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t')
+      .replace(/\\b/g, '\\b')
+      .replace(/\f/g, '\\f');
+  }
+
 }
+
