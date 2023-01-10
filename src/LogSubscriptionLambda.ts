@@ -42,8 +42,8 @@ export class LogSubscriptionLambda extends Construct {
             return [];
           },
           // Copy a file so that it will be included in the bundled asset
-          afterBundling(inputDir: string, outputDir: string): string[] {
-            return [`cp ${inputDir}/template.json ${outputDir}`];
+          afterBundling(_inputDir: string, _outputDir: string): string[] {
+            return [''];
           },
         },
       },

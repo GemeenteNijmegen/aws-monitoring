@@ -7,7 +7,7 @@ describe('Log subscription lambda', () => {
 
   test('LogMessageFormatter', async () => {
 
-    const message = {
+    const event = {
       logGroup: 'test-group',
       logStream: '',
       messageType: '',
@@ -20,19 +20,25 @@ describe('Log subscription lambda', () => {
           timestamp: new Date().getMilliseconds(),
         },
         {
-          message: 'Message2',
+          message: JSON.stringify({ a: 'Random string', b: [1, 2, 3], c: ' " \n { } ' }),
           id: '1234',
           timestamp: new Date().getMilliseconds(),
         },
       ],
     };
 
-    const formatter = new LogsMessageFormatter(message, '123456789012');
+    const formatter = new LogsMessageFormatter(event, '123456789012');
     const formatted = formatter.formattedMessage();
 
-    expect(formatted.blocks[2].text.text).toContain('*Log group:* test-group');
-    expect(formatted.blocks[2].text.text).toContain('Message');
-    expect(formatted.blocks[2].text.text).toContain('Message2');
+    const message = JSON.stringify(formatted, null, 4);
+
+    // Context
+    expect(message).toContain('log group: *test-group*');
+    expect(message).toContain('account: *123456789012*');
+
+    // Messages
+    expect(message).toContain('```Message```');
+    expect(formatted.blocks[3].text.text).toBe('```{\"a\":\"Random string\",\"b\":[1,2,3],\"c\":\" \\\" \\n { } \"}```');
 
   });
 
