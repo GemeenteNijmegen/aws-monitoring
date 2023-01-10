@@ -10,6 +10,7 @@ import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
 import { LogSubscriptionLambda } from './LogSubscriptionLambda';
 import { MonitoringLambda } from './MonitoringLambda';
+import { PreDefinedQueryStack } from './PreDefinedQueryStack';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -31,6 +32,8 @@ export class MonitoringTargetStage extends Stage {
       const paramsStack = new ParameterStack(this, `parameters-${environment.accountName}`, environment);
       const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.accountName}`, environment);
       monitoringStack.addDependency(paramsStack, 'SSM Parameters must exist before lambda using it is created.');
+
+      new PreDefinedQueryStack(this, 'cloudwatch-queries', environment);
     });
   }
 }
