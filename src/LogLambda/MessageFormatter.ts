@@ -1,276 +1,213 @@
-import fs from 'fs';
-import path from 'path';
-import { getEventType } from './index';
+import { CloudWatchLogsDecodedData } from 'aws-lambda';
+import { SlackMessage } from './SlackMessage';
+import { getEventType } from './SnsEventHandler';
 
-interface MessageParameters {
-  title: string;
-  message: string;
-  context: {
-    type: string;
-    account: string;
-  };
-  url: string;
-  url_text: string;
-}
-export class MessageFormatter {
-  message: any;
+/**
+ * Abstract class for formatting differnt types of events
+ * the formattedMesssage method returns a SlackMessage object
+ */
+export abstract class MessageFormatter<T> {
+
+  event: T;
   account: string;
-  constructor(message: any, account: string) {
-    this.message = message;
+
+  constructor(event: T, account: string) {
+    this.event = event;
     this.account = account;
   }
 
-  /**
-   * Do some cleanup / validation of the MessageParameters object.
-   *
-   * @param parameters {Messageparameters} the filled params
-   * @returns {Messageparameters} the cleaned params
-   */
-  cleanParameters(parameters: MessageParameters): MessageParameters {
-    // Slack header block allows text to be max 151 chars long.
-    const maxHeaderLength = 151;
-    parameters.title = parameters.title.substring(0, maxHeaderLength - 1);
-    return parameters;
+  formattedMessage(): SlackMessage {
+    const message = new SlackMessage();
+    return this.constructMessage(message);
   }
 
-  formattedMessage(): any {
-    const parameters = this.cleanParameters(this.messageParameters());
-    const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.json'));
-    const templateString = templateBuffer.toString();
-    let blockString = templateString.replace('<HEADER>', parameters.title);
-    blockString = blockString.replace('<CONTEXT_ACCOUNT>', parameters.context.account);
-    blockString = blockString.replace('<CONTEXT_TYPE>', parameters.context.type);
-    blockString = blockString.replace('<MESSAGE>', parameters.message);
-    blockString = blockString.replace('<URL>', parameters.url);
-    blockString = blockString.replace('<URL_TEXT>', parameters.url_text);
-    try {
-      const message = JSON.parse(blockString);
-      return message;
-    } catch (error: any) {
-      console.debug(error);
-      console.debug(blockString);
+  abstract constructMessage(message: SlackMessage): SlackMessage;
+}
+
+export class AlarmMessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    if (this.event?.detail?.state?.value == 'ALARM') {
+      message.addHeader(`❗️ Alarm: ${this.event.detail.alarmName}`);
+    } else if (this.event?.detail?.state?.value == 'OK') {
+      message.addHeader(`✅ Alarm ended: ${this.event.detail.alarmName}`);
+    } else if (this.event?.detail?.state?.value == 'INSUFFICIENT_DATA') {
+      message.addHeader(`Insufficient data: ${this.event.detail.alarmName}`);
     }
-  }
 
-  messageParameters(): MessageParameters {
-    return {
-      title: '',
-      message: '',
-      context: {
-        type: '',
-        account: this.account,
-      },
-      url: '',
-      url_text: '',
-    };
+    message.addContext({
+      type: getEventType(this.event),
+      account: this.account,
+    });
+    message.addSection(this.event?.detail.state.reason);
+    const target = `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`;
+    message.addLink('Bekijk alarm', target);
+    return message;
   }
 }
 
 
-export class AlarmMessageFormatter extends MessageFormatter {
+export class EcsMessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    const status = this.event?.detail?.lastStatus;
+    const desiredStatus = this.event?.detail?.desiredStatus;
+    const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
+    const clusterName = this.event?.detail?.clusterArn.split('/').pop();
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
 
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: '',
-      message: message?.detail.state.reason,
-      context: {
-        type: getEventType(message),
-        account: this.account,
-      },
-      url: `https://${message?.region}.console.aws.amazon.com/cloudwatch/home?region=${message?.region}#alarmsV2:alarm/${encodeURIComponent(message.detail.alarmName)}`,
-      url_text: 'Bekijk alarm',
-    };
-    if (message?.detail?.state?.value == 'ALARM') {
-      messageObject.title = `❗️ Alarm: ${message.detail.alarmName}`;
-    } else if (message?.detail?.state?.value == 'OK') {
-      messageObject.title = `✅ Alarm ended: ${message.detail.alarmName}`;
-    } else if (message?.detail?.state?.value == 'INSUFFICIENT_DATA') {
-      messageObject.title = `Insufficient data: ${message.detail.alarmName}`;
-    }
-    return messageObject;
-  }
-}
-
-
-export class EcsMessageFormatter extends MessageFormatter {
-
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    const containerString = message?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
-    const clusterName = message?.detail?.clusterArn.split('/').pop();
-    let messageObject = {
-      title: '',
-      message: `Containers involved: \\n - ${containerString}`,
-      context: {
-        type: `${getEventType(message)}, cluster ${clusterName}`,
-        account: this.account,
-      },
-      url: `https://${message?.region}.console.aws.amazon.com/ecs/home?region=${message?.region}#/clusters/${clusterName}/services`,
-      url_text: 'Bekijk cluster',
-    };
-    const status = message?.detail?.lastStatus;
-    const desiredStatus = message?.detail?.desiredStatus;
     if (status != desiredStatus) {
-      messageObject.title = `❗️ ECS Task not in desired state (state ${status}, desired ${desiredStatus})`;
+      message.addHeader(`❗️ ECS Task not in desired state (state ${status}, desired ${desiredStatus})`);
     } else {
-      messageObject.title = `✅ ECS Task in desired state (${status})`;
+      message.addHeader(`✅ ECS Task in desired state (${status})`);
     }
-    return messageObject;
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${clusterName}`,
+      account: this.account,
+    });
+    message.addSection(`Containers involved: \\n - ${containerString}`);
+    message.addLink('Bekijk cluster', target);
+    return message;
   }
 }
 
-export class DevopsGuruMessageFormatter extends MessageFormatter {
-
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: 'DevopsGuru Insight',
-      message: message?.detail?.insightDescription,
-      context: {
-        type: `${getEventType(message)}`,
-        account: this.account,
-      },
-      url: message?.detail?.insightUrl,
-      url_text: 'Bekijk insight',
-    };
-
-    if (message?.detail?.insightSeverity == 'high') {
-      messageObject.title = `❗️ ${messageObject.title}`;
+export class DevopsGuruMessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    if (this.event?.detail?.insightSeverity == 'high') {
+      message.addHeader('❗️ DevopsGuru Insight');
+    } else {
+      message.addHeader('DevopsGuru Insight');
     }
-    return messageObject;
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    message.addSection(this.event?.detail?.insightDescription);
+    message.addLink('Bekijk insight', this.event?.detail?.insightUrl);
+    return message;
   }
 }
 
 
-export class CertificateExpiryFormatter extends MessageFormatter {
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: 'Certificate nearing expiration',
-      message: `${message?.detail?.CommonName} verloopt over *${message?.detail?.DaysToExpiry} dagen.`,
-      context: {
-        type: `${getEventType(message)}`,
-        account: this.account,
-      },
-      url: 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1',
-      url_text: 'Bekijk certificaten',
-    };
-
-    if (message?.detail?.insightSeverity == 'high') {
-      messageObject.title = `❗️ ${messageObject.title}`;
-    }
-    return messageObject;
+export class CertificateExpiryFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader('❗️ Certificate nearing expiration');
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    message.addSection(`${this.event?.detail?.CommonName} verloopt over *${this.event?.detail?.DaysToExpiry} dagen.`);
+    message.addLink('Bekijk certificaten', 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1');
+    return message;
   }
 }
 
 
-export class Ec2MessageFormatter extends MessageFormatter {
+export class Ec2MessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
 
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    const status = message?.detail?.state;
-    let messageObject = {
-      title: `EC2 instance ${status}`,
-      message: `Instance id: ${message?.detail?.['instance-id']}`,
-      context: {
-        type: `${getEventType(message)}`,
-        account: this.account,
-      },
-      url: `https://${message?.region}.console.aws.amazon.com/ec2/v2/home?region=${message?.region}#InstanceDetails:instanceId=${message?.detail?.['instance-id']}`,
-      url_text: 'Bekijk instance',
-    };
-    return messageObject;
+    const status = this.event?.detail?.state;
+    message.addHeader(`EC2 instance ${status}`);
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    message.addSection(`Instance id: ${this.event?.detail?.['instance-id']}`);
+
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ec2/v2/home?region=${this.event?.region}#InstanceDetails:instanceId=${this.event?.detail?.['instance-id']}`;
+    message.addLink('Bekijk instance', target);
+
+    return message;
   }
 }
 
-export class CodePipelineFormatter extends MessageFormatter {
-
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: '',
-      message: 'Codepipeline state changed',
-      context: {
-        type: getEventType(message),
-        account: this.account,
-      },
-      url: `https://${message?.region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${message?.detail?.pipeline}/view`,
-      url_text: 'Bekijk codepipeline',
-    };
-    switch (message?.detail?.state) {
+export class CodePipelineFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    switch (this.event?.detail?.state) {
       case 'STARTED':
-        messageObject.title = `⏳ Pipeline started: ${message.detail.pipeline}`;
+        message.addHeader(`⏳ Pipeline started: ${this.event.detail.pipeline}`);
         break;
       case 'FAILED':
-        messageObject.title = `❗️ Codepipeline failed: ${message.detail.pipeline}`;
+        message.addHeader(`❗️ Codepipeline failed: ${this.event.detail.pipeline}`);
         break;
       case 'STOPPED':
-        messageObject.title = `❌ Codepipeline stopped: ${message.detail.pipeline}`;
+        message.addHeader(`❌ Codepipeline stopped: ${this.event.detail.pipeline}`);
         break;
       case 'SUCCEEDED':
-        messageObject.title = `✅ Pipeline succeeded: ${message.detail.pipeline}`;
+        message.addHeader(`✅ Pipeline succeeded: ${this.event.detail.pipeline}`);
         break;
       case 'SUPERSEDED':
-        messageObject.title = `🔁 Pipeline superseded: ${message.detail.pipeline}`;
+        message.addHeader(`🔁 Pipeline superseded: ${this.event.detail.pipeline}`);
         break;
       default:
-        messageObject.title = `Pipeline ${message.detail.state}: ${message.detail.pipeline}`;
+        message.addHeader(`Pipeline ${this.event.detail.state}: ${this.event.detail.pipeline}`);
         break;
     }
-    return messageObject;
+
+    message.addContext({
+      type: getEventType(this.event),
+      account: this.account,
+    });
+
+    message.addSection('Codepipeline state changed');
+    const target = `https://${this.event?.region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${this.event?.detail?.pipeline}/view`;
+    message.addLink('Bekijk codepipeline', target);
+
+    return message;
   }
 }
 
-export class HealthDashboardFormatter extends MessageFormatter {
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: `Health Dashboard alert: ${message?.detail?.eventTypeCode}`,
-      message: `${message?.detail?.eventDescription.map((event: { latestDescription: any }) => `${event.latestDescription}`)}`,
-      context: {
-        type: `${getEventType(message)}`,
-        account: this.account,
-      },
-      url: 'https://health.aws.amazon.com/health/home#/account/dashboard/',
-      url_text: 'Bekijk Health Dashboard',
-    };
-
-    return messageObject;
+export class HealthDashboardFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader(`Health Dashboard alert: ${this.event?.detail?.eventTypeCode}`);
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: any }) => `${event.latestDescription}`)}`);
+    message.addLink('Bekijk Health Dashboard', 'https://health.aws.amazon.com/health/home#/account/dashboard/');
+    return message;
   }
 }
 
-export class InspectorFindingFormatter extends MessageFormatter {
-  messageParameters(): MessageParameters {
-    const message = this.message;
-    let messageObject = {
-      title: `Inspector Finding alert: ${message?.detail?.title}`,
-      message: `${message?.detail?.description}`,
-      context: {
-        type: `${getEventType(message)}`,
-        account: this.account,
-      },
-      url: 'https://eu-west-1.console.aws.amazon.com/securityhub/home?region=eu-west-1',
-      url_text: 'Bekijk Inspector Finding in Security Hub',
-    };
-
-    return messageObject;
+export class InspectorFindingFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader(`Inspector Finding alert: ${this.event?.detail?.title}`);
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    message.addSection(this.event?.detail?.description);
+    const target = 'https://eu-west-1.console.aws.amazon.com/securityhub/home?region=eu-west-1';
+    message.addLink('Bekijk Inspector Finding in Security Hub', target);
+    return message;
   }
 }
 
-export class UnhandledEventFormatter extends MessageFormatter {
+export class UnhandledEventFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader('Unhandled event');
+    message.addContext({
+      type: 'unhandled event from SNS topic',
+      account: this.account,
+    });
+    message.addSection(`Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.event)}\`\`\` `);
+    const target = 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1';
+    message.addLink('Open CloudWatch', target);
+    return message;
+  }
+}
 
-  messageParameters(): MessageParameters {
-    let messageObject = {
-      title: 'Unhandled event',
-      message: `Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.message)}\`\`\` `,
-      context: {
-        type: 'unhandled event from SNS topic',
-        account: this.account,
-      },
-      url: 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1',
-      url_text: 'Open CloudWatch',
-    };
-    return messageObject;
+export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecodedData> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    const codeBlock = '```';
+    message.addHeader('Log subscription');
+    message.addContext({
+      'account': this.account,
+      'log group': this.event.logGroup,
+    });
+    this.event.logEvents.forEach(log => {
+      const text = `${codeBlock}${log.message}${codeBlock}`;
+      message.addSection(text);
+    });
+    return message;
   }
 }

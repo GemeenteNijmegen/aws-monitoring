@@ -1,5 +1,6 @@
 import path from 'path';
 import { aws_lambda, aws_ssm, Duration, Tags } from 'aws-cdk-lib';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -40,9 +41,8 @@ export class MonitoringLambda extends Construct {
           beforeInstall(_inputDir, _outputDir) {
             return [];
           },
-          // Copy a file so that it will be included in the bundled asset
-          afterBundling(inputDir: string, outputDir: string): string[] {
-            return [`cp ${inputDir}/template.json ${outputDir}`];
+          afterBundling(_inputDir, _outputDir) {
+            return [];
           },
         },
       },
@@ -52,5 +52,13 @@ export class MonitoringLambda extends Construct {
         SLACK_WEBHOOK_URL_LOW_PRIO: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
       },
     });
+
+    /**
+     * Allow invocation from cloudwatch logs (log subscription filter)
+     */
+    this.function.addPermission('log-subscription-allow-invoke', {
+      principal: new ServicePrincipal('logs.amazonaws.com'),
+    });
+
   }
 }

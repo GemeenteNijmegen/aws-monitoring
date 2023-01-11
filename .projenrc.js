@@ -17,7 +17,7 @@ const project = new GemeenteNijmegenCdkApp({
     'cdk-nag',
   ],
   scripts: {
-    'post-upgrade': '(cd src/LogLambda && npx npm-check-updates --upgrade --target=minor) && (cd src/LogSubscriptionsLambda && npx npm-check-updates --upgrade --target=minor)',
+    'post-upgrade': 'cd src/LogLambda && npx npm-check-updates --upgrade --target=minor',
   },
   /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
