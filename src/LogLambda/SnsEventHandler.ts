@@ -1,6 +1,6 @@
-import { getAccount } from './utils';
 import { HandledEvent, IHandler, Priority } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter } from './MessageFormatter';
+import { getAccount } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger

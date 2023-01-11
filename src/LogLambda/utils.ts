@@ -1,6 +1,6 @@
 /**
  * Get the env. var. account name.
- * 
+ *
  * @returns {string} the account name, if not set throws an error.
  */
 export function getAccount(): string {
