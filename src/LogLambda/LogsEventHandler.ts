@@ -21,7 +21,6 @@ export class LogsEventHandler implements IHandler {
       };
     } catch (error) {
       console.error(error);
-
     }
     return false;
   }

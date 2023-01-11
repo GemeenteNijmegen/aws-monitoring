@@ -16,29 +16,33 @@ export async function getEventFromFilePath(filePath: string): Promise<any> {
   return JSON.parse(event);
 }
 
-export function constructLogSubscriptionEvent(...messages: any[]) {
+export interface LogSubscriptionEventProps {
+  owner?: string;
+  logGroup?: string;
+  logStream?: string;
+}
+
+export function constructLogSubscriptionEvent(props: LogSubscriptionEventProps, ...messages: any[]): any {
 
   const logEvent = {
-    owner: '123456789012',
-    logGroup: 'CloudTrail',
-    logStream: 'test-log-group/124124',
-    subscriptionFilters: [
-      'Destination',
-    ],
+    owner: props.owner ?? '123456789012',
+    logGroup: props.logGroup ?? 'test-log-group',
+    logStream: props.logGroup ? `${props.logGroup}/12342` : 'test-log-group/124124',
+    subscriptionFilters: ['test-filter'],
     messageType: 'DATA_MESSAGE',
     logEvents: messages.map((m, i) => {
       return {
         id: i,
-        timestamp: 1432826855000,
-        message: m,
+        timestamp: 123,
+        message: typeof m == 'string' ? m : JSON.stringify(m),
       };
     }),
   };
 
+  // Encode the log event
   const base64 = Buffer.from(JSON.stringify(logEvent));
   const payload = zlib.gzipSync(base64);
-
-  const event = { awslogs: { data: payload.toString('base64') } };
-  console.log(JSON.stringify(event, null, 2));
+  // Construct and return the log subscription event
+  return { awslogs: { data: payload.toString('base64') } };
 
 }

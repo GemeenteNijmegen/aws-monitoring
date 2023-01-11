@@ -117,7 +117,7 @@ export function parseMessageFromEvent(event: any): any {
 export function getEventType(message: any): keyof typeof events {
   const type = message?.['detail-type'];
   if (!type) return 'unhandledEvent';
-  if (Object.keys(events).includes(type) !== undefined) {
+  if (Object.keys(events).includes(type)) {
     return type;
   } else {
     return 'unhandledEvent';
