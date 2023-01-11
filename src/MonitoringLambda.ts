@@ -33,6 +33,19 @@ export class MonitoringLambda extends Construct {
       entry: path.join(__dirname, 'LogLambda', 'index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
       depsLockFilePath: path.join(__dirname, 'LogLambda', 'package-lock.json'),
+      bundling: {
+        commandHooks: {
+          beforeBundling(_inputDir, _outputDir) {
+            return ['npm install'];
+          },
+          beforeInstall(_inputDir, _outputDir) {
+            return [];
+          },
+          afterBundling(_inputDir, _outputDir) {
+            return [];
+          },
+        },
+      },
       environment: {
         ACCOUNT_NAME: props.accountName,
         SLACK_WEBHOOK_URL: aws_ssm.StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
