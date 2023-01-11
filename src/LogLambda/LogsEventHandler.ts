@@ -1,6 +1,6 @@
 import * as zlib from 'zlib';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
-import { getAccount } from '.';
+import { getAccount } from './utils';
 import { HandledEvent, IHandler } from './IHandler';
 import { LogsMessageFormatter } from './MessageFormatter';
 

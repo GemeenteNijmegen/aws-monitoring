@@ -1,4 +1,4 @@
-import { getAccount } from '..';
+import { getAccount } from '../utils';
 import { SlackMessage } from '../SlackMessage';
 import { stringMatchesPatternInArray } from '../SnsEventHandler';
 
