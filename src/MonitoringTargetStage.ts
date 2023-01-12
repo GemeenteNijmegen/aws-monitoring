@@ -53,8 +53,16 @@ export class MonitoringTargetStack extends Stack {
 
     this.addEventSubscriptions(topic, props);
     if (props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
-    new DefaultAlarms(this, 'default-alarms', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail` });
-    this.AddLambdaSubscriber(topic, props.accountName);
+
+
+    const monitoringLambda = this.monitoringLambda(props.accountName);
+
+    new DefaultAlarms(this, 'default-alarms', {
+      cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`,
+      logSubscriptionLambdaArn: monitoringLambda.function.functionArn,
+    });
+
+    this.AddLambdaSubscriber(topic, monitoringLambda);
 
     if (props.assumedRolesToAlarmOn) {
       new AssumedRoleAlarms(this, 'assumed-roles', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`, roles: props.assumedRolesToAlarmOn });
@@ -63,6 +71,14 @@ export class MonitoringTargetStack extends Stack {
     this.suppressNagging();
   }
 
+
+  /**
+   * This lambda is responsible for formatting events posted to SNS
+   * and sending notifications to a slack webhook.
+   */
+  private monitoringLambda(accountName: string) {
+    return new MonitoringLambda(this, 'log-lambda', { accountName });
+  }
 
   /**
    * Add Eventbridge rules and send notifications to SNS for triggered events.
@@ -147,6 +163,20 @@ export class MonitoringTargetStack extends Stack {
         },
         ruleDescription: 'Send EC2 instance start events to SNS',
       },
+      {
+        id: 'cloudformation-stack-drift-events',
+        pattern: {
+          source: ['aws.cloudformation'],
+          detailType: ['CloudFormation Drift Detection Status Change'],
+          detail: {
+            'status-details': {
+              'stack-drift-status': ['DRIFTED'],
+              'detection-status': ['DETECTION_COMPLETE'],
+            },
+          },
+        },
+        ruleDescription: 'Send EC2 instance start events to SNS',
+      },
     ];
 
     const includeFilter = (sub: { id: string }) => {
@@ -211,15 +241,10 @@ export class MonitoringTargetStack extends Stack {
   }
 
   /**
-   * Creates a new lambda function and subscribes it to a topic.
-   *
-   * This lambda is responsible for formatting events posted to SNS
-   * and sending notifications to a slack webhook.
-   *
+   * Subscribes the monitoring lambda to to a topic.
    * @param topic the SNS topic the lambda should be subscribed to
    */
-  AddLambdaSubscriber(topic: aws_sns.Topic, accountName: string) {
-    const monitoringLambda = new MonitoringLambda(this, 'log-lambda', { accountName });
+  AddLambdaSubscriber(topic: aws_sns.Topic, monitoringLambda: MonitoringLambda) {
     topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
   }
 

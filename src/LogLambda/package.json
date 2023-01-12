@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "@types/aws-lambda": "^8.10.109"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.21.2"

@@ -1,6 +1,9 @@
-import { stringMatchesPatternInArray } from '../index';
+import { SlackMessage } from '../SlackMessage';
+import { stringMatchesPatternInArray } from '../SnsEventHandler';
+import { getAccount } from '../utils';
 
 beforeAll(() => {
+  process.env.ACCOUNT_NAME = 'test-account-name';
 });
 
 describe('Test patterns', () => {
@@ -37,4 +40,45 @@ describe('Test patterns', () => {
     expect(stringMatchesPatternInArray(pattern, string)).toBe(true);
   });
 
+});
+
+
+describe('SlackMessage', () => {
+
+  test('header', () => {
+    const m = new SlackMessage();
+    m.addHeader('✅ Test');
+    const message = m.getSlackMessage();
+    expect(message.blocks[0].text.text).toBe('✅ Test');
+  });
+
+  test('link', () => {
+    const m = new SlackMessage();
+    m.addLink('test', 'target');
+    const message = m.getSlackMessage();
+    expect(message.blocks[0].text.text).toBe('<target|test>');
+  });
+
+  test('context', () => {
+    const m = new SlackMessage();
+    m.addContext({
+      type: 'test',
+      account: '123',
+    });
+    const message = m.getSlackMessage();
+    expect(message.blocks[0].elements[0].text).toBe('type: *test*');
+    expect(message.blocks[0].elements[1].text).toBe('account: *123*');
+  });
+
+  test('section', () => {
+    const m = new SlackMessage();
+    m.addSection('body');
+    const message = m.getSlackMessage();
+    expect(message.blocks[0].text.text).toBe('body');
+  });
+
+});
+
+test('get account name', () => {
+  expect(getAccount()).toBe('test-account-name');
 });

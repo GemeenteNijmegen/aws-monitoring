@@ -1,10 +1,13 @@
 import { Duration } from 'aws-cdk-lib';
 import { Alarm, Metric } from 'aws-cdk-lib/aws-cloudwatch';
-import { FilterPattern, LogGroup, MetricFilter } from 'aws-cdk-lib/aws-logs';
+import { Function } from 'aws-cdk-lib/aws-lambda';
+import { FilterPattern, LogGroup, SubscriptionFilter } from 'aws-cdk-lib/aws-logs';
+import * as destinations from 'aws-cdk-lib/aws-logs-destinations';
 import { Construct } from 'constructs';
 
 export interface AssumedRoleAlarmsProps {
   cloudTrailLogGroupName: string;
+  logSubscriptionLambdaArn: string;
 }
 
 export class DefaultAlarms extends Construct {
@@ -15,7 +18,7 @@ export class DefaultAlarms extends Construct {
     super(scope, id);
 
     this.addConcurrentExecutionsAlarm();
-    this.addAccessDeniedAlarm(props.cloudTrailLogGroupName);
+    this.addAccessDeniedAlarm(props.cloudTrailLogGroupName, props.logSubscriptionLambdaArn);
   }
 
   /**
@@ -44,7 +47,7 @@ export class DefaultAlarms extends Construct {
    * Filtern pattern checks on errorCode UnauthorizedOperation and AccessDenied.
    * Users from Oblivion and Nijmegen are excluded.
    */
-  private addAccessDeniedAlarm(cloudTrailLogGroupName: string) {
+  private addAccessDeniedAlarm(cloudTrailLogGroupName: string, logSubscriptionLambdaArn: string) {
 
     const pattern = FilterPattern.all(
       FilterPattern.any(
@@ -52,32 +55,19 @@ export class DefaultAlarms extends Construct {
         FilterPattern.stringValue('$.errorCode', '=', 'UnauthorizedOperation'),
       ),
       FilterPattern.stringValue('$.userIdentity.sessionContext.sessionIssuer.userName', '!=', 'oblcc-capacity'),
-      FilterPattern.any(
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:b.withaar'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.dessing'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.vandijk'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:j.vanderborg'),
-      ),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:b.withaar'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.dessing'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.vandijk'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:j.vanderborg'),
     );
 
-    new MetricFilter(this, 'MetricFilter', {
-      logGroup: LogGroup.fromLogGroupName(this, 'cloudtrail', cloudTrailLogGroupName),
-      metricName: 'AccessDeniedCustom',
-      metricNamespace: 'CloudTrailMetrics',
+
+    const fn = Function.fromFunctionArn(this, 'LogSubscriptionLambda', logSubscriptionLambdaArn);
+
+    new SubscriptionFilter(this, 'CloudTrailSubscription', {
+      destination: new destinations.LambdaDestination(fn),
       filterPattern: pattern,
-    });
-
-    const metric = new Metric({
-      metricName: 'AccessDeniedCustom',
-      namespace: 'CloudTrailMetrics',
-      statistic: 'Maximum',
-      period: Duration.minutes(5),
-    });
-
-    new Alarm(this, 'access-denied', {
-      metric: metric,
-      evaluationPeriods: 1,
-      threshold: 1,
+      logGroup: LogGroup.fromLogGroupName(this, 'CloudTrailLogs', cloudTrailLogGroupName),
     });
   }
 }
