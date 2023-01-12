@@ -211,3 +211,33 @@ export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecoded
     return message;
   }
 }
+
+
+export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecodedData> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    let headerText: string | undefined = undefined;
+    const sections: string[] = [];
+    const codeBlock = '```';
+
+
+    this.event.logEvents.forEach(log => {
+      const messageJson = JSON.parse(log.message);
+      if (headerText && headerText != messageJson.errorCode) {
+        headerText = 'Error';
+      } else {
+        headerText = messageJson.errorCode;
+      }
+      const text = `\`${messageJson.errorCode}\` for event \`${messageJson.eventName}\` in service \`${messageJson.eventSource}\`, principal: \`${messageJson.userIdentity.principalId}\`. ${codeBlock}${messageJson.errorMessage}${codeBlock}`;
+      sections.push(text);
+    });
+    headerText = (headerText == undefined) ? 'Error' : headerText;
+
+    message.addHeader(headerText);
+    message.addContext({
+      'account': this.account,
+      'log group': this.event.logGroup,
+    });
+    sections.forEach(section => message.addSection(section));
+    return message;
+  }
+}
