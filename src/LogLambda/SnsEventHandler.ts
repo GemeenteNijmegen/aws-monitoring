@@ -1,6 +1,6 @@
-import { getAccount } from '.';
 import { HandledEvent, IHandler, Priority } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter } from './MessageFormatter';
+import { getAccount } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -25,47 +25,47 @@ interface Event {
 const events: Record<string, Event> = {
   'CloudWatch Alarm State Change': {
     shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
-    formatter: (m, a) => new AlarmMessageFormatter(m, a),
+    formatter: (message, account) => new AlarmMessageFormatter(message, account),
     priority: 'high',
   },
   'ECS Task State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new EcsMessageFormatter(m, a),
+    formatter: (message, account) => new EcsMessageFormatter(message, account),
     priority: 'high',
   },
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new Ec2MessageFormatter(m, a),
+    formatter: (message, account) => new Ec2MessageFormatter(message, account),
     priority: 'high',
   },
   'DevOps Guru New Insight Open': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new DevopsGuruMessageFormatter(m, a),
+    formatter: (message, account) => new DevopsGuruMessageFormatter(message, account),
     priority: 'high',
   },
   'ACM Certificate Approaching Expiration': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new CertificateExpiryFormatter(m, a),
+    formatter: (message, account) => new CertificateExpiryFormatter(message, account),
     priority: 'high',
   },
   'CodePipeline Pipeline Execution State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new CodePipelineFormatter(m, a),
+    formatter: (message, account) => new CodePipelineFormatter(message, account),
     priority: 'low',
   },
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new HealthDashboardFormatter(m, a),
+    formatter: (message, account) => new HealthDashboardFormatter(message, account),
     priority: 'high',
   },
   'Inspector2 Finding': {
     shouldTriggerAlert: () => true,
-    formatter: (m, a) => new InspectorFindingFormatter(m, a),
+    formatter: (message, account) => new InspectorFindingFormatter(message, account),
     priority: 'high',
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
-    formatter: (m, a) => new UnhandledEventFormatter(m, a),
+    formatter: (message, account) => new UnhandledEventFormatter(message, account),
     priority: 'high',
   },
 };

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const MAX_HEADER_LENGTH = 151;
 const MAX_SECTION_LENGTH = 3000;
 
@@ -57,6 +59,32 @@ export class SlackMessage {
     return {
       blocks: this.blocks,
     };
+  }
+
+  /**
+   * Use axios to send a message to Slack
+   *
+   * @param message the message
+   * @returns axios response
+   */
+  async send(priority: string) {
+    let url = this.getSlackUrl(priority);
+    if (!url) {
+      throw Error('No slack webhook url defined');
+    }
+    const message = this.getSlackMessage();
+    return axios.post(url, message);
+  }
+
+  getSlackUrl(priority: string) {
+    switch (priority) {
+      case 'low':
+        return process.env?.SLACK_WEBHOOK_URL_LOW_PRIO;
+      case 'avg':
+      case 'high':
+      default:
+        return process.env?.SLACK_WEBHOOK_URL;
+    }
   }
 
 }
