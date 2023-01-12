@@ -227,7 +227,7 @@ export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudW
       } else {
         headerText = messageJson.errorCode;
       }
-      const text = `${codeBlock}${messageJson.errorMessage}${codeBlock}`;
+      const text = `\`${messageJson.errorCode}\` for event \`${messageJson.eventName}\` in service \`${messageJson.eventSource}\`, principal: \`${messageJson.userIdentity.principalId}\`. ${codeBlock}${messageJson.errorMessage}${codeBlock}`;
       sections.push(text);
     });
     headerText = (headerText == undefined) ? 'Error' : headerText;

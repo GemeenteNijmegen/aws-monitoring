@@ -76,13 +76,12 @@ describe('Log subscription events', () => {
 
   test('Log event with cloudtrail and other errors', async () => {
     const logMessage = await getEventFromFilePath('samples/log-event.json');
-    const event = constructLogSubscriptionEvent({}, logMessage, { errorCode: 'bla', errorMessage: 'something' });
+    const event = constructLogSubscriptionEvent({}, logMessage, { errorCode: 'bla', errorMessage: 'something', userIdentity: { principalId: 'me' } });
     const handled = logsHandler.handle(event);
     expect(handled).not.toBeFalsy();
     if (handled == false) { return; }
 
     const message = handled.message.getSlackMessage();
-    console.debug(JSON.stringify(message));
     expect(message.blocks[0].text.text).toBe('Error');
   });
 });

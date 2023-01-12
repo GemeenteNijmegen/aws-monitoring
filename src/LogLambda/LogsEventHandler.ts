@@ -34,13 +34,19 @@ export class LogsEventHandler implements IHandler {
   }
 
   private isCloudtrailErrorLog(parsed: CloudWatchLogsDecodedData) {
+    const requiredFields = [
+      'errorCode',
+      'errorMessage',
+      'userIdentity',
+      'eventSource',
+      'eventName'
+    ];
     return parsed.logEvents.find((logEvent) => {
       try {
         const log = JSON.parse(logEvent.message);
-        if (log?.errorCode && log?.errorMessage) {
-          return true;
-        }
-        return false;
+        const foundFields = requiredFields.filter((field) => log[field]);
+        console.debug(foundFields.length);
+        return foundFields.length == requiredFields.length;
       } catch (error) {
         return false;
       }
