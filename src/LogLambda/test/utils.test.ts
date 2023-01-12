@@ -56,7 +56,7 @@ describe('SlackMessage', () => {
     const m = new SlackMessage();
     m.addLink('test', 'target');
     const message = m.getSlackMessage();
-    expect(message.blocks[0].text.text).toBe('[test](target)');
+    expect(message.blocks[0].text.text).toBe('<target|test>');
   });
 
   test('context', () => {
