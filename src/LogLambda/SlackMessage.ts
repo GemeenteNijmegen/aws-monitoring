@@ -48,7 +48,7 @@ export class SlackMessage {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `<${text}|${target}>`,
+        text: `[${text}](${target})`,
       },
     });
   }

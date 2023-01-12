@@ -55,12 +55,10 @@ export class DefaultAlarms extends Construct {
         FilterPattern.stringValue('$.errorCode', '=', 'UnauthorizedOperation'),
       ),
       FilterPattern.stringValue('$.userIdentity.sessionContext.sessionIssuer.userName', '!=', 'oblcc-capacity'),
-      FilterPattern.any(
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:b.withaar'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.dessing'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.vandijk'),
-        FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:j.vanderborg'),
-      ),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:b.withaar'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.dessing'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.vandijk'),
+      FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:j.vanderborg'),
     );
 
 

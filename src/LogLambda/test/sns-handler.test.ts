@@ -47,7 +47,8 @@ describe('SNS events', () => {
     expect(blocks[1].elements[0].text).toBe('type: *EC2 Instance State-change Notification*');
     expect(blocks[1].elements[1].text).toBe('account: *testing*');
     expect(blocks[2].text.text).toBe('Instance id: i-0482279efaef0935a');
-    expect(blocks[3].text.text).toBe('<Bekijk instance|https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#InstanceDetails:instanceId=i-0482279efaef0935a>');
+    expect(blocks[3].text.text).toContain('Bekijk instance');
+    expect(blocks[3].text.text).toContain('https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#InstanceDetails:instanceId=i-0482279efaef0935a');
 
   });
 
