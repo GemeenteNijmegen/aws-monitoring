@@ -1,7 +1,7 @@
 
 import { LogsEventHandler } from '../LogsEventHandler';
 import { SnsEventHandler } from '../SnsEventHandler';
-import { constructLogSubscriptionEvent } from './util';
+import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'testing';
@@ -62,4 +62,27 @@ describe('Log subscription events', () => {
     expect(message.blocks[5].text.text).toContain(JSON.stringify(log4));
   });
 
+  test('Log event with cloudtrail errors', async () => {
+    const logMessage = await getEventFromFilePath('samples/log-event.json');
+    const event = constructLogSubscriptionEvent({}, logMessage);
+    const handled = logsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+
+    const message = handled.message.getSlackMessage();
+    console.debug(JSON.stringify(message));
+    expect(message.blocks[0].text.text).toBe('AccessDenied');
+  });
+
+  test('Log event with cloudtrail and other errors', async () => {
+    const logMessage = await getEventFromFilePath('samples/log-event.json');
+    const event = constructLogSubscriptionEvent({}, logMessage, { errorCode: 'bla', errorMessage: 'something' });
+    const handled = logsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+
+    const message = handled.message.getSlackMessage();
+    console.debug(JSON.stringify(message));
+    expect(message.blocks[0].text.text).toBe('Error');
+  });
 });
