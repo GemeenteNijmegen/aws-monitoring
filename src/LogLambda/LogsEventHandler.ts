@@ -39,7 +39,7 @@ export class LogsEventHandler implements IHandler {
       'errorMessage',
       'userIdentity',
       'eventSource',
-      'eventName'
+      'eventName',
     ];
     return parsed.logEvents.find((logEvent) => {
       try {
