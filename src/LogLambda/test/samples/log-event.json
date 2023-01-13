@@ -1,0 +1,42 @@
+{
+  "eventVersion": "1.08",
+  "userIdentity": {
+    "type": "AssumedRole",
+    "principalId": "<test>:securityhub",
+    "arn": "arn:aws:sts::acctid:assumed-role/AWSServiceRoleForSecurityHub/securityhub",
+    "accountId": "acctid",
+    "accessKeyId": "ASIAS3LZURMZZPRP65E5",
+    "sessionContext": {
+      "sessionIssuer": {
+        "type": "Role",
+        "principalId": "<test>",
+        "arn": "arn:aws:iam::acctid:role/aws-service-role/securityhub.amazonaws.com/AWSServiceRoleForSecurityHub",
+        "accountId": "acctid",
+        "userName": "AWSServiceRoleForSecurityHub"
+      },
+      "webIdFederationData": {},
+      "attributes": {
+        "creationDate": "2023-01-12T15:26:11Z",
+        "mfaAuthenticated": "false"
+      }
+    },
+    "invokedBy": "securityhub.amazonaws.com"
+  },
+  "eventTime": "2023-01-12T15:26:11Z",
+  "eventSource": "sns.amazonaws.com",
+  "eventName": "ListSubscriptionsByTopic",
+  "awsRegion": "eu-west-1",
+  "sourceIPAddress": "securityhub.amazonaws.com",
+  "userAgent": "securityhub.amazonaws.com",
+  "errorCode": "AccessDenied",
+  "errorMessage": "User: arn:aws:sts::acctid:assumed-role/AWSServiceRoleForSecurityHub/securityhub is not authorized to perform: SNS:ListSubscriptionsByTopic on resource: arn:aws:sns:eu-west-1:382378071824:CWAlarmDummyTopic because no resource-based policy allows the SNS:ListSubscriptionsByTopic action",
+  "requestParameters": null,
+  "responseElements": null,
+  "requestID": "69f6cdfe-7b03-55b1-976c-91c453d0f510",
+  "eventID": "941bcadb-9e14-490a-a35c-e729da53c60c",
+  "readOnly": true,
+  "eventType": "AwsApiCall",
+  "managementEvent": true,
+  "recipientAccountId": "acctid",
+  "eventCategory": "Management"
+}
