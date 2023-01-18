@@ -182,6 +182,20 @@ export class InspectorFindingFormatter extends MessageFormatter<any> {
   }
 }
 
+export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader('❗️ Stack drift detection alert');
+    message.addContext({
+      type: `${getEventType(this.event)}`,
+      account: this.account,
+    });
+    if (this.event?.detail) {
+      message.addSection(this.event?.detail['stack-id']);
+    }
+    return message;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter<any> {
   constructMessage(message: SlackMessage): SlackMessage {
     message.addHeader('Unhandled event');
