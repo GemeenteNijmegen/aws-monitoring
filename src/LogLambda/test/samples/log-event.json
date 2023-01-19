@@ -29,7 +29,7 @@
   "sourceIPAddress": "securityhub.amazonaws.com",
   "userAgent": "securityhub.amazonaws.com",
   "errorCode": "AccessDenied",
-  "errorMessage": "User: arn:aws:sts::acctid:assumed-role/AWSServiceRoleForSecurityHub/securityhub is not authorized to perform: SNS:ListSubscriptionsByTopic on resource: arn:aws:sns:eu-west-1:382378071824:CWAlarmDummyTopic because no resource-based policy allows the SNS:ListSubscriptionsByTopic action",
+  "errorMessage": "Some random error",
   "requestParameters": null,
   "responseElements": null,
   "requestID": "69f6cdfe-7b03-55b1-976c-91c453d0f510",
