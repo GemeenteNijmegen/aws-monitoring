@@ -1,6 +1,5 @@
 import { SlackMessage } from '../SlackMessage';
-import { stringMatchesPatternInArray } from '../SnsEventHandler';
-import { getAccount } from '../utils';
+import { getAccount, stringMatchesPatternInArray } from '../utils';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'test-account-name';
@@ -39,7 +38,6 @@ describe('Test patterns', () => {
     ];
     expect(stringMatchesPatternInArray(pattern, string)).toBe(true);
   });
-
 });
 
 

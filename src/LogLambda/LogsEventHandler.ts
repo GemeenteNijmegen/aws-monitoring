@@ -2,7 +2,12 @@ import * as zlib from 'zlib';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import { HandledEvent, IHandler } from './IHandler';
 import { LogsMessageFormatter, CloudTrailErrorLogsMessageFormatter } from './MessageFormatter';
-import { getAccount } from './utils';
+import { getAccount, stringMatchesPatternInArray } from './utils';
+
+
+const excludedMessageStrings = [
+  'assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource',
+];
 
 
 export class LogsEventHandler implements IHandler {
@@ -14,6 +19,12 @@ export class LogsEventHandler implements IHandler {
   handle(event: any): HandledEvent | false {
     try {
       const parsed = parseMessageFromEvent(event);
+
+      // Remove excluded log events
+      parsed.logEvents = parsed.logEvents.filter((currentEvent) => !stringMatchesPatternInArray(excludedMessageStrings, currentEvent.message));
+      // If all messages are excluded, stop handling.
+      if (parsed.logEvents.length == 0) { return false; }
+
       let formatter = this.selectMessageFormatter(parsed);
       return {
         priority: 'high',
@@ -52,6 +63,7 @@ export class LogsEventHandler implements IHandler {
       }
     });
   }
+
 }
 
 function parseMessageFromEvent(event: CloudWatchLogsEvent): CloudWatchLogsDecodedData {
