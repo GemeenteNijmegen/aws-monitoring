@@ -7,6 +7,7 @@ import { getAccount, stringMatchesPatternInArray } from './utils';
 
 const excludedMessageStrings = [
   'assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource',
+  'AWSServiceRoleForSecurityHub/securityhub is not authorized to perform: SNS:ListSubscriptionsByTopic on resource: .*:CWAlarmDummyTopic',
 ];
 
 
