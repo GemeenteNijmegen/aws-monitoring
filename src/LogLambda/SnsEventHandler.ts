@@ -1,6 +1,6 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter } from './MessageFormatter';
-import { getAccount } from './utils';
+import { getAccount, stringMatchesPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -139,7 +139,6 @@ export function messageShouldTriggerAlert(message: any): boolean {
  * OK or vice versa is not a relevant alert. New or ended alarms should report.
  *
  * @param message an SNS message containing a cloudwatch state changed event
- * @param excludedAlarms the list of allarms to exclude
  */
 function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
 
@@ -152,24 +151,4 @@ function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
     return true;
   }
   return false;
-}
-
-/**
- * Check if a string (case insensitive, regex allowed) is included in an array of strings.
- *
- * @param array an array of lowercased strings
- * @param string the string to match in the array
- * @returns boolean
- */
-export function stringMatchesPatternInArray(array: string[], string: string): boolean {
-  const lowerCasedString = string.toLowerCase();
-  const match = array.find((potentialMatch) => {
-    const regExp = new RegExp(potentialMatch.toLowerCase());
-    return regExp.test(escapeRegExp(lowerCasedString));
-  });
-  return match !== undefined;
-}
-
-function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
