@@ -1,5 +1,5 @@
 import { SlackMessage } from '../SlackMessage';
-import { getAccount, stringMatchesPatternInArray} from '../utils';
+import { getAccount, stringMatchesPatternInArray } from '../utils';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'test-account-name';

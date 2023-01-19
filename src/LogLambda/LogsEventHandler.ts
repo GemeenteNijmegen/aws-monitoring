@@ -19,12 +19,12 @@ export class LogsEventHandler implements IHandler {
   handle(event: any): HandledEvent | false {
     try {
       const parsed = parseMessageFromEvent(event);
-      
+
       // Remove excluded log events
-      parsed.logEvents = parsed.logEvents.filter((event) => !stringMatchesPatternInArray(excludedMessageStrings, event.message));
+      parsed.logEvents = parsed.logEvents.filter((currentEvent) => !stringMatchesPatternInArray(excludedMessageStrings, currentEvent.message));
       // If all messages are excluded, stop handling.
-      if(parsed.logEvents.length == 0) { return false; }
-      
+      if (parsed.logEvents.length == 0) { return false; }
+
       let formatter = this.selectMessageFormatter(parsed);
       return {
         priority: 'high',
