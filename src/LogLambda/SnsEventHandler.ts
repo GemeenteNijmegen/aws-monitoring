@@ -1,5 +1,5 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter } from './MessageFormatter';
 import { getAccount } from './utils';
 
 /**
@@ -61,6 +61,11 @@ const events: Record<string, Event> = {
   'Inspector2 Finding': {
     shouldTriggerAlert: () => true,
     formatter: (message, account) => new InspectorFindingFormatter(message, account),
+    priority: 'high',
+  },
+  'CloudFormation Drift Detection Status Change': {
+    shouldTriggerAlert: () => true,
+    formatter: (message, account) => new DriftDetectionStatusFormatter(message, account),
     priority: 'high',
   },
   'unhandledEvent': {
