@@ -1,7 +1,7 @@
 import * as path from 'path';
+import { getEventFromFilePath } from './util';
 import { LogsEventHandler } from '../LogsEventHandler';
 import { getEventType, SnsEventHandler } from '../SnsEventHandler';
-import { getEventFromFilePath } from './util';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'testing';
