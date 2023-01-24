@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { handler } from '..';
 import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
+import { handler } from '..';
 
 let axiosMock: MockAdapter;
 
