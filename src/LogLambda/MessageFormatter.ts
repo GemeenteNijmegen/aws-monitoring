@@ -162,7 +162,7 @@ export class HealthDashboardFormatter extends MessageFormatter<any> {
       type: `${getEventType(this.event)}`,
       account: this.account,
     });
-    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: any }) => `${event.latestDescription}`)}`);
+    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n') }`)}`);
     message.addLink('Bekijk Health Dashboard', 'https://health.aws.amazon.com/health/home#/account/dashboard/');
     return message;
   }
