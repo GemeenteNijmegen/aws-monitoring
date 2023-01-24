@@ -8,6 +8,7 @@ import { getAccount, stringMatchesPatternInArray } from './utils';
 const excludedMessageStrings = [
   'assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform:',
   'AWSServiceRoleForSecurityHub/securityhub is not authorized to perform: SNS:ListSubscriptionsByTopic on resource: .*:CWAlarmDummyTopic',
+  'AWSServiceRoleForAccessAnalyzer/access-analyzer is not authorized to perform: kms:DescribeKey on resource', // Only errors in development/production accounts, probably solved with new landing zone
 ];
 
 
