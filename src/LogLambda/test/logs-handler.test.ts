@@ -1,7 +1,7 @@
 
+import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
 import { LogsEventHandler } from '../LogsEventHandler';
 import { SnsEventHandler } from '../SnsEventHandler';
-import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'testing';
