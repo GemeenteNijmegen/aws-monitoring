@@ -59,4 +59,6 @@ junit.xml
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
+!/src/monitoringLambda/monitoring-function.ts
+!/src/monitoringLambda/test/monitoring-function.ts
 !/.github/workflows/emergency.yml

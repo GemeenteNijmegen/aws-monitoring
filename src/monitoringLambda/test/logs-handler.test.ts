@@ -85,13 +85,13 @@ describe('Log subscription events', () => {
   });
 
   test('Log event with excluded strings returns false', async () => {
-    const event = constructLogSubscriptionEvent({}, 'User: arn:aws:sts::123456:assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource: role cdk-hnb659fds-lookup-role-123456-eu-central-1 because no identity-based policy allows the iam:GetRole action');
+    const event = constructLogSubscriptionEvent({}, 'User: arn:aws:sts::123456:assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource: role cdk-hnb659fds-lookup-role-123456-eu-west-1 because no identity-based policy allows the iam:GetRole action');
     const handled = logsHandler.handle(event);
     expect(handled).toBeFalsy();
   });
 
   test('Log event with excluded and not excluded strings filters excluded strings', async () => {
-    const event = constructLogSubscriptionEvent({}, 'User: arn:aws:sts::123456:assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource: role cdk-hnb659fds-lookup-role-123456-eu-central-1 because no identity-based policy allows the iam:GetRole action', 'another log message');
+    const event = constructLogSubscriptionEvent({}, 'User: arn:aws:sts::123456:assumed-role/config-drift-detection-role/configLambdaExecution is not authorized to perform: iam:GetRole on resource: role cdk-hnb659fds-lookup-role-123456-eu-west-1 because no identity-based policy allows the iam:GetRole action', 'another log message');
     const handled = logsHandler.handle(event);
     if (handled == false) { throw Error('this should not be false'); }
     expect(handled).not.toBeFalsy();

@@ -95,7 +95,7 @@ export class CertificateExpiryFormatter extends MessageFormatter<any> {
       account: this.account,
     });
     message.addSection(`${this.event?.detail?.CommonName} verloopt over *${this.event?.detail?.DaysToExpiry} dagen.`);
-    message.addLink('Bekijk certificaten', 'https://eu-central-1.console.aws.amazon.com/acm/home?region=eu-central-1');
+    message.addLink('Bekijk certificaten', 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1');
     return message;
   }
 }
@@ -176,7 +176,7 @@ export class InspectorFindingFormatter extends MessageFormatter<any> {
       account: this.account,
     });
     message.addSection(this.event?.detail?.description);
-    const target = 'https://eu-central-1.console.aws.amazon.com/securityhub/home?region=eu-central-1';
+    const target = 'https://eu-west-1.console.aws.amazon.com/securityhub/home?region=eu-west-1';
     message.addLink('Bekijk Inspector Finding in Security Hub', target);
     return message;
   }
@@ -204,7 +204,7 @@ export class UnhandledEventFormatter extends MessageFormatter<any> {
       account: this.account,
     });
     message.addSection(`Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.event)}\`\`\` `);
-    const target = 'https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1';
+    const target = 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1';
     message.addLink('Open CloudWatch', target);
     return message;
   }

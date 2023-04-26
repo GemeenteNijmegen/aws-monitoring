@@ -5,7 +5,7 @@ import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { Construct } from 'constructs';
 
 interface EventSubscriptionProps {
-  criticality: 'low' | 'medium' | 'high' | 'critical',
+  criticality: 'low' | 'medium' | 'high' | 'critical';
   pattern: EventPattern;
   ruleDescription: string;
 }
@@ -32,7 +32,7 @@ export class EventSubscription extends Construct {
   }
 
   private topic(criticality: string): ITopic {
-    const arn = aws_ssm.StringParameter.valueForStringParameter(this, 
+    const arn = aws_ssm.StringParameter.valueForStringParameter(this,
       `/landingzone/platform-events/${criticality}-sns-topic-arn`);
     return Topic.fromTopicArn(this, 'topic', arn);
   }

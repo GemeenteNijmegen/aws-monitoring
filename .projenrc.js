@@ -4,6 +4,7 @@ const project = new GemeenteNijmegenCdkApp({
   defaultReleaseBranch: 'main',
   devDeps: [
     '@gemeentenijmegen/modules-projen',
+    'axios-mock-adapter',
   ],
   name: 'aws-monitoring',
   depsUpgradeOptions: {
@@ -16,6 +17,8 @@ const project = new GemeenteNijmegenCdkApp({
     'aws-cdk-lib',
     'constructs',
     'cdk-nag',
+    'axios',
+    '@types/aws-lambda',
   ],
   scripts: {
     'post-upgrade': 'cd src/LogLambda && npx npm-check-updates --upgrade --target=minor',

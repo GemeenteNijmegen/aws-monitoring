@@ -16,6 +16,8 @@
     ".projen/tasks.json",
     "cdk.json",
     "LICENSE",
+    "src/monitoringLambda/monitoring-function.ts",
+    "src/monitoringLambda/test/monitoring-function.ts",
     "tsconfig.dev.json",
     "tsconfig.json"
   ],

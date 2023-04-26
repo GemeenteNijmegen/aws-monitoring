@@ -1,20 +1,20 @@
 import { Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventSubscription } from './EventSubscription';
 import { Statics } from './statics';
-import { EventPattern } from 'aws-cdk-lib/aws-events';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
 }
 
 interface EventSubscriptionConfiguration {
-  id: string,
-  criticality: 'low' | 'medium' | 'high' | 'critical',
-  pattern: EventPattern,
-  ruleDescription: string,
+  id: string;
+  criticality: 'low' | 'medium' | 'high' | 'critical';
+  pattern: EventPattern;
+  ruleDescription: string;
 }
 
 export class MonitoringTargetStage extends Stage {
@@ -54,7 +54,7 @@ export class MonitoringTargetStack extends Stack {
 
   /**
    * Add Eventbridge rules and send notifications to SNS for triggered events.
-   * 
+   *
    * Used for alarm notifications (all in account/region) and ECS task state
    * changes (all in region). */
   private addEventSubscriptions(props: DeploymentEnvironment) {
