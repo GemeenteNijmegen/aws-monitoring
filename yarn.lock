@@ -448,6 +448,11 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
+"@gemeentenijmegen/aws-constructs@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@gemeentenijmegen/aws-constructs/-/aws-constructs-0.0.4.tgz#ea4440bfd02f660643ffdbed98867559805369f4"
+  integrity sha512-POfKPHohkk6PQBM5KE4gqks+y4jnNKbitt+pQ4yi+y0fbKgWOj5kRdD3eQKSdDDqqrQx2+lVJah58rLJDAA6LQ==
+
 "@gemeentenijmegen/modules-projen@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@gemeentenijmegen/modules-projen/-/modules-projen-0.0.8.tgz#29799c4a71dcf46ef22a412f6991ed81d325fcaf"

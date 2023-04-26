@@ -8,6 +8,11 @@ export abstract class Statics {
   static readonly repository: string = 'aws-monitoring';
   static readonly repositoryOwner: string = 'GemeenteNijmegen';
 
+  /** 
+   * Account information
+   */
+  static readonly gnBuildAccount: string = '836443378780';
+
   /**
    * Arn for account-wide monitoring topic and encryption key
    */

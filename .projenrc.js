@@ -12,6 +12,7 @@ const project = new GemeenteNijmegenCdkApp({
     },
   },
   deps: [
+    '@gemeentenijmegen/aws-constructs',
     'aws-cdk-lib',
     'constructs',
     'cdk-nag',

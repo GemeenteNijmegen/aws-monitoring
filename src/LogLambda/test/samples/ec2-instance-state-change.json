@@ -3,18 +3,18 @@
         {
             "EventSource": "aws:sns",
             "EventVersion": "1.0",
-            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28:491f4b30-de15-4699-9538-9bda14c9a4b7",
+            "EventSubscriptionArn": "arn:aws:sns:eu-central-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28:491f4b30-de15-4699-9538-9bda14c9a4b7",
             "Sns": {
                 "Type": "Notification",
                 "MessageId": "52fc3cb0-d5f9-54bd-a9b5-67cd4bd18220",
-                "TopicArn": "arn:aws:sns:eu-west-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28",
+                "TopicArn": "arn:aws:sns:eu-central-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28",
                 "Subject": null,
-                "Message": "{\"version\":\"0\",\"id\":\"fe2ae20e-91a0-4d18-deff-0b4b3df6c32f\",\"detail-type\":\"EC2 Instance State-change Notification\",\"source\":\"aws.ec2\",\"account\":\"315037222840\",\"time\":\"2022-08-22T15:08:24Z\",\"region\":\"eu-west-1\",\"resources\":[\"arn:aws:ec2:eu-west-1:315037222840:instance/i-0482279efaef0935a\"],\"detail\":{\"instance-id\":\"i-0482279efaef0935a\",\"state\":\"running\"}}",
+                "Message": "{\"version\":\"0\",\"id\":\"fe2ae20e-91a0-4d18-deff-0b4b3df6c32f\",\"detail-type\":\"EC2 Instance State-change Notification\",\"source\":\"aws.ec2\",\"account\":\"315037222840\",\"time\":\"2022-08-22T15:08:24Z\",\"region\":\"eu-central-1\",\"resources\":[\"arn:aws:ec2:eu-central-1:315037222840:instance/i-0482279efaef0935a\"],\"detail\":{\"instance-id\":\"i-0482279efaef0935a\",\"state\":\"running\"}}",
                 "Timestamp": "2022-08-22T15:08:24.516Z",
                 "SignatureVersion": "1",
                 "Signature": "PJo2mMYrqhdAUbmwkgdJfKCEfVCS8vJnzQrZ7wSK1MixeVYOCUcIKRg+D3q4wqStJWXtgEL3iz4Ibu56J0B8d27tAgMfphqcUYW+eeYcYsD+XwoL8CnWnTWeLbJ/UplR9qmqh9rWLaMk4GYaI7yRR/QWhax2jmtENrD7PXI3son+hGci54mqeX/tcepfaAuvVdl6amTBNodUod41MjJNkeuTmGupg/LgfSebsnVsixtXIEuvXHbMvIPa10XxLJKCiMZec1BLOGYGquhfoeCWFMfaS/Q3t82eRRz7VvjZb3H3VuwLHcUeOCYdpBc/GYLaRsaZQDy3FVg6/VTvVRtAxA==",
-                "SigningCertUrl": "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
-                "UnsubscribeUrl": "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28:491f4b30-de15-4699-9538-9bda14c9a4b7",
+                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:315037222840:monitoring-stack-monitoring-auth-accp-snstopic2C4AE3C1-1K7VM9XU3WO28:491f4b30-de15-4699-9538-9bda14c9a4b7",
                 "MessageAttributes": {}
             }
         }

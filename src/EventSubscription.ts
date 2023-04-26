@@ -1,10 +1,11 @@
-import { aws_events_targets, aws_sns } from 'aws-cdk-lib';
+import { aws_events_targets, aws_ssm } from 'aws-cdk-lib';
 import { EventPattern, Rule } from 'aws-cdk-lib/aws-events';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { Construct } from 'constructs';
 
 interface EventSubscriptionProps {
-  topic: aws_sns.Topic;
+  criticality: 'low' | 'medium' | 'high' | 'critical',
   pattern: EventPattern;
   ruleDescription: string;
 }
@@ -17,15 +18,22 @@ export class EventSubscription extends Construct {
   constructor(scope: Construct, id: string, props: EventSubscriptionProps) {
     super(scope, id);
 
+    const topic = this.topic(props.criticality);
     const rule = new Rule(this, `${id}-rule`, {
       description: props.ruleDescription,
-      targets: [new aws_events_targets.SnsTopic(props.topic)],
+      targets: [new aws_events_targets.SnsTopic(topic)],
       eventPattern: props.pattern,
     });
 
     const principal = new ServicePrincipal('events.amazonaws.com', {
       conditions: { StringEquals: { 'sns:Endpoint': rule.ruleArn } },
     });
-    props.topic.grantPublish(principal);
+    topic.grantPublish(principal);
+  }
+
+  private topic(criticality: string): ITopic {
+    const arn = aws_ssm.StringParameter.valueForStringParameter(this, 
+      `/landingzone/platform-events/${criticality}-sns-topic-arn`);
+    return Topic.fromTopicArn(this, 'topic', arn);
   }
 }

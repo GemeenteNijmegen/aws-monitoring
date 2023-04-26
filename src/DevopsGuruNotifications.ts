@@ -31,7 +31,7 @@ export class DevopsGuruNotifications extends Construct {
 
     props.topicKey.addToResourcePolicy(new aws_iam.PolicyStatement({
       effect: aws_iam.Effect.ALLOW,
-      principals: [new aws_iam.ServicePrincipal('eu-west-1.devops-guru.amazonaws.com')],
+      principals: [new aws_iam.ServicePrincipal('eu-central-1.devops-guru.amazonaws.com')],
       actions: [
         'kms:GenerateDataKey*',
         'kms:Decrypt',

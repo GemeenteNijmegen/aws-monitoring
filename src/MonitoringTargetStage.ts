@@ -1,18 +1,20 @@
-import { aws_kms, aws_sns, aws_ssm, RemovalPolicy, Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
-import { NagSuppressions } from 'cdk-nag';
+import { Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { AssumedRoleAlarms } from './AssumedRoleAlarms';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
-import { DevopsGuruNotifications } from './DevopsGuruNotifications';
 import { EventSubscription } from './EventSubscription';
-import { MonitoringLambda } from './MonitoringLambda';
 import { Statics } from './statics';
+import { EventPattern } from 'aws-cdk-lib/aws-events';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
+}
+
+interface EventSubscriptionConfiguration {
+  id: string,
+  criticality: 'low' | 'medium' | 'high' | 'critical',
+  pattern: EventPattern,
+  ruleDescription: string,
 }
 
 export class MonitoringTargetStage extends Stage {
@@ -27,9 +29,7 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
 
     props.deployToEnvironments.forEach(environment => {
-      const paramsStack = new ParameterStack(this, `parameters-${environment.accountName}`, environment);
-      const monitoringStack = new MonitoringTargetStack(this, `monitoring-${environment.accountName}`, environment);
-      monitoringStack.addDependency(paramsStack, 'SSM Parameters must exist before lambda using it is created.');
+      new MonitoringTargetStack(this, `monitoring-${environment.accountName}`, environment);
     });
   }
 }
@@ -48,50 +48,20 @@ export class MonitoringTargetStack extends Stack {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
-    const key = this.kmskey();
-    const topic = this.topic(key);
-
-    this.addEventSubscriptions(topic, props);
-    if (props.enableDevopsGuru) { new DevopsGuruNotifications(this, 'devopsguru', { topic, topicKey: key }); }
-
-
-    const monitoringLambda = this.monitoringLambda(props.accountName);
-
-    new DefaultAlarms(this, 'default-alarms', {
-      cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`,
-      logSubscriptionLambdaArn: monitoringLambda.function.functionArn,
-    });
-
-    this.AddLambdaSubscriber(topic, monitoringLambda);
-
-    if (props.assumedRolesToAlarmOn) {
-      new AssumedRoleAlarms(this, 'assumed-roles', { cloudTrailLogGroupName: `gemeentenijmegen-${props.accountName}/cloudtrail`, roles: props.assumedRolesToAlarmOn });
-    }
-
-    this.suppressNagging();
-  }
-
-
-  /**
-   * This lambda is responsible for formatting events posted to SNS
-   * and sending notifications to a slack webhook.
-   */
-  private monitoringLambda(accountName: string) {
-    return new MonitoringLambda(this, 'log-lambda', { accountName });
+    this.addEventSubscriptions(props);
+    new DefaultAlarms(this, 'default-alarms');
   }
 
   /**
    * Add Eventbridge rules and send notifications to SNS for triggered events.
-   *
+   * 
    * Used for alarm notifications (all in account/region) and ECS task state
-   * changes (all in region).
-   *
-   * @param {topic} topic the rule will send event notifications to this topic
-   */
-  private addEventSubscriptions(topic: aws_sns.Topic, props: DeploymentEnvironment) {
-    const eventSubscriptions = [
+   * changes (all in region). */
+  private addEventSubscriptions(props: DeploymentEnvironment) {
+    const eventSubscriptions: EventSubscriptionConfiguration[] = [
       {
         id: 'alarms',
+        criticality: 'low',
         pattern: {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
@@ -100,6 +70,7 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'ecs-state-change',
+        criticality: 'low',
         pattern: {
           source: ['aws.ecs'],
           detailType: ['ECS Task State Change'],
@@ -108,6 +79,7 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'certificates',
+        criticality: 'medium',
         pattern: {
           source: ['aws.acm'],
           detailType: ['ACM Certificate Approaching Expiration'],
@@ -116,14 +88,16 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'devopsguru-events',
+        criticality: 'high',
         pattern: {
-          'source': ['aws.devops-guru'],
-          'detail-type': ['DevOps Guru New Insight Open'],
+          source: ['aws.devops-guru'],
+          detailType: ['DevOps Guru New Insight Open'],
         },
         ruleDescription: 'Devopsguru New insights + increased severity to SNS',
       },
       {
         id: 'codepipeline-events',
+        criticality: 'low',
         pattern: {
           source: ['aws.codepipeline'],
           detailType: ['CodePipeline Pipeline Execution State Change'],
@@ -135,6 +109,7 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'health-events',
+        criticality: 'medium',
         pattern: {
           source: ['aws.health'],
           detailType: ['AWS Health Event'],
@@ -143,6 +118,7 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'inspector-finding-events',
+        criticality: 'critical',
         pattern: {
           source: ['aws.inspector2'],
           detailType: ['Inspector2 Finding'],
@@ -154,6 +130,7 @@ export class MonitoringTargetStack extends Stack {
       },
       {
         id: 'ec2-start-events',
+        criticality: 'low',
         pattern: {
           source: ['aws.ec2'],
           detailType: ['EC2 Instance State-change Notification'],
@@ -161,10 +138,11 @@ export class MonitoringTargetStack extends Stack {
             state: ['pending', 'running', 'stopped', 'stopping', 'terminated'],
           },
         },
-        ruleDescription: 'Send EC2 instance start events to SNS',
+        ruleDescription: 'Send EC2 instance events to SNS',
       },
       {
         id: 'cloudformation-stack-drift-events',
+        criticality: 'low',
         pattern: {
           source: ['aws.cloudformation'],
           detailType: ['CloudFormation Drift Detection Status Change'],
@@ -175,7 +153,7 @@ export class MonitoringTargetStack extends Stack {
             },
           },
         },
-        ruleDescription: 'Send EC2 instance start events to SNS',
+        ruleDescription: 'Send stack drift detected events to SNS',
       },
     ];
 
@@ -190,111 +168,7 @@ export class MonitoringTargetStack extends Stack {
       .filter(includeFilter)
       .filter(excludeFilter)
       .forEach(subscription =>
-        new EventSubscription(this, subscription.id, {
-          topic, pattern: subscription.pattern, ruleDescription: subscription.ruleDescription,
-        }),
+        new EventSubscription(this, subscription.id, { ...subscription }),
       );
-
-  }
-
-  /**
-   * Create a kms key for use with the SNS topic. Allow eventbridge to use this key
-   */
-  kmskey(): aws_kms.Key {
-    const key = new aws_kms.Key(this, 'kmskey', {
-      enableKeyRotation: true,
-      description: 'encryption key for monitoring stack for this account',
-      alias: 'account/kms/monitoring-key',
-    });
-
-    //Grant access to eventbridge for publishing to SNS
-    key.grant(new ServicePrincipal('events.amazonaws.com'),
-      'kms:Decrypt',
-      'kms:Encrypt',
-      'kms:ReEncrypt*',
-      'kms:GenerateDataKey*',
-    );
-
-    new aws_ssm.StringParameter(this, 'key-arn', {
-      stringValue: key.keyArn,
-      parameterName: Statics.ssmMonitoringKeyArn,
-    });
-
-    return key;
-  }
-
-  /**
-   * Create an SNS topic and a parameter exporting the topic arn.
-   *
-   * @returns aws_sns.Topic the newly created topic
-   */
-  topic(key: aws_kms.Key) {
-    const topic = new aws_sns.Topic(this, 'sns-topic', {
-      displayName: 'Account-wide monitoring topic',
-      masterKey: key,
-    });
-    new aws_ssm.StringParameter(this, 'topic-arn', {
-      stringValue: topic.topicArn,
-      parameterName: Statics.ssmMonitoringTopicArn,
-    });
-    return topic;
-  }
-
-  /**
-   * Subscribes the monitoring lambda to to a topic.
-   * @param topic the SNS topic the lambda should be subscribed to
-   */
-  AddLambdaSubscriber(topic: aws_sns.Topic, monitoringLambda: MonitoringLambda) {
-    topic.addSubscription(new LambdaSubscription(monitoringLambda.function));
-  }
-
-  private suppressNagging() {
-    NagSuppressions.addResourceSuppressions(
-      this,
-      [
-        {
-          id: 'AwsSolutions-IAM4',
-          reason: 'Lambda needs to be able to create and write to a log group',
-          appliesTo: ['Policy::arn:<AWS::Partition>:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'],
-        },
-      ],
-      true,
-    );
-
-    /**
-     * Deze is eigenlijk te breed, accepteert nu alle resources met wildcard in de stack. Voor zover ik kan vinden is
-     * het niet specifieker in te richten. Ander nadeel van deze suppression is dat het op alle resources met wildcard
-     * dit als metadata toevoegt.
-     */
-    NagSuppressions.addResourceSuppressions(
-      this,
-      [
-        {
-          id: 'AwsSolutions-IAM5',
-          reason: 'Setting a log retention policy requires wildcard resource permission for creating log groups.',
-          appliesTo: ['Resource::*'],
-        },
-      ],
-      true,
-    );
   }
 }
-
-export class ParameterStack extends Stack {
-  constructor(scope: Construct, id: string, props: StackProps) {
-    super(scope, id, props);
-
-    const slackParam = new aws_ssm.StringParameter(this, 'ssm_slack_1', {
-      stringValue: '-',
-      parameterName: Statics.ssmSlackWebhookUrl,
-    });
-    slackParam.applyRemovalPolicy(RemovalPolicy.DESTROY);
-
-    const slackParamLowPriority = new aws_ssm.StringParameter(this, 'ssm_slack_2', {
-      stringValue: '-',
-      parameterName: Statics.ssmSlackWebhookUrlLowPriority,
-    });
-    slackParamLowPriority.applyRemovalPolicy(RemovalPolicy.DESTROY);
-  }
-}
-

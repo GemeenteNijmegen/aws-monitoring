@@ -1,4 +1,5 @@
-import { Stack, StackProps, Tags, pipelines, CfnParameter } from 'aws-cdk-lib';
+import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
+import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
@@ -15,6 +16,8 @@ export class PipelineStack extends Stack {
   environmentName: string;
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
+    Aspects.of(this).add(new PermissionsBoundaryAspect());
+
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     this.branchName = props.branchName;
@@ -51,7 +54,7 @@ export class PipelineStack extends Stack {
   }
 
   private connectionSource(connectionArn: CfnParameter): pipelines.CodePipelineSource {
-    return pipelines.CodePipelineSource.connection('GemeenteNijmegen/aws-monitoring', this.branchName, {
+    return pipelines.CodePipelineSource.connection(`${Statics.repositoryOwner}/${Statics.repository}`, this.branchName, {
       connectionArn: connectionArn.valueAsString,
     });
   }

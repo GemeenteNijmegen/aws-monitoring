@@ -6,7 +6,7 @@ import { MonitoringTargetStack } from '../src/MonitoringTargetStage';
 
 test('Snapshot', () => {
   const app = new App();
-  const stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-west-1' } });
+  const stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
 
   const template = Template.fromStack(stack);
   expect(template.toJSON()).toMatchSnapshot();
@@ -18,7 +18,7 @@ describe('cdk-nag AwsSolutions Pack', () => {
   beforeAll(() => {
     // GIVEN
     app = new App();
-    stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-west-1' } });
+    stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
 
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
