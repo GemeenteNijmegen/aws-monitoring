@@ -10,7 +10,7 @@ const deployFromEnvironment = {
 };
 
 const sandboxEnvironment = {
-  account: '122467643252',
+  account: Statics.gnTestAccount,
   region: 'eu-central-1',
 };
 

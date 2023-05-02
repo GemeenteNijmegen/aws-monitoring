@@ -12,6 +12,7 @@ export abstract class Statics {
    * Account information
    */
   static readonly gnBuildAccount: string = '836443378780';
+  static readonly gnTestAccount: string = '095798249317';
 
   /**
    * Arn for account-wide monitoring topic and encryption key

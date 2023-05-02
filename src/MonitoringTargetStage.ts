@@ -20,8 +20,11 @@ interface EventSubscriptionConfiguration {
 export class MonitoringTargetStage extends Stage {
   /**
    * The monitoring target stage creates a stack containing
-   * a monitoring topic, which can be used account-wide as a target
-   * for monitoring notifications.
+   * eventbridge rules and several default alarms for monitoring 
+   * an account. Notifications get posted to one of several SNS
+   * topics. This project assumes those topics already exist in
+   * the account, and their arn's are saved to SSM, with parameter
+   * names of the format `/landingzone/platform-events/${criticality}-sns-topic-arn` 
    */
   constructor(scope: Construct, id: string, props: MonitoringTargetStageProps) {
     super(scope, id, props);
@@ -29,18 +32,15 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
 
     props.deployToEnvironments.forEach(environment => {
-      new MonitoringTargetStack(this, `monitoring-${environment.accountName}`, environment);
+      new MonitoredAccountStack(this, `monitoring-${environment.accountName}`, environment);
     });
   }
 }
 
-export class MonitoringTargetStack extends Stack {
+export class MonitoredAccountStack extends Stack {
   /**
-   * Create a new stack containing all resources required for the monitoring
-   * stage.
-   *
-   * The monitoring topic has a lambda subscriber responsible for
-   * formatting and sending relevant notifications to a slack channel.
+   * Create a new stack containing all resources required for monitoring
+   * this specfic (target) account.
    */
   constructor(scope: Construct, id: string, props: DeploymentEnvironment) {
     super(scope, id, props);
