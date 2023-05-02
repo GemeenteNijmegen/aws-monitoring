@@ -20,11 +20,11 @@ interface EventSubscriptionConfiguration {
 export class MonitoringTargetStage extends Stage {
   /**
    * The monitoring target stage creates a stack containing
-   * eventbridge rules and several default alarms for monitoring 
+   * eventbridge rules and several default alarms for monitoring
    * an account. Notifications get posted to one of several SNS
    * topics. This project assumes those topics already exist in
    * the account, and their arn's are saved to SSM, with parameter
-   * names of the format `/landingzone/platform-events/${criticality}-sns-topic-arn` 
+   * names of the format `/landingzone/platform-events/${criticality}-sns-topic-arn`
    */
   constructor(scope: Construct, id: string, props: MonitoringTargetStageProps) {
     super(scope, id, props);

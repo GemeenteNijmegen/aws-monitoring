@@ -2,11 +2,11 @@ import { App, Aspects, Stack } from 'aws-cdk-lib';
 import { Annotations, Match, Template } from 'aws-cdk-lib/assertions';
 import { FilterPattern } from 'aws-cdk-lib/aws-logs';
 import { AwsSolutionsChecks } from 'cdk-nag';
-import { MonitoringTargetStack } from '../src/MonitoringTargetStage';
+import { MonitoredAccountStack } from '../src/MonitoringTargetStage';
 
 test('Snapshot', () => {
   const app = new App();
-  const stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
+  const stack = new MonitoredAccountStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
 
   const template = Template.fromStack(stack);
   expect(template.toJSON()).toMatchSnapshot();
@@ -18,7 +18,7 @@ describe('cdk-nag AwsSolutions Pack', () => {
   beforeAll(() => {
     // GIVEN
     app = new App();
-    stack = new MonitoringTargetStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
+    stack = new MonitoredAccountStack(app, 'test', { accountName: 'sandbox', env: { account: '123', region: 'eu-central-1' } });
 
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
