@@ -20,14 +20,20 @@ export class AggregatorStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
     const parameters = new Parameters(this, 'parameters');
-    const lambda = new MonitoringFunction(this, 'slack-lambda', {
+    const notifier = new Notifier(this, 'notifier');
+    notifier.node.addDependency(parameters);
+  }
+}
+
+class Notifier extends Construct {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
+    new MonitoringFunction(this, 'slack-lambda', {
       environment: {
         SLACK_WEBHOOK_URL: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
         SLACK_WEBHOOK_URL_LOW_PRIO: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
       },
     });
-    lambda.node.addDependency(parameters);
-
     //TODO: Start listening to all criticality levels
     const topic = this.topic('low');
     topic.addSubscription(new LambdaSubscription(lambda));
