@@ -21,17 +21,11 @@ export abstract class Statics {
   };
 
   /**
-   * Arn for account-wide monitoring topic and encryption key
-   */
-  static readonly ssmMonitoringTopicArn: string = '/account/sns/monitoring-topic-arn';
-  static readonly ssmMonitoringKeyArn: string = '/account/kms/monitoring-key-arn';
-
-  /**
    * Slack webhook url for monitoring lambda
    */
-  static readonly ssmSlackWebhookUrl: string = '/aws-monitoring/slack-webhook-url';
+  static readonly ssmSlackWebhookUrl: string = '/monitoring/slack-webhook-url';
   /**
    * Slack webhook url for low priority notifications
    */
-  static readonly ssmSlackWebhookUrlLowPriority: string = '/aws-monitoring/slack-webhook-url-low-prio';
+  static readonly ssmSlackWebhookUrlLowPriority: string = '/monitoring/slack-webhook-url-low-prio';
 }
