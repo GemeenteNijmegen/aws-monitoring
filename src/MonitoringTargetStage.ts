@@ -1,10 +1,10 @@
 import { Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
-import { DeploymentEnvironment } from './DeploymentEnvironments';
-import { Statics } from './statics';
 import { AggregatorStack } from './AggregatorStack';
+import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -36,10 +36,12 @@ export class MonitoringTargetStage extends Stage {
     });
 
     // TODO: Roll out lambda to audit-account
-    new AggregatorStack(this, 'aggregator', { env: {
-      account: Statics.gnAggregatorAccount,
-      region: 'eu-central-1'
-    }})
+    new AggregatorStack(this, 'aggregator', {
+      env: {
+        account: Statics.gnAggregatorAccount,
+        region: 'eu-central-1',
+      },
+    });
     // TODO: Roll out cloudtrail-stuff to mpa-account?
   }
 }

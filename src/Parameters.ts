@@ -1,5 +1,7 @@
-import { Construct } from 'constructs';
+import { RemovalPolicy } from 'aws-cdk-lib';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { Construct } from 'constructs';
+import { Statics } from './statics';
 
 
 export class Parameters extends Construct {

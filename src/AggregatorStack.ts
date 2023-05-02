@@ -1,9 +1,9 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { Construct } from 'constructs';
+import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { Parameters } from './Parameters';
 import { Statics } from './statics';
 
@@ -24,7 +24,7 @@ export class AggregatorStack extends Stack {
       environment: {
         SLACK_WEBHOOK_URL: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
         SLACK_WEBHOOK_URL_LOW_PRIO: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
-      }
+      },
     });
     lambda.node.addDependency(parameters);
 

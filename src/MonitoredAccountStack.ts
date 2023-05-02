@@ -3,8 +3,8 @@ import { Construct } from 'constructs';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventSubscription } from './EventSubscription';
-import { Statics } from './statics';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
+import { Statics } from './statics';
 
 
 export class MonitoredAccountStack extends Stack {
@@ -127,17 +127,17 @@ export class MonitoredAccountStack extends Stack {
       },
     ];
 
-    const includeFilter = (sub: { id: string; }) => {
+    const includeFilter = (sub: { id: string }) => {
       return props.includedEventSubscriptions ? props.includedEventSubscriptions.includes(sub.id) : true;
     };
-    const excludeFilter = (sub: { id: string; }) => {
+    const excludeFilter = (sub: { id: string }) => {
       return props.excludedEventSubscriptions ? !props.excludedEventSubscriptions.includes(sub.id) : true;
     };
 
     eventSubscriptions
       .filter(includeFilter)
       .filter(excludeFilter)
-      .forEach(subscription => new EventSubscription(this, subscription.id, { ...subscription })
+      .forEach(subscription => new EventSubscription(this, subscription.id, { ...subscription }),
       );
   }
 }
