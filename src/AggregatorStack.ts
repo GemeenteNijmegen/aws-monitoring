@@ -4,7 +4,6 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
-import { Parameters } from './Parameters';
 import { Statics } from './statics';
 
 
@@ -19,9 +18,7 @@ export class AggregatorStack extends Stack {
    */
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
-    const parameters = new Parameters(this, 'parameters');
-    const notifier = new Notifier(this, 'notifier');
-    notifier.node.addDependency(parameters);
+    new Notifier(this, 'notifier');
   }
 }
 

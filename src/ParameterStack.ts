@@ -1,12 +1,12 @@
-import { RemovalPolicy } from 'aws-cdk-lib';
+import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
 
 
-export class Parameters extends Construct {
-  constructor(scope: Construct, id: string) {
-    super(scope, id);
+export class ParameterStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
 
     const slackParam = new StringParameter(this, 'ssm_slack_1', {
       stringValue: '-',

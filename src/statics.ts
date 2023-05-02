@@ -15,6 +15,11 @@ export abstract class Statics {
   static readonly gnAggregatorAccount: string = '302838002127';
   static readonly gnTestAccount: string = '095798249317';
 
+  static readonly aggregatorEnvironment = {
+    account: Statics.gnAggregatorAccount,
+    region: 'eu-central-1',
+  };
+
   /**
    * Arn for account-wide monitoring topic and encryption key
    */

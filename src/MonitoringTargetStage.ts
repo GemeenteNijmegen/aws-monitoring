@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -35,13 +36,10 @@ export class MonitoringTargetStage extends Stage {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
 
-    // TODO: Roll out lambda to audit-account
-    new AggregatorStack(this, 'aggregator', {
-      env: {
-        account: Statics.gnAggregatorAccount,
-        region: 'eu-central-1',
-      },
-    });
+
+    new AggregatorStack(this, 'aggregator', { env: Statics.aggregatorEnvironment })
+      .addDependency(new ParameterStack(this, 'parameters', { env: Statics.aggregatorEnvironment }));
+
     // TODO: Roll out cloudtrail-stuff to mpa-account?
   }
 }
