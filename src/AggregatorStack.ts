@@ -28,7 +28,7 @@ export class AggregatorStack extends Stack {
 class Notifier extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
-    new MonitoringFunction(this, 'slack-lambda', {
+    const lambda = new MonitoringFunction(this, 'slack-lambda', {
       environment: {
         SLACK_WEBHOOK_URL: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
         SLACK_WEBHOOK_URL_LOW_PRIO: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
