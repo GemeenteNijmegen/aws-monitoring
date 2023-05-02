@@ -32,7 +32,7 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
 
     props.deployToEnvironments.forEach(environment => {
-      new MonitoredAccountStack(this, `monitoring-${environment.accountName}`, environment);
+      new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
   }
 }
