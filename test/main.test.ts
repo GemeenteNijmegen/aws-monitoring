@@ -2,7 +2,7 @@ import { App, Aspects, Stack } from 'aws-cdk-lib';
 import { Annotations, Match, Template } from 'aws-cdk-lib/assertions';
 import { FilterPattern } from 'aws-cdk-lib/aws-logs';
 import { AwsSolutionsChecks } from 'cdk-nag';
-import { MonitoredAccountStack } from '../src/MonitoringTargetStage';
+import { MonitoredAccountStack } from '../src/MonitoredAccountStack';
 
 test('Snapshot', () => {
   const app = new App();
