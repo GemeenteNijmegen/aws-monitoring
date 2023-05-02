@@ -1,10 +1,14 @@
-import { Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { Stack, StackProps, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventSubscription } from './EventSubscription';
 import { Statics } from './statics';
+import { MonitoringFunction } from './monitoringLambda/monitoring-function';
+import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
+import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -34,6 +38,38 @@ export class MonitoringTargetStage extends Stage {
     props.deployToEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
+
+    // TODO: Roll out lambda to audit-account
+    new AggregatorStack(this, 'aggregator', { env: { 
+      account: Statics.gnAggregatorAccount,
+      region: 'eu-central-1'
+    }})
+    // TODO: Roll out cloudtrail-stuff to mpa-account?
+  }
+}
+
+export class AggregatorStack extends Stack {
+  /**
+   * A stack deployed to the audit account. SNS notifications
+   * from all monitored accounts are forwarded to this account,
+   * which has a matching set of SNS topics.
+   * 
+   * We subscribe to these topics from our monitoring messaging
+   * lambda.
+   */
+  constructor(scope: Construct, id: string, props: StackProps) {
+    super(scope, id, props);
+    const lambda = new MonitoringFunction(this, 'slack-lambda');
+    
+    //TODO: Start listening to all criticality levels
+    const topic = this.topic('low');
+    topic.addSubscription(new LambdaSubscription(lambda));
+  }
+
+  private topic(criticality: string): ITopic {
+    const arn = StringParameter.valueForStringParameter(this,
+      `/landingzone/platform-events/central-${criticality}-sns-topic-arn`);
+    return Topic.fromTopicArn(this, 'topic', arn);
   }
 }
 
