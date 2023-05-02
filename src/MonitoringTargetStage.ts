@@ -1,4 +1,4 @@
-import { Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { Aspects, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
@@ -6,6 +6,7 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
+import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -31,6 +32,8 @@ export class MonitoringTargetStage extends Stage {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
+
+    Aspects.of(this).add(new PermissionsBoundaryAspect());
 
     props.deployToEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
