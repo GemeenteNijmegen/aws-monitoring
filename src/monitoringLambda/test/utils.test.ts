@@ -1,5 +1,5 @@
 import { SlackMessage } from '../SlackMessage';
-import { getAccount, stringMatchesPatternInArray } from '../utils';
+import { stringMatchesPatternInArray } from '../utils';
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'test-account-name';
@@ -75,8 +75,4 @@ describe('SlackMessage', () => {
     expect(message.blocks[0].text.text).toBe('body');
   });
 
-});
-
-test('get account name', () => {
-  expect(getAccount()).toBe('test-account-name');
 });

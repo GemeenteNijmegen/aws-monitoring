@@ -35,7 +35,6 @@ describe('Log subscription events', () => {
 
     const message = handled.message.getSlackMessage();
     expect(message.blocks[0].text.text).toBe('Log subscription');
-    expect(message.blocks[1].elements[0].text).toBe('account: *testing*');
     expect(message.blocks[1].elements[1].text).toBe('log group: *test-log-group*');
     expect(message.blocks[2].text.text).toContain(logStr1);
     expect(message.blocks[3].text.text).toContain(logStr2);
@@ -54,7 +53,6 @@ describe('Log subscription events', () => {
 
     const message = handled.message.getSlackMessage();
     expect(message.blocks[0].text.text).toBe('Log subscription');
-    expect(message.blocks[1].elements[0].text).toBe('account: *testing*');
     expect(message.blocks[1].elements[1].text).toBe('log group: *test-log-group*');
     expect(message.blocks[2].text.text).toContain(JSON.stringify(log1));
     expect(message.blocks[3].text.text).toContain(JSON.stringify(log2));

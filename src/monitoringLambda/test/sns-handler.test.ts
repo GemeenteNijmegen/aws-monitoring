@@ -4,7 +4,6 @@ import { LogsEventHandler } from '../LogsEventHandler';
 import { getEventType, SnsEventHandler } from '../SnsEventHandler';
 
 beforeAll(() => {
-  process.env.ACCOUNT_NAME = 'testing';
   process.env.SLACK_WEBHOOK_URL = 'http://nothing.test';
   process.env.SLACK_WEBHOOK_URL_LOW_PRIO = 'http://nothing.test.low.prio';
 });
@@ -26,7 +25,6 @@ describe('SNS events', () => {
     expect(handled.priority).toBe('high');
 
     const json = JSON.stringify(handled.message.getSlackMessage());
-    expect(json).toContain('account: *testing*');
     expect(json).toContain('type: *ECS Task State Change, cluster joost-test*');
     expect(json).toContain('ECS Task not in desired state (state PENDING, desired RUNNING)');
 
@@ -45,7 +43,6 @@ describe('SNS events', () => {
     const blocks = handled.message.getSlackMessage().blocks;
     expect(blocks[0].text.text).toBe('EC2 instance running');
     expect(blocks[1].elements[0].text).toBe('type: *EC2 Instance State-change Notification*');
-    expect(blocks[1].elements[1].text).toBe('account: *testing*');
     expect(blocks[2].text.text).toBe('Instance id: i-0482279efaef0935a');
     expect(blocks[3].text.text).toContain('Bekijk instance');
     expect(blocks[3].text.text).toContain('https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#InstanceDetails:instanceId=i-0482279efaef0935a');

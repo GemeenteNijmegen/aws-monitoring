@@ -1,3 +1,4 @@
+import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
@@ -6,7 +7,6 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
-import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
