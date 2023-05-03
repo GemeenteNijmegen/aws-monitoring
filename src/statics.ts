@@ -21,11 +21,12 @@ export abstract class Statics {
   };
 
   /**
-   * Slack webhook url for monitoring lambda
+   * Priorities for monitoring
    */
-  static readonly ssmSlackWebhookUrl: string = '/monitoring/slack-webhook-url';
+  static readonly monitoringPriorities = ['low', 'medium', 'high', 'critical'];
+
   /**
    * Slack webhook url for low priority notifications
    */
-  static readonly ssmSlackWebhookUrlLowPriority: string = '/monitoring/slack-webhook-url-low-prio';
+  static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url-';
 }

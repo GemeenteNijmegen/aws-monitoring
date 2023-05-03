@@ -25,14 +25,21 @@ export class AggregatorStack extends Stack {
 class Notifier extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
-    const lambda = new MonitoringFunction(this, 'slack-lambda', {
-      environment: {
-        SLACK_WEBHOOK_URL: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrl),
-        SLACK_WEBHOOK_URL_LOW_PRIO: StringParameter.valueForStringParameter(this, Statics.ssmSlackWebhookUrlLowPriority),
-      },
-    });
-    //TODO: Start listening to all criticality levels
-    const topics = ['low', 'medium', 'high', 'critical'].map(criticality => this.topic(criticality));
+    const lambda = new MonitoringFunction(this, 'slack-lambda');
+    for (const priority in Statics.monitoringPriorities) {
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${priority}`);
+      lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
+    }
+    this.subscribeLambda(lambda);
+  }
+
+  /**
+   *
+   * @param priorities A list of SNS topic priorities to listen to
+   * @param lambda
+   */
+  private subscribeLambda(lambda: MonitoringFunction) {
+    const topics = Statics.monitoringPriorities.map(criticality => this.topic(criticality));
     topics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
   }
 

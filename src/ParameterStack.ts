@@ -8,16 +8,12 @@ export class ParameterStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const slackParam = new StringParameter(this, 'ssm_slack_1', {
-      stringValue: '-',
-      parameterName: Statics.ssmSlackWebhookUrl,
-    });
-    slackParam.applyRemovalPolicy(RemovalPolicy.DESTROY);
-
-    const slackParamLowPriority = new StringParameter(this, 'ssm_slack_2', {
-      stringValue: '-',
-      parameterName: Statics.ssmSlackWebhookUrlLowPriority,
-    });
-    slackParamLowPriority.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    for (const priority in Statics.monitoringPriorities) {
+      const param = new StringParameter(this, `ssm_slack_${priority}`, {
+        stringValue: '-',
+        parameterName: `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${priority}`,
+      });
+      param.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    }
   }
 }
