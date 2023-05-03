@@ -2,7 +2,7 @@ import * as zlib from 'zlib';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import { HandledEvent, IHandler } from './IHandler';
 import { LogsMessageFormatter, CloudTrailErrorLogsMessageFormatter } from './MessageFormatter';
-import { getAccount, stringMatchesPatternInArray } from './utils';
+import { stringMatchesPatternInArray } from './utils';
 
 
 const excludedMessageStrings = [
@@ -40,9 +40,9 @@ export class LogsEventHandler implements IHandler {
 
   private selectMessageFormatter(parsed: CloudWatchLogsDecodedData) {
     if (this.isCloudtrailErrorLog(parsed)) {
-      return new CloudTrailErrorLogsMessageFormatter(parsed, getAccount());
+      return new CloudTrailErrorLogsMessageFormatter(parsed, ''); //TODO: pass account (was getAccount())
     } else {
-      return new LogsMessageFormatter(parsed, getAccount());
+      return new LogsMessageFormatter(parsed, ''); //TODO: pass account (was getAccount())
     }
   }
 

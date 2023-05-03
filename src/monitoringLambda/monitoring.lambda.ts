@@ -1,7 +1,6 @@
 import { LogsEventHandler } from './LogsEventHandler';
 import { SnsEventHandler } from './SnsEventHandler';
 
-
 /**
  * Tries to find a handler and use it to handle the event
  *

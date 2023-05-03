@@ -1,17 +1,4 @@
 /**
- * Get the env. var. account name.
- *
- * @returns {string} the account name, if not set throws an error.
- */
-export function getAccount(): string {
-  const account = process.env.ACCOUNT_NAME;
-  if (!account) {
-    throw Error('No account name defined in environment');
-  }
-  return account;
-}
-
-/**
  * Check if a string (case insensitive, regex allowed) is included in an array of strings.
  *
  * @param array an array of lowercased strings

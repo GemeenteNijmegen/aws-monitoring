@@ -1,6 +1,6 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter } from './MessageFormatter';
-import { getAccount, stringMatchesPatternInArray } from './utils';
+import { stringMatchesPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -89,9 +89,9 @@ export class SnsEventHandler implements IHandler {
     if (!messageShouldTriggerAlert(message)) {
       return false;
     }
-
     const eventType = getEventType(message);
-    const formatter = events[eventType].formatter(message, getAccount());
+    const account = this.getAccount(message);
+    const formatter = events[eventType].formatter(message, account);
     const priority = events[eventType].priority;
 
     return {
@@ -100,6 +100,10 @@ export class SnsEventHandler implements IHandler {
     };
   }
 
+  getAccount(message: any): string {
+    const account = message?.['account'];
+    return account ?? '';
+  }
 }
 
 export function parseMessageFromEvent(event: any): any {

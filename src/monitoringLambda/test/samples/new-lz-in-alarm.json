@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-low:2e7e49e3-9694-40b6-98af-d81b3d616945",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "647ba261-b0c2-5b2f-8ac3-feadf4f32c47",
+                "TopicArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-low",
+                "Subject": "CloudWatch Alarm State Change",
+                "Message": "{\n    \"version\": \"0\",\n    \"id\": \"b5f33482-334a-ca1b-a5ad-e7b96701cf0f\",\n    \"detail-type\": \"CloudWatch Alarm State Change\",\n    \"source\": \"aws.cloudwatch\",\n    \"account\": \"123456\",\n    \"time\": \"2023-05-03T11:13:53Z\",\n    \"region\": \"eu-central-1\",\n    \"resources\": [\n        \"arn:aws:cloudwatch:eu-central-1:123456:alarm:monitoring-sandbox-defaultalarmsconcurrentexecutionsA5ABF13D-EE1KQ2P5UEYN\"\n    ],\n    \"detail\": {\n        \"alarmName\": \"monitoring-sandbox-defaultalarmsconcurrentexecutionsA5ABF13D-EE1KQ2P5UEYN\",\n        \"state\": {\n            \"value\": \"OK\",\n            \"reason\": \"Threshold Crossed: 1 datapoint [1.0 (03/05/23 11:03:00)] was not greater than or equal to the threshold (20.0).\",\n            \"reasonData\": \"{\\\"version\\\":\\\"1.0\\\",\\\"queryDate\\\":\\\"2023-05-03T11:13:53.406+0000\\\",\\\"startDate\\\":\\\"2023-05-03T11:03:00.000+0000\\\",\\\"statistic\\\":\\\"Maximum\\\",\\\"period\\\":300,\\\"recentDatapoints\\\":[1.0],\\\"threshold\\\":20.0,\\\"evaluatedDatapoints\\\":[{\\\"timestamp\\\":\\\"2023-05-03T11:03:00.000+0000\\\",\\\"sampleCount\\\":2.0,\\\"value\\\":1.0}]}\",\n            \"timestamp\": \"2023-05-03T11:13:53.410+0000\"\n        },\n        \"previousState\": {\n            \"value\": \"ALARM\",\n            \"reason\": \"testing purposes\",\n            \"timestamp\": \"2023-05-03T11:13:30.649+0000\"\n        },\n        \"configuration\": {\n            \"metrics\": [\n                {\n                    \"id\": \"16c3ee57-ff94-bca9-790b-141f1ea07fb1\",\n                    \"metricStat\": {\n                        \"metric\": {\n                            \"namespace\": \"AWS/Lambda\",\n                            \"name\": \"ConcurrentExecutions\",\n                            \"dimensions\": {}\n                        },\n                        \"period\": 300,\n                        \"stat\": \"Maximum\"\n                    },\n                    \"returnData\": true\n                }\n            ]\n        }\n    }\n}",
+                "Timestamp": "2023-05-03T11:13:53.673Z",
+                "SignatureVersion": "1",
+                "Signature": "uw9BKH36ZNdY25O1Rgd+UNuMzGDacZPtdi9tWjwe8eN1/DpCZYzpU7MQQZHupUzkKw5NUFdwoV/wabnNyuloZjqw2PDPWBCG4GzKUqskQu0tTQ4R07QLdIm8Y2RHeBOb2h14xVPtRXPVn/dhZBUSVvyFDEsJ2zeVDT8E1/SY/Rv2pI2n00+y5+/wLWve5vey6nRbA9SA3nssafPuaBj6T0Lomrr0tgLl0SeV5j6GU+aYGMIs+GADfcmkv7/DHRrfKQpsBiQ3Y+m+pEaQp37uQRuRBDugE53ALmoagMwCHxg3xGfEC56d6oH8Ncb8BLcsFoNBiC8xKyFrPuW72Rne8A==",
+                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-low:2e7e49e3-9694-40b6-98af-d81b3d616945",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

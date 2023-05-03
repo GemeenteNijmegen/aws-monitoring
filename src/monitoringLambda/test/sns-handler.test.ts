@@ -69,6 +69,19 @@ describe('Alarms via SNS events', () => {
 
   const snsHandler = new SnsEventHandler();
 
+
+  test('New LZ ALARM should report', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'new-lz-in-alarm.json'));
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('account: *095798249317*');
+    expect(handled).not.toBeFalsy();
+  });
+
   test('PreviousState ALARM should report', async () => {
     const event = await getEventFromFilePath(path.join('samples', 'from-alarm.json'));
     const handled = snsHandler.handle(event);
