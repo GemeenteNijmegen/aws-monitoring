@@ -8,11 +8,12 @@ export class ParameterStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    for (const priority in Statics.monitoringPriorities) {
+    for (const priority of Statics.monitoringPriorities) {
       const param = new StringParameter(this, `ssm_slack_${priority}`, {
         stringValue: '-',
         parameterName: `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${priority}`,
       });
+      console.debug(`${priority}`);
       param.applyRemovalPolicy(RemovalPolicy.DESTROY);
     }
   }

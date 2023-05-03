@@ -26,7 +26,7 @@ class Notifier extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
     const lambda = new MonitoringFunction(this, 'slack-lambda');
-    for (const priority in Statics.monitoringPriorities) {
+    for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }

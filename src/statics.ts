@@ -28,5 +28,5 @@ export abstract class Statics {
   /**
    * Slack webhook url for low priority notifications
    */
-  static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url-';
+  static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url';
 }
