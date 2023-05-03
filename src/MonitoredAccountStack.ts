@@ -37,12 +37,12 @@ export class MonitoredAccountStack extends Stack {
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
             state: {
-              value: ["INSUFFICIENT_DATA", "OK"]
+              value: ['INSUFFICIENT_DATA', 'OK'],
             },
             previousState: {
-              value: ["ALARM"]
-            }
-          }
+              value: ['ALARM'],
+            },
+          },
         },
         ruleDescription: 'Send alarm state change notifications from alarm to OK to SNS',
       },
@@ -54,9 +54,9 @@ export class MonitoredAccountStack extends Stack {
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
             state: {
-              value: ["ALARM"]
-            }
-          }
+              value: ['ALARM'],
+            },
+          },
         },
         ruleDescription: 'Send all alarm state change notifications to ALARM to SNS',
       },

@@ -39,6 +39,6 @@ class Notifier extends Construct {
   private topic(criticality: string): ITopic {
     const arn = StringParameter.valueForStringParameter(this,
       `/landingzone/platform-events/central-${criticality}-sns-topic-arn`);
-    return Topic.fromTopicArn(this, 'topic', arn);
+    return Topic.fromTopicArn(this, `topic-${criticality}`, arn);
   }
 }
