@@ -32,8 +32,8 @@ class Notifier extends Construct {
       },
     });
     //TODO: Start listening to all criticality levels
-    const topic = this.topic('low');
-    topic.addSubscription(new LambdaSubscription(lambda));
+    const topics = ['low', 'medium', 'high', 'critical'].map(criticality => this.topic(criticality));
+    topics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
   }
 
   private topic(criticality: string): ITopic {

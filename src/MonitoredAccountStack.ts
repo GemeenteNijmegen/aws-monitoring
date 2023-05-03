@@ -30,13 +30,35 @@ export class MonitoredAccountStack extends Stack {
   private addEventSubscriptions(props: DeploymentEnvironment) {
     const eventSubscriptions: EventSubscriptionConfiguration[] = [
       {
-        id: 'alarms',
+        id: 'alarm-reset',
         criticality: 'low',
         pattern: {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            state: {
+              value: ["INSUFFICIENT_DATA", "OK"]
+            },
+            previousState: {
+              value: ["ALARM"]
+            }
+          }
         },
-        ruleDescription: 'Send all alarm state change notifications to SNS',
+        ruleDescription: 'Send alarm state change notifications from alarm to OK to SNS',
+      },
+      {
+        id: 'alarm',
+        criticality: 'high',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            state: {
+              value: ["ALARM"]
+            }
+          }
+        },
+        ruleDescription: 'Send all alarm state change notifications to ALARM to SNS',
       },
       {
         id: 'ecs-state-change',
