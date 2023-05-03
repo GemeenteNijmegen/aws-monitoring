@@ -12,7 +12,7 @@ import { SnsEventHandler } from './SnsEventHandler';
  * @param event
  */
 export async function handler(event: any) {
-
+  console.log(JSON.stringify(event));
   const sns = new SnsEventHandler();
   const logs = new LogsEventHandler();
 
@@ -28,7 +28,9 @@ export async function handler(event: any) {
     const handled = matchedHandler.handle(event);
     if (handled) {
       await handled.message.send(handled.priority);
+      console.log('sent message');
     }
+    console.log('did not send message, not handled.');
   } catch (error) {
     console.error(error);
   }
