@@ -78,7 +78,7 @@ describe('Alarms via SNS events', () => {
       return;
     }
     const json = JSON.stringify(handled.message.getSlackMessage());
-    expect(json).toContain('account: *095798249317*');
+    expect(json).toContain('account: *123456*');
     expect(handled).not.toBeFalsy();
   });
 
