@@ -200,9 +200,9 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
   constructMessage(message: SlackMessage): SlackMessage {
     message.addHeader(`SecurityHub: ${this.event?.Title}`);
     message.addContext({
-      type: `securityhub`,
+      type: 'securityhub',
       account: this.account,
-      state: `${this.event?.WorkflowState}`
+      state: `${this.event?.WorkflowState}`,
     });
     if (this.event?.Description) {
       message.addSection(`${this.event?.Description}

@@ -41,13 +41,13 @@ export class MonitoringTargetStage extends Stage {
     });
 
     const parameterPrefix = props.isProduction ? 'prod' : 'dev';
-    const parameterStack = new ParameterStack(this, 'parameters', { 
-      env: Statics.aggregatorEnvironment, 
-      prefix: parameterPrefix
-    });
-    new AggregatorStack(this, 'aggregator', { 
+    const parameterStack = new ParameterStack(this, 'parameters', {
       env: Statics.aggregatorEnvironment,
-      prefix: parameterPrefix
+      prefix: parameterPrefix,
+    });
+    new AggregatorStack(this, 'aggregator', {
+      env: Statics.aggregatorEnvironment,
+      prefix: parameterPrefix,
     })
       .addDependency(parameterStack);
 

@@ -44,7 +44,7 @@ export class PipelineStack extends Stack {
       ],
     });
 
-    const pipeline = new pipelines.CodePipeline(this, `monitoring-${this.environmentName}`, {
+    const pipeline = new pipelines.CodePipeline(this, `pipeline-${this.environmentName}`, {
       pipelineName: `monitoring-${this.environmentName}`,
       dockerEnabledForSelfMutation: true,
       dockerEnabledForSynth: true,

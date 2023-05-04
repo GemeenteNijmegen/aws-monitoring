@@ -134,9 +134,9 @@ export function getEventType(message: any, event?: any): keyof typeof events {
     return type;
   }
   const subject = event?.Records[0]?.Sns?.Subject;
-  if(subject) {
+  if (subject) {
     const eventSubject = stringMatchingPatternInArray(Object.keys(events), subject);
-    if(eventSubject) {
+    if (eventSubject) {
       return eventSubject;
     }
   }

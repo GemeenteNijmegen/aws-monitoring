@@ -7,7 +7,6 @@
  */
 
 export function stringMatchesPatternInArray(array: string[], string: string): boolean {
-  console.debug(string);
   return typeof stringMatchingPatternInArray(array, string) == 'string';
 }
 
@@ -19,7 +18,6 @@ export function stringMatchesPatternInArray(array: string[], string: string): bo
  * @returns the matching string, or false if not found
  */
 export function stringMatchingPatternInArray(array: string[], string: string): string|false {
-  console.debug(string);
   const lowerCasedString = string.toLowerCase();
   const match = array.find((potentialMatch) => {
     const regExp = new RegExp(potentialMatch.toLowerCase());

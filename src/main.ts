@@ -21,7 +21,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'sandbox
     {
       env: deployFromEnvironment,
       branchName: 'sandbox-new-lz',
-      deployToEnvironments: [{ accountName: 'sandbox', env: sandboxEnvironment, assumedRolesToAlarmOn: 'Developers' }],
+      deployToEnvironments: [{ accountName: 'workload-test', env: sandboxEnvironment, assumedRolesToAlarmOn: 'Developers' }],
       environmentName: 'development',
     },
   );
@@ -32,7 +32,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'sandbox
       branchName: 'main-new-lz',
       deployToEnvironments: deploymentEnvironments,
       environmentName: 'production',
-      isProduction: true
+      isProduction: true,
     },
   );
 }

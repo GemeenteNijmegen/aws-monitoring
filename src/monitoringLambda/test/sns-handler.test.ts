@@ -127,7 +127,7 @@ describe('Security hub event from Subject', () => {
 
   test('Security hub high message formatter works', async () => {
     const snsHandler = new SnsEventHandler();
-  
+
     const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz.json'));
     const handled = snsHandler.handle(event);
     if (handled == false) {
