@@ -6,6 +6,7 @@ import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
+import { SlackIntegrationStack } from './SlackIntegrationStack';
 import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
@@ -48,8 +49,11 @@ export class MonitoringTargetStage extends Stage {
     new AggregatorStack(this, 'aggregator', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
-    })
-      .addDependency(parameterStack);
+    }).addDependency(parameterStack);
+
+    new SlackIntegrationStack(this, 'slack-integration', {
+      env: Statics.aggregatorEnvironment,
+    }).addDependency(parameterStack);
 
     // TODO: Roll out cloudtrail-stuff to mpa-account?
   }
