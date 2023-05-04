@@ -30,7 +30,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   {
     accountName: 'gn-geo-data-production',
     env: {
-      account: '549334216741 ',
+      account: '549334216741',
       region: 'eu-central-1',
     },
   },
