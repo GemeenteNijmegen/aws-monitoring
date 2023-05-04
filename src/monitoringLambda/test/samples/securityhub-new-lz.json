@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high:0427fc92-5ebc-4ad4-806d-da70fe2ec68b",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "5bb04bd7-3c61-5ad9-b95a-171a1ad3cc96",
+                "TopicArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high",
+                "Subject": "SecurityHub - gn-build - CodeBuild.5",
+                "Message": "{\n    \"AccountName\": \"gn-build\",\n    \"Environment\": \"production\",\n    \"Title\": \"CodeBuild.5 CodeBuild project environments should not have privileged mode enabled\",\n    \"Severity\": \"HIGH\",\n    \"ControlId\": \"CodeBuild.5\",\n    \"AccountId\": \"836443378780\",\n    \"Region\": \"eu-central-1\",\n    \"Description\": \"This control checks if an AWS CodeBuild project environment has privileged mode enabled.\",\n    \"WorkflowState\": \"NEW\",\n    \"Compliance\": {\n        \"Status\": \"FAILED\",\n        \"SecurityControlId\": \"CodeBuild.5\",\n        \"AssociatedStandards\": [\n            {\n                \"StandardsId\": \"standards/aws-foundational-security-best-practices/v/1.0.0\"\n            }\n        ]\n    },\n    \"Resources\": [\n        {\n            \"Partition\": \"aws\",\n            \"Type\": \"AwsCodeBuildProject\",\n            \"Region\": \"eu-central-1\",\n            \"Id\": \"arn:aws:codebuild:eu-central-1:836443378780:project/geostoragemainPipelineBuild-fc35zxwLlDEN\"\n        }\n    ]\n}",
+                "Timestamp": "2023-05-04T03:20:18.754Z",
+                "SignatureVersion": "1",
+                "Signature": "unbhhZIFJWRjqhhTOmd7k2DhS/cbGjrU1PaXFAhEnWzz4GPXJyzRqMIMDg0l7a3FAKRWyTkGbmIrKAmk8gI00i7ax/v/A4ptf+dw32ZbJdXxNcd+kVit1XXPbrBGjKGXz16T2HsoW1/mEFQDsWdR2k+XFCmtDDSmZMjWFTjEZY6BoS1ETreKcBKOFDpAWkU1SNRncraXEmzl0p6js1XFLsUXDps2i22F9eM0A5KcZxN1dvhSB06J0MZDebA+X/19j3PinSEvzEDw6SDEjSxsVjyLp/UrcmC16KyTK1uAewpak4cfsUpNbCEh2cMkiIfCwGyWBzlj9BxAa2bkJpdlQg==",
+                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high:0427fc92-5ebc-4ad4-806d-da70fe2ec68b",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { getEventFromFilePath } from './util';
 import { LogsEventHandler } from '../LogsEventHandler';
-import { getEventType, SnsEventHandler } from '../SnsEventHandler';
+import { getEventType, parseMessageFromEvent, SnsEventHandler } from '../SnsEventHandler';
 
 beforeAll(() => {
   process.env.SLACK_WEBHOOK_URL = 'http://nothing.test';
@@ -115,7 +115,29 @@ describe('Alarms via SNS events', () => {
     const handled = snsHandler.handle(event);
     expect(handled).toBe(false);
   });
+});
 
+describe('Security hub event from Subject', () => {
+  test('Security hub high notification triggers', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz.json'));
+    const message = parseMessageFromEvent(event);
+    const type = getEventType(message, event);
+    expect(type).toBe('SecurityHub');
+  });
+
+  test('Security hub high message formatter works', async () => {
+    const snsHandler = new SnsEventHandler();
+  
+    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz.json'));
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('state: *NEW*');
+    expect(handled).not.toBeFalsy();
+  });
 });
 
 describe('More message types from SNS events', () => {

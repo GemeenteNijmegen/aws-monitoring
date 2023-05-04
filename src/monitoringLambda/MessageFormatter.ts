@@ -196,6 +196,23 @@ export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
   }
 }
 
+export class SecurityHubFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    message.addHeader(`SecurityHub: ${this.event?.Title}`);
+    message.addContext({
+      type: `securityhub`,
+      account: this.account,
+      state: `${this.event?.WorkflowState}`
+    });
+    if (this.event?.Description) {
+      message.addSection(`${this.event?.Description}
+      - Type: *${this.event?.Resources?.Type}*
+      - Id: *${this.event?.Resources?.Id}*`);
+    }
+    return message;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter<any> {
   constructMessage(message: SlackMessage): SlackMessage {
     message.addHeader('Unhandled event');

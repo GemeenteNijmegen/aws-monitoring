@@ -22,7 +22,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'sandbox
       env: deployFromEnvironment,
       branchName: 'sandbox-new-lz',
       deployToEnvironments: [{ accountName: 'sandbox', env: sandboxEnvironment, assumedRolesToAlarmOn: 'Developers' }],
-      environmentName: 'sandbox',
+      environmentName: 'development',
     },
   );
 } else if ( process.env.BRANCH_NAME == 'main-new-lz') {
@@ -32,6 +32,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'sandbox
       branchName: 'main-new-lz',
       deployToEnvironments: deploymentEnvironments,
       environmentName: 'production',
+      isProduction: true
     },
   );
 }

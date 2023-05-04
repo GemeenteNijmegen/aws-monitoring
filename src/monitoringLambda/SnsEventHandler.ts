@@ -1,6 +1,6 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter } from './MessageFormatter';
-import { stringMatchesPatternInArray } from './utils';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter } from './MessageFormatter';
+import { stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -68,6 +68,11 @@ const events: Record<string, Event> = {
     formatter: (message, account) => new DriftDetectionStatusFormatter(message, account),
     priority: 'high',
   },
+  'SecurityHub': {
+    shouldTriggerAlert: () => true,
+    formatter: (message, account) => new SecurityHubFormatter(message, account),
+    priority: 'high',
+  },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
     formatter: (message, account) => new UnhandledEventFormatter(message, account),
@@ -86,10 +91,10 @@ export class SnsEventHandler implements IHandler {
   handle(event: any): HandledEvent | false {
 
     const message = parseMessageFromEvent(event);
-    if (!messageShouldTriggerAlert(message)) {
+    if (!eventShouldTriggerAlert(event)) {
       return false;
     }
-    const eventType = getEventType(message);
+    const eventType = getEventType(message, event);
     const account = this.getAccount(message);
     const formatter = events[eventType].formatter(message, account);
     const priority = events[eventType].priority;
@@ -123,18 +128,24 @@ export function parseMessageFromEvent(event: any): any {
  *
  * @returns {string} event type
  */
-export function getEventType(message: any): keyof typeof events {
+export function getEventType(message: any, event?: any): keyof typeof events {
   const type = message?.['detail-type'];
-  if (!type) return 'unhandledEvent';
   if (Object.keys(events).includes(type)) {
     return type;
-  } else {
-    return 'unhandledEvent';
   }
+  const subject = event?.Records[0]?.Sns?.Subject;
+  if(subject) {
+    const eventSubject = stringMatchingPatternInArray(Object.keys(events), subject);
+    if(eventSubject) {
+      return eventSubject;
+    }
+  }
+  return 'unhandledEvent';
 }
 
-export function messageShouldTriggerAlert(message: any): boolean {
-  const eventType = getEventType(message);
+function eventShouldTriggerAlert(event: any): boolean {
+  const message = parseMessageFromEvent(event);
+  const eventType = getEventType(message, event);
   return events[eventType].shouldTriggerAlert(message);
 }
 

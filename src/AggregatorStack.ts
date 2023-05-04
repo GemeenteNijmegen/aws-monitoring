@@ -6,6 +6,12 @@ import { Construct } from 'constructs';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { Statics } from './statics';
 
+interface AggregatorStackProps extends StackProps {
+  /**
+   * prefix for named params, because multiple copies of this stack can exist in account
+   */
+  prefix: string;
+}
 
 export class AggregatorStack extends Stack {
   /**
@@ -16,18 +22,24 @@ export class AggregatorStack extends Stack {
    * We subscribe to these topics from our monitoring messaging
    * lambda.
    */
-  constructor(scope: Construct, id: string, props: StackProps) {
+  constructor(scope: Construct, id: string, props: AggregatorStackProps) {
     super(scope, id, props);
-    new Notifier(this, 'notifier');
+    new Notifier(this, 'notifier', { prefix: props.prefix });
   }
 }
 
+interface NotifierProps {
+  /**
+   * Prefix for the monitoring parameter (`dev` in `monitoring-dev-low`)
+   */
+  prefix: string;
+}
 class Notifier extends Construct {
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
     const lambda = new MonitoringFunction(this, 'slack-lambda');
     for (const priority of Statics.monitoringPriorities) {
-      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${priority}`);
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${props.prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
     this.subscribeLambda(lambda);

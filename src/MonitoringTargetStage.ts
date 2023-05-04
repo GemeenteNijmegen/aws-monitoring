@@ -10,6 +10,7 @@ import { Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
+  isProduction?: boolean;
 }
 
 export interface EventSubscriptionConfiguration {
@@ -39,9 +40,16 @@ export class MonitoringTargetStage extends Stage {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
 
-
-    new AggregatorStack(this, 'aggregator', { env: Statics.aggregatorEnvironment })
-      .addDependency(new ParameterStack(this, 'parameters', { env: Statics.aggregatorEnvironment }));
+    const parameterPrefix = props.isProduction ? 'prod' : 'dev';
+    const parameterStack = new ParameterStack(this, 'parameters', { 
+      env: Statics.aggregatorEnvironment, 
+      prefix: parameterPrefix
+    });
+    new AggregatorStack(this, 'aggregator', { 
+      env: Statics.aggregatorEnvironment,
+      prefix: parameterPrefix
+    })
+      .addDependency(parameterStack);
 
     // TODO: Roll out cloudtrail-stuff to mpa-account?
   }
