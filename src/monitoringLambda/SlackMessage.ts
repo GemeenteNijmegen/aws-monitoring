@@ -77,14 +77,10 @@ export class SlackMessage {
   }
 
   getSlackUrl(priority: string) {
-    switch (priority) {
-      case 'low':
-        return process.env?.SLACK_WEBHOOK_URL_LOW_PRIO;
-      case 'avg':
-      case 'high':
-      default:
-        return process.env?.SLACK_WEBHOOK_URL;
+    if(!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
+      return false;
     }
+    return process.env?.[`SLACK_WEBHOOK_URL_${priority}`];
   }
 
 }
