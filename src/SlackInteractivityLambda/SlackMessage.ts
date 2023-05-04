@@ -3,9 +3,32 @@ import axios from 'axios';
 const MAX_HEADER_LENGTH = 151;
 const MAX_SECTION_LENGTH = 3000;
 
+// TODO combine with SlackMessage from other lambda (different send method)
 export class SlackMessage {
 
+  static fromPayload(payload: any) {
+    const msg = new SlackMessage();
+    msg.blocks = payload.message.blocks;
+    msg.responseUrl = payload.response_url;
+    msg.additionalOptions = {
+      replace_original: true,
+    };
+    return msg;
+  }
+
+  private additionalOptions = {};
   private blocks: any[] = [];
+  private responseUrl: string = '';
+
+  removeAllInteractionBlocks() {
+    this.blocks = this.blocks.filter(block => {
+      const isActions = block.type == 'actions';
+      const hasElements = block.elements?.length > 0;
+      const hasActionId = hasElements ? block.elements[0].action_id == 'create-topdesk-ticket' : false;
+      return !(isActions && hasElements && hasActionId);
+    });
+    return this;
+  }
 
   addHeader(text: string) {
     this.blocks.push({
@@ -58,29 +81,21 @@ export class SlackMessage {
   getSlackMessage() {
     return {
       blocks: this.blocks,
+      ...this.additionalOptions,
     };
   }
 
   /**
    * Use axios to send a message to Slack
    *
-   * @param message the message
    * @returns axios response
    */
-  async send(priority: string) {
-    let url = this.getSlackUrl(priority);
-    if (!url) {
-      throw Error('No slack webhook url defined');
+  async send() {
+    if (!this.responseUrl) {
+      throw Error('No response url found in payload');
     }
     const message = this.getSlackMessage();
-    return axios.post(url, message);
-  }
-
-  getSlackUrl(priority: string) {
-    if (!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
-      return false;
-    }
-    return process.env?.[`SLACK_WEBHOOK_URL_${priority}`];
+    return axios.post(this.responseUrl, message);
   }
 
 }

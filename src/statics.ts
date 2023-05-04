@@ -29,4 +29,13 @@ export abstract class Statics {
    * Slack webhook url for low priority notifications
    */
   static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url';
+
+
+  static readonly ssmTopDeskApiUrl = '/slack-integration/topdesk/api/url';
+  static readonly ssmTopDeskUsername = '/slack-integration/topdesk/api/username';
+  static readonly ssmTopDeskDeepLinkUrl = '/slack-integration/topdesk/deeplink/url';
+
+  static readonly secretTopDeskPassword = '/slack-integration/topdesk/api/password';
+  static readonly secretSlackSigningKey = '/slack-integration/slack/signing-key';
+
 }

@@ -50,6 +50,9 @@
         },
         {
           "spawn": "bundle:monitoringLambda/test/monitoring.lambda"
+        },
+        {
+          "spawn": "bundle:SlackInteractivityLambda/SlackInteractivity.lambda"
         }
       ]
     },
@@ -86,6 +89,24 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/monitoringLambda/test/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/test/monitoring.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:SlackInteractivityLambda/SlackInteractivity.lambda": {
+      "name": "bundle:SlackInteractivityLambda/SlackInteractivity.lambda",
+      "description": "Create a JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch": {
+      "name": "bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --external:aws-sdk --watch"
         }
       ]
     },

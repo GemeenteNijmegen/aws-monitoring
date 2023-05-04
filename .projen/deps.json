@@ -97,6 +97,10 @@
       "type": "runtime"
     },
     {
+      "name": "@gemeentenijmegen/utils",
+      "type": "runtime"
+    },
+    {
       "name": "@types/aws-lambda",
       "type": "runtime"
     },
