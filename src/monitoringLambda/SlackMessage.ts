@@ -55,6 +55,24 @@ export class SlackMessage {
     });
   }
 
+  addButton(text: string, actionName: string, payload: any) {
+    this.blocks.push({
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: text,
+            emoji: true,
+          },
+          value: JSON.stringify(payload),
+          action_id: actionName,
+        },
+      ],
+    });
+  }
+
   getSlackMessage() {
     return {
       blocks: this.blocks,
