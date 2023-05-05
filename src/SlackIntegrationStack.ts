@@ -1,5 +1,4 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
-import { FunctionUrl, FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda';
+import { Stack, StackProps, aws_apigateway as apigateway } from 'aws-cdk-lib';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
@@ -25,14 +24,10 @@ export class SlackIntegrationStack extends Stack {
     slackSecret.grantRead(slackFunction);
     topDeskPassword.grantRead(slackFunction);
 
-    /**
-     * This URL should be provided to the slack app as an endpoint
-     * to receive interaction messages.
-     */
-    new FunctionUrl(this, 'interactivity-function-url', {
-      function: slackFunction,
-      authType: FunctionUrlAuthType.NONE,
-    });
+    // Create an api gateway to expose the lambda
+    const api = new apigateway.RestApi(this, 'integrations-api');
+    const slack = api.root.addResource('slack');
+    slack.addMethod('POST', new apigateway.LambdaIntegration(slackFunction));
 
   }
 }
