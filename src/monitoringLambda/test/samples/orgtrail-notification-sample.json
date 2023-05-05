@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-central-1:12345678:landingzone-central-platform-events-low:79b696e0-2b57-4066-861f-b3d8b7aed65f",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "4c3371fa-f5b5-5940-935d-2d375f70cb0d",
+                "TopicArn": "arn:aws:sns:eu-central-1:12345678:landingzone-central-platform-events-low",
+                "Subject": "S3BucketDeleted detected in 836443378780 eu-central-1",
+                "Message": "{\n    \"userIdentity\": {\n        \"type\": \"AssumedRole\",\n        \"principalId\": \"ABEGIUEA:exampleuser@example.com\",\n        \"arn\": \"arn:aws:sts::836443378780:assumed-role/assumedRoleName/exampleuser@example.com\",\n        \"accountId\": \"836443378780\",\n        \"accessKeyId\": \"ASIA4FP7JCROGLVDQDVB\",\n        \"sessionContext\": {\n            \"sessionIssuer\": {\n                \"type\": \"Role\",\n                \"principalId\": \"ABEGIUEA\",\n                \"arn\": \"arn:aws:iam::836443378780:role/aws-reserved/sso.amazonaws.com/eu-central-1/assumedRoleName\",\n                \"accountId\": \"836443378780\",\n                \"userName\": \"assumedRoleName\"\n            },\n            \"webIdFederationData\": {},\n            \"attributes\": {\n                \"creationDate\": \"2023-05-04T12:42:45Z\",\n                \"mfaAuthenticated\": \"false\"\n            }\n        }\n    },\n    \"eventTime\": \"2023-05-04T12:43:36Z\",\n    \"eventSource\": \"s3.amazonaws.com\",\n    \"eventName\": \"DeleteBucket\",\n    \"awsRegion\": \"eu-central-1\",\n    \"userAgent\": \"[S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.241-160.348.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.362-b10 java/1.8.0_362 vendor/Oracle_Corporation cfg/retry-mode/standard]\",\n    \"eventID\": \"56ab0059-086a-4795-9d58-5a6ad9373519\",\n    \"readOnly\": false,\n    \"eventType\": \"AwsApiCall\",\n    \"recipientAccountId\": \"836443378780\"\n}",
+                "Timestamp": "2023-05-04T12:43:49.570Z",
+                "SignatureVersion": "1",
+                "Signature": "somesig=",
+                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:12345678:landingzone-central-platform-events-low:79b696e0-2b57-4066-861f-b3d8b7aed65f",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

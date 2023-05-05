@@ -220,6 +220,20 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
   }
 }
 
+export class OrgTrailMessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: SlackMessage): SlackMessage {
+    console.debug(this.event);
+    message.addHeader(`${this.event?.eventName} event detected`);
+    message.addContext({
+      type: 'orgtrail',
+      account: this.account,
+      region: this.event?.awsRegion
+    });
+    message.addSection(`${this?.event?.userIdentity?.principalId} triggered a ${this.event?.eventName} event. The event ID is *${this?.event?.eventID}*, of type ${this?.event?.eventType}.`);
+    return message;
+  }
+}
+
 export class UnhandledEventFormatter extends MessageFormatter<any> {
   constructMessage(message: SlackMessage): SlackMessage {
     message.addHeader('Unhandled event');

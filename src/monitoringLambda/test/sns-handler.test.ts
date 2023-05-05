@@ -140,6 +140,29 @@ describe('Security hub event from Subject', () => {
   });
 });
 
+describe('Cloudtrail log events', () => {
+  const snsHandler = new SnsEventHandler();
+  test('Eventtype is detected', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'orgtrail-notification-sample.json'));
+    const message = parseMessageFromEvent(event);
+    const type = getEventType(message, event);
+    expect(type).toBe('OrgTrailFromMPA');
+  });
+
+  test('Message formatter works', async () => {
+
+    const event = await getEventFromFilePath(path.join('samples', 'orgtrail-notification-sample.json'));
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+    const json = handled.message.getSlackMessage();
+    expect(json).toContain('detected from');
+    expect(handled).not.toBeFalsy();
+  });
+});
+
 describe('More message types from SNS events', () => {
 
   test('Devopsguru eventbridge event', async () => {

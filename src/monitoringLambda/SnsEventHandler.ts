@@ -1,6 +1,6 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter } from './MessageFormatter';
-import { stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter } from './MessageFormatter';
+import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -73,6 +73,11 @@ const events: Record<string, Event> = {
     formatter: (message, account) => new SecurityHubFormatter(message, account),
     priority: 'high',
   },
+  'OrgTrailFromMPA': {
+    shouldTriggerAlert: () => true,
+    formatter: (message, account) => new OrgTrailMessageFormatter(message, account),
+    priority: 'high',
+  },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
     formatter: (message, account) => new UnhandledEventFormatter(message, account),
@@ -106,7 +111,7 @@ export class SnsEventHandler implements IHandler {
   }
 
   getAccount(message: any): string {
-    const account = message?.account;
+    const account = message?.account ?? message?.recipientAccountId;
     return account ?? '';
   }
 }
@@ -138,6 +143,10 @@ export function getEventType(message: any, event?: any): keyof typeof events {
     const eventSubject = stringMatchingPatternInArray(Object.keys(events), subject);
     if (eventSubject) {
       return eventSubject;
+    }
+    // detect orgtrail notification from mpa account
+    if(patternMatchesString('detected in ', subject)) {
+      return 'OrgTrailFromMPA'
     }
   }
   return 'unhandledEvent';

@@ -19,11 +19,15 @@ export function stringMatchesPatternInArray(array: string[], string: string): bo
  */
 export function stringMatchingPatternInArray(array: string[], string: string): string|false {
   const lowerCasedString = string.toLowerCase();
-  const match = array.find((potentialMatch) => {
-    const regExp = new RegExp(potentialMatch.toLowerCase());
-    return regExp.test(escapeRegExp(lowerCasedString));
+  const match = array.find((pattern) => {
+    return patternMatchesString(pattern, lowerCasedString);
   });
   return match !== undefined ? match : false;
+}
+
+export function patternMatchesString(pattern: string, lowerCasedString: string) {
+  const regExp = new RegExp(pattern.toLowerCase());
+  return regExp.test(escapeRegExp(lowerCasedString));
 }
 
 function escapeRegExp(string: string): string {
