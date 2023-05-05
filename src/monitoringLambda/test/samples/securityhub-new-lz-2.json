@@ -1,0 +1,22 @@
+{
+  "Records": [
+      {
+          "EventSource": "aws:sns",
+          "EventVersion": "1.0",
+          "EventSubscriptionArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high:7819d743-12d8-4ea5-bac1-47924663b5c5",
+          "Sns": {
+              "Type": "Notification",
+              "MessageId": "393e7a59-63a6-53de-a606-26978bf830f5",
+              "TopicArn": "arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high",
+              "Subject": "SecurityHub - gn-geo-data-production - EC2.9",
+              "Message": "{\n    \"AccountName\": \"gn-geo-data-production\",\n    \"Environment\": \"production\",\n    \"Title\": \"EC2.9 EC2 instances should not have a public IPv4 address\",\n    \"Severity\": \"HIGH\",\n    \"ControlId\": \"EC2.9\",\n    \"AccountId\": \"549334216741\",\n    \"Region\": \"eu-central-1\",\n    \"Description\": \"This control checks whether EC2 instances have a public IP address. The control fails if the publicIp field is present in the EC2 instance configuration item. This control applies to IPv4 addresses only.\",\n    \"WorkflowState\": \"NEW\",\n    \"Compliance\": {\n        \"Status\": \"FAILED\",\n        \"SecurityControlId\": \"EC2.9\",\n        \"AssociatedStandards\": [\n            {\n                \"StandardsId\": \"standards/aws-foundational-security-best-practices/v/1.0.0\"\n            }\n        ]\n    },\n    \"Resources\": [\n        {\n            \"Partition\": \"aws\",\n            \"Type\": \"AwsEc2Instance\",\n            \"Details\": {\n                \"AwsEc2Instance\": {\n                    \"VpcId\": \"vpc-0247c88eefdefa413\",\n                    \"MetadataOptions\": {\n                        \"HttpPutResponseHopLimit\": 2,\n                        \"HttpTokens\": \"required\",\n                        \"HttpEndpoint\": \"enabled\"\n                    },\n                    \"VirtualizationType\": \"hvm\",\n                    \"NetworkInterfaces\": [\n                        {\n                            \"NetworkInterfaceId\": \"eni-0cad2eaa25fe0a46d\"\n                        }\n                    ],\n                    \"ImageId\": \"ami-0750be70a912aa1e9\",\n                    \"SubnetId\": \"subnet-00549e10f8c677234\",\n                    \"LaunchedAt\": \"2023-04-19T09:52:23.000Z\",\n                    \"Monitoring\": {\n                        \"State\": \"disabled\"\n                    },\n                    \"IamInstanceProfileArn\": \"arn:aws:iam::549334216741:instance-profile/geo-storage-data-stack-ec2migrationinstanceInstanceProfile2D15950B-SdvAUvnXHNdY\"\n                }\n            },\n            \"Region\": \"eu-central-1\",\n            \"Id\": \"arn:aws:ec2:eu-central-1:549334216741:instance/i-0159a7b6a4da06ef6\"\n        }\n    ]\n}",
+              "Timestamp": "2023-05-05T11:18:54.015Z",
+              "SignatureVersion": "1",
+              "Signature": "EjxTPvGSeoBtBKCAyKSCYz01wHcKaYbxYU0s0xr+bPXviW740o6RvEj91CRRKQqywhs9HXclz7FGdjl1SNa1gxPSyWlQ35nkEULiHXJCt2EelcwPxhiUoyS4rgkYTK0UZrn1BMtvKX4Pxh6UQzbb3IFQ6inSvAjm/PJThxCOPvr/55ut7lqRARhtG6qhN7f72D/JgAoKObiHVaE2yYcbrtxwTElrYyD8oNqf8l338b4MisAspUKCBkJ0kEKlnE8W/eDe4McaHgMmvkqkh8WcJ0RkBy9HH34Wdz/3of9ioV60EVfcc7cRoNh6aXbtL7nKrm0XTIuC5ebFuSdm2Q9izw==",
+              "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+              "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:302838002127:landingzone-central-platform-events-high:7819d743-12d8-4ea5-bac1-47924663b5c5",
+              "MessageAttributes": {}
+          }
+      }
+  ]
+}

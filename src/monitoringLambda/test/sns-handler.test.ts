@@ -128,13 +128,14 @@ describe('Security hub event from Subject', () => {
   test('Security hub high message formatter works', async () => {
     const snsHandler = new SnsEventHandler();
 
-    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz.json'));
+    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz-2.json'));
     const handled = snsHandler.handle(event);
     if (handled == false) {
       expect(handled).not.toBeFalsy();
       return;
     }
     const json = JSON.stringify(handled.message.getSlackMessage());
+    console.debug(json);
     expect(json).toContain('state: *NEW*');
     expect(handled).not.toBeFalsy();
   });

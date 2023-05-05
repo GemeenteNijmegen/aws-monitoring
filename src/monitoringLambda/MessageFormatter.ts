@@ -205,10 +205,14 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
       state: `${this.event?.WorkflowState}`,
     });
     if (this.event?.Description) {
-      message.addSection(`${this.event?.Description}
-      - Type: *${this.event?.Resources?.Type}*
-      - Id: *${this.event?.Resources?.Id}*`);
+      message.addSection(`${this.event?.Description}`);
     }
+    
+    let resourceString = '';
+    for(const resource of this.event?.Resources) {
+      resourceString = resourceString.concat(`- *${resource.Type}*: ${resource.Id}`);
+    }
+    if(resourceString != '') { message.addSection(resourceString); }
 
     addCreateTicketInteraction(message, {
       title: `SecurityHub: ${this.event?.Title}`,
