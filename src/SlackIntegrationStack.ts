@@ -7,10 +7,20 @@ import { Construct } from 'constructs';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
 
-export class SlackIntegrationStack extends Stack {
+export class IntegrationsStack extends Stack {
+
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
+    const api = new apigatewayv2.HttpApi(this, 'integration-api-gateway', {
+      description: 'Monitoring integration endpoints',
+    });
+
+    this.setupSlackIntegration(api);
+
+  }
+
+  setupSlackIntegration(api: apigatewayv2.HttpApi) {
     const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey);
     const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword);
 
@@ -26,15 +36,11 @@ export class SlackIntegrationStack extends Stack {
     slackSecret.grantRead(slackFunction);
     topDeskPassword.grantRead(slackFunction);
 
-    const api = new apigatewayv2.HttpApi(this, 'integration-api-gateway', {
-      description: 'Monitoring integration endpoints',
-    });
-
     api.addRoutes({
       integration: new HttpLambdaIntegration('api-slack', slackFunction),
       path: '/slack',
       methods: [apigatewayv2.HttpMethod.GET],
     });
-
   }
+
 }
