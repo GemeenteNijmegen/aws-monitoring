@@ -100,8 +100,8 @@ export class SlackMessage {
       console.debug('no webhook set, no known priority', priority);
       return false;
     }
-    console.debug(`returning webhook SLACK_WEBHOOK_URL_${priority}`);
-    return process.env?.[`SLACK_WEBHOOK_URL_${priority}`];
+    console.debug(`returning webhook SLACK_WEBHOOK_URL_${priority.toUpperCase()}`);
+    return process.env?.[`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`];
   }
 
 }
