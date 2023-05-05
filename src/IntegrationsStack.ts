@@ -46,7 +46,7 @@ export class IntegrationsStack extends Stack {
     api.addRoutes({
       integration: new HttpLambdaIntegration('api-slack', slackFunction),
       path: '/slack',
-      methods: [apigatewayv2.HttpMethod.GET],
+      methods: [apigatewayv2.HttpMethod.POST],
     });
   }
 
