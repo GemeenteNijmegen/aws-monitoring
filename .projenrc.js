@@ -16,6 +16,8 @@ const project = new GemeenteNijmegenCdkApp({
     'cdk-nag',
     'axios',
     '@types/aws-lambda',
+    '@aws-cdk/aws-apigatewayv2-alpha',
+    '@aws-cdk/aws-apigatewayv2-integrations-alpha',
   ],
   devDeps: [
     '@gemeentenijmegen/modules-projen',

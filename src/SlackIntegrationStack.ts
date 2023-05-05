@@ -1,4 +1,6 @@
-import { Stack, StackProps, aws_apigateway as apigateway } from 'aws-cdk-lib';
+import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
+import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import { Stack, StackProps } from 'aws-cdk-lib';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
@@ -24,10 +26,15 @@ export class SlackIntegrationStack extends Stack {
     slackSecret.grantRead(slackFunction);
     topDeskPassword.grantRead(slackFunction);
 
-    // Create an api gateway to expose the lambda
-    const api = new apigateway.RestApi(this, 'integrations-api');
-    const slack = api.root.addResource('slack');
-    slack.addMethod('POST', new apigateway.LambdaIntegration(slackFunction));
+    const api = new apigatewayv2.HttpApi(this, 'integration-api-gateway', {
+      description: 'Monitoring integration endpoints',
+    });
+
+    api.addRoutes({
+      integration: new HttpLambdaIntegration('api-slack', slackFunction),
+      path: '/slack',
+      methods: [apigatewayv2.HttpMethod.GET],
+    });
 
   }
 }
