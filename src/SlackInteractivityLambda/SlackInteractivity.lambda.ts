@@ -85,7 +85,7 @@ async function authenticate(event: APIGatewayProxyEventV2) {
 
   // If the request is > 1 minute old ignore it (replay attack)
   if ((Date.now()/1000) - parseInt(slackTimestamp) > 60 * 1) {
-    console.log('Replay attack');
+    console.log('Replay attack', slackTimestamp);
     return false;
   }
 
