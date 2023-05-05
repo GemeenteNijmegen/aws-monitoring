@@ -31,7 +31,7 @@ export abstract class Statics {
   static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url';
 
 
-  static ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;
+  static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;
   static readonly ssmTopDeskUsername = (env: string) => `/slack-integration/${env}/topdesk/api/username`;
   static readonly ssmTopDeskDeepLinkUrl = (env: string) => `/slack-integration/${env}/topdesk/deeplink/url`;
 
