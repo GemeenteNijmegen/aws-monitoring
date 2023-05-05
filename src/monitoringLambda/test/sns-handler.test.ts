@@ -157,8 +157,8 @@ describe('Cloudtrail log events', () => {
       expect(handled).not.toBeFalsy();
       return;
     }
-    const json = handled.message.getSlackMessage();
-    expect(json).toContain('detected from');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('DeleteBucket event detected');
     expect(handled).not.toBeFalsy();
   });
 });

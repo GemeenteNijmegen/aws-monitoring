@@ -145,8 +145,8 @@ export function getEventType(message: any, event?: any): keyof typeof events {
       return eventSubject;
     }
     // detect orgtrail notification from mpa account
-    if(patternMatchesString('detected in ', subject)) {
-      return 'OrgTrailFromMPA'
+    if (patternMatchesString('detected in ', subject)) {
+      return 'OrgTrailFromMPA';
     }
   }
   return 'unhandledEvent';
