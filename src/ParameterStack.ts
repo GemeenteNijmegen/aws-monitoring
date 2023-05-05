@@ -24,32 +24,32 @@ export class ParameterStack extends Stack {
     }
 
     const topdeksApiUrl = new StringParameter(this, 'ssm1', {
-      parameterName: Statics.ssmTopDeskApiUrl,
+      parameterName: Statics.ssmTopDeskApiUrl(props.prefix),
       stringValue: 'https://test-support.irvn.nl/tas/api',
     });
     topdeksApiUrl.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const topdeskUsername = new StringParameter(this, 'ssm2', {
-      parameterName: Statics.ssmTopDeskUsername,
+      parameterName: Statics.ssmTopDeskUsername(props.prefix),
       stringValue: 'AWS-API',
     });
     topdeskUsername.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const topdeskDeepLinkUrl = new StringParameter(this, 'ssm3', {
-      parameterName: Statics.ssmTopDeskDeepLinkUrl,
+      parameterName: Statics.ssmTopDeskDeepLinkUrl(props.prefix),
       stringValue: 'https://test-support.irvn.nl/tas/secure/contained/incident?unid=',
     });
     topdeskDeepLinkUrl.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const topDeskPassword = new Secret(this, 'secret1', {
       description: 'topdesk api password',
-      secretName: Statics.secretTopDeskPassword,
+      secretName: Statics.secretTopDeskPassword(props.prefix),
     });
     topDeskPassword.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const slackSecret = new Secret(this, 'slack-secret', {
       description: 'slack request validation secret',
-      secretName: Statics.secretSlackSigningKey,
+      secretName: Statics.secretSlackSigningKey(props.prefix),
     });
     slackSecret.applyRemovalPolicy(RemovalPolicy.DESTROY);
 

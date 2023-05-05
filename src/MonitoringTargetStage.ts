@@ -53,6 +53,7 @@ export class MonitoringTargetStage extends Stage {
 
     new IntegrationsStack(this, 'integrations', {
       env: Statics.aggregatorEnvironment,
+      prefix: parameterPrefix,
     }).addDependency(parameterStack);
 
     // TODO: Roll out cloudtrail-stuff to mpa-account?
