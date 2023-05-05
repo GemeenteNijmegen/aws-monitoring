@@ -7,30 +7,37 @@ import { Construct } from 'constructs';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
 
+export interface IntegrationsStackProps extends StackProps {
+  /**
+   * Environment prefix to use in parameters
+   */
+  prefix: string;
+}
+
 export class IntegrationsStack extends Stack {
 
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
+  constructor(scope: Construct, id: string, props: IntegrationsStackProps) {
     super(scope, id, props);
 
     const api = new apigatewayv2.HttpApi(this, 'integration-api-gateway', {
       description: 'Monitoring integration endpoints',
     });
 
-    this.setupSlackIntegration(api);
+    this.setupSlackIntegration(props, api);
 
   }
 
-  setupSlackIntegration(api: apigatewayv2.HttpApi) {
-    const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey);
-    const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword);
+  setupSlackIntegration(props: IntegrationsStackProps, api: apigatewayv2.HttpApi) {
+    const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey(props.prefix));
+    const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
 
     const slackFunction = new SlackInteractivityFunction(this, 'interactivity-function', {
       environment: {
         SLACK_SECRET_ARN: slackSecret.secretArn,
         TOPDESK_PASSWORD_ARN: topDeskPassword.secretArn,
-        TOPDESK_USERNAME: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskUsername),
-        TOPDESK_API_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskApiUrl),
-        TOPDESK_DEEP_LINK_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskDeepLinkUrl),
+        TOPDESK_USERNAME: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskUsername(props.prefix)),
+        TOPDESK_API_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskApiUrl(props.prefix)),
+        TOPDESK_DEEP_LINK_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskDeepLinkUrl(props.prefix)),
       },
     });
     slackSecret.grantRead(slackFunction);
