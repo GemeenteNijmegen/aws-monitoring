@@ -12,14 +12,21 @@ A rough diagram:
 ```mermaid
 flowchart TD
     pipeline[[pipeline]]
-    workload[workload-account]
-    audit[audit-account]
+    workload{{workload-account}}
+    audit{{audit-account}}
+    mpa{{mpa-account}}
     eventbridge[/eventbridge event/]
     sns-account[SNS in workload-account]
     sns-audit[SNS in audit-account]
     lambda[[Monitoring-lambda]]
     slack([Slack-topics])
     securityhub[Securityhub]
+
+    subgraph accounts
+        mpa
+        audit
+        workload
+    end
 
     subgraph stacks
         pipeline -- MonitoredAccountStack --> workload
@@ -28,7 +35,8 @@ flowchart TD
     end
     subgraph events
         workload --> eventbridge --> sns-account --> sns-audit
-        audit --> securityhub --> sns-audit
+        audit --> securityhub -- findings --> sns-audit
+        mpa -- cloudtrail filter notifications --> sns-audit
     end
     subgraph verwerking
         sns-audit --> lambda --> slack
