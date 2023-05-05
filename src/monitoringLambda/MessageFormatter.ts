@@ -209,6 +209,13 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
       - Type: *${this.event?.Resources?.Type}*
       - Id: *${this.event?.Resources?.Id}*`);
     }
+
+    addCreateTicketInteraction(message, {
+      title: `SecurityHub: ${this.event?.Title}`,
+      desciption: this.event?.Description,
+      priority: 'low', // TODO fix this when interaction works
+    });
+
     return message;
   }
 }
@@ -271,4 +278,15 @@ export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudW
     sections.forEach(section => message.addSection(section));
     return message;
   }
+}
+
+
+function addCreateTicketInteraction(message: SlackMessage, payload: any) {
+  const sendPayload = {
+    title: 'Issue opend from slack',
+    description: '(none)',
+    priority: 'low',
+    ...payload,
+  };
+  message.addButton('Create TopDesk ticket', 'create-topdesk-ticket', sendPayload);
 }
