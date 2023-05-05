@@ -8,7 +8,7 @@ import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInte
 import { Statics } from './statics';
 
 export class IntegrationsStack extends Stack {
-  
+
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
@@ -16,11 +16,11 @@ export class IntegrationsStack extends Stack {
       description: 'Monitoring integration endpoints',
     });
 
-    this.setupSlackIntegration(api);    
+    this.setupSlackIntegration(api);
 
   }
 
-  setupSlackIntegration(api: apigatewayv2.HttpApi){
+  setupSlackIntegration(api: apigatewayv2.HttpApi) {
     const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey);
     const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword);
 
