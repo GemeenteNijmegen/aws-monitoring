@@ -95,9 +95,12 @@ export class SlackMessage {
   }
 
   getSlackUrl(priority: string) {
-    if (!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
+    console.debug('getting slack webhook for priority ', priority);
+    if(!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
+      console.debug('no webhook set, no known priority', priority);
       return false;
     }
+    console.debug(`returning webhook SLACK_WEBHOOK_URL_${priority}`);
     return process.env?.[`SLACK_WEBHOOK_URL_${priority}`];
   }
 
