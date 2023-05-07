@@ -71,7 +71,6 @@ export class SlackMessage {
         },
       ],
     };
-    console.log('Button block:', block, JSON.stringify(block));
     this.blocks.push(block);
   }
 
@@ -93,7 +92,7 @@ export class SlackMessage {
       throw Error('No slack webhook url defined');
     }
     const message = this.getSlackMessage();
-    return axios.post(url, message);
+    return axios.post(url, JSON.stringify(message));
   }
 
   getSlackUrl(priority: string) {
