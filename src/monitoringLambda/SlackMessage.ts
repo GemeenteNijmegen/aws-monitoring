@@ -56,7 +56,7 @@ export class SlackMessage {
   }
 
   addButton(text: string, actionName: string, payload: any) {
-    this.blocks.push({
+    const block = {
       type: 'actions',
       elements: [
         {
@@ -70,7 +70,9 @@ export class SlackMessage {
           action_id: actionName,
         },
       ],
-    });
+    };
+    console.log('Button block:', block, JSON.stringify(block));
+    this.blocks.push(block);
   }
 
   getSlackMessage() {
