@@ -66,7 +66,7 @@ export class SlackMessage {
             text: text,
             emoji: true,
           },
-          value: JSON.stringify(payload),
+          value: Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64'),
           action_id: actionName,
         },
       ],
@@ -93,12 +93,12 @@ export class SlackMessage {
     }
     const message = this.getSlackMessage();
 
-    const client = new axios.Axios({
+    console.debug('Message:', JSON.stringify(message));
+    return axios.post(url, JSON.stringify(message), {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    return client.post(url, JSON.stringify(message));
   }
 
   getSlackUrl(priority: string) {
