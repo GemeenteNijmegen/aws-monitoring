@@ -93,11 +93,11 @@ export class SlackMessage {
     }
     const message = this.getSlackMessage();
 
-    console.debug("Message:", JSON.stringify(message))
+    console.debug('Message:', JSON.stringify(message));
     return axios.post(url, JSON.stringify(message), {
       headers: {
-        "Content-Type": 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
