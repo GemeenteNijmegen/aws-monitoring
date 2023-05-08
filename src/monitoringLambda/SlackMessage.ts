@@ -66,7 +66,7 @@ export class SlackMessage {
             text: text,
             emoji: true,
           },
-          value: Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64'),
+          value: Buffer.from(JSON.stringify(payload)).toString('base64'),
           action_id: actionName,
         },
       ],

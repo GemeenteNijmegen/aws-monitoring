@@ -99,7 +99,7 @@ interface Action {
   value: any;
 }
 
-function getActionFromPayload(payload: any) : Action {
+export function getActionFromPayload(payload: any) : Action {
   if (!payload.actions || payload.actions.length != 1) {
     throw Error('Could not get action from payload');
   }
