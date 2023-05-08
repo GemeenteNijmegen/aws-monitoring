@@ -92,6 +92,8 @@ export class SlackMessage {
       throw Error('No slack webhook url defined');
     }
     const message = this.getSlackMessage();
+
+    console.log('Send message:', JSON.stringify(message), message);
     return axios.post(url, JSON.stringify(message));
   }
 

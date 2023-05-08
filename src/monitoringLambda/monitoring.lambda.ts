@@ -28,6 +28,7 @@ export async function handler(event: any) {
     if (handled) {
       await handled.message.send(handled.priority);
       console.log('sent message');
+      return;
     }
     console.log('did not send message, not handled.');
   } catch (error) {
