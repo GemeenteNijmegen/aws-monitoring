@@ -1,24 +1,6 @@
 {
   "type": "block_actions",
-  "user": {
-      "id": "U032HFEM9JB",
-      "username": "m.dessing",
-      "name": "m.dessing",
-      "team_id": "T01GA48JZL0"
-  },
-  "api_app_id": "A03SVTB63QV",
-  "token": "ZsSNnwMQrDA3pBNG3EckLnww",
-  "container": {
-      "type": "message",
-      "message_ts": "1683550436.083359",
-      "channel_id": "C055YGGEHPE",
-      "is_ephemeral": false
-  },
-  "trigger_id": "5251551131216.1554144645680.24f126a80d431c5a01dc186b26c2005a",
-  "team": {
-      "id": "T01GA48JZL0",
-      "domain": "nijmegen-devops"
-  },
+  "token": "xxxxx",
   "enterprise": null,
   "is_enterprise_install": false,
   "channel": {
@@ -28,7 +10,7 @@
   "message": {
       "type": "message",
       "subtype": "bot_message",
-      "text": "❗️ Alarm: monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C type: *CloudWatch Alarm State Change* account: *095798249317* testing purposes <https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C|Bekijk alarm> Create TopDesk ticket button",
+      "text": "❗️ Alarm: alarm-name type: *CloudWatch Alarm State Change* account: *095798249317* testing purposes <https://nijmegen.nl|Bekijk alarm> Create TopDesk ticket button",
       "ts": "1683550436.083359",
       "bot_id": "B0573BPK4QG",
       "blocks": [
@@ -37,7 +19,7 @@
               "block_id": "XPa",
               "text": {
                   "type": "plain_text",
-                  "text": ":exclamation: Alarm: monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C",
+                  "text": ":exclamation: Alarm: alarm-name",
                   "emoji": true
               }
           },
@@ -52,7 +34,7 @@
                   },
                   {
                       "type": "mrkdwn",
-                      "text": "account: *095798249317*",
+                      "text": "account: *123456789012*",
                       "verbatim": false
                   }
               ]
@@ -71,7 +53,7 @@
               "block_id": "qevbv",
               "text": {
                   "type": "mrkdwn",
-                  "text": "<https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C|Bekijk alarm>",
+                  "text": "<https://nijmegen.nl|Bekijk alarm>",
                   "verbatim": false
               }
           },
@@ -96,7 +78,7 @@
   "state": {
       "values": {}
   },
-  "response_url": "https://hooks.slack.com/actions/T01GA48JZL0/5240492545009/QCGDdzNVekkBrpt8jKRwTIxQ",
+  "response_url": "https://hooks.slack.com/actions/xxxxx/xxxxx/xxx",
   "actions": [
       {
           "action_id": "create-topdesk-ticket",
