@@ -95,8 +95,8 @@ export class SlackMessage {
 
     const client = new axios.Axios({
       headers: {
-        "Content-Type": "application/json",
-      }
+        'Content-Type': 'application/json',
+      },
     });
     return client.post(url, JSON.stringify(message));
   }
