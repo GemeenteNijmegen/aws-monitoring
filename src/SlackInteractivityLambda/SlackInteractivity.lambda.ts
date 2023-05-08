@@ -104,8 +104,13 @@ function getActionFromPayload(payload: any) : Action {
     throw Error('Could not get action from payload');
   }
   const payloadAction = payload.actions[0];
+
+  const base64ActionValue = payloadAction.value;
+  const actionValue = Buffer.from(base64ActionValue, 'base64').toString('utf-8');
+  const value = JSON.parse(actionValue);
+
   return {
     id: payloadAction.action_id,
-    value: JSON.parse(payloadAction.value),
+    value: value,
   };
 }
