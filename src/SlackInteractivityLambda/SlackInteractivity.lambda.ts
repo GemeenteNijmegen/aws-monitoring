@@ -47,6 +47,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
  * @returns
  */
 function decodePlayload(event: APIGatewayProxyEventV2) {
+  console.log(event);
   const decoded = Buffer.from(event.body ?? '', 'base64').toString('utf-8');
   const body = decodeURIComponent(decoded);
   const params = new URLSearchParams(body);
