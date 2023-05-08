@@ -41,6 +41,14 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
     message.addSection(this.event?.detail.state.reason);
     const target = `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`;
     message.addLink('Bekijk alarm', target);
+
+    addCreateTicketInteraction(message, {
+      title: `Alarm: ${this.event.detail.alarmName} (${this.account})`,
+      desciption: this.event?.detail.state.reason + ` <a href="${target}">Bekijk alarm</a>`,
+      priority: 'low', // TODO fix this when interaction works
+    });
+
+
     return message;
   }
 }
