@@ -1,0 +1,114 @@
+{
+  "type": "block_actions",
+  "user": {
+      "id": "U032HFEM9JB",
+      "username": "m.dessing",
+      "name": "m.dessing",
+      "team_id": "T01GA48JZL0"
+  },
+  "api_app_id": "A03SVTB63QV",
+  "token": "ZsSNnwMQrDA3pBNG3EckLnww",
+  "container": {
+      "type": "message",
+      "message_ts": "1683550436.083359",
+      "channel_id": "C055YGGEHPE",
+      "is_ephemeral": false
+  },
+  "trigger_id": "5251551131216.1554144645680.24f126a80d431c5a01dc186b26c2005a",
+  "team": {
+      "id": "T01GA48JZL0",
+      "domain": "nijmegen-devops"
+  },
+  "enterprise": null,
+  "is_enterprise_install": false,
+  "channel": {
+      "id": "C055YGGEHPE",
+      "name": "privategroup"
+  },
+  "message": {
+      "type": "message",
+      "subtype": "bot_message",
+      "text": "❗️ Alarm: monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C type: *CloudWatch Alarm State Change* account: *095798249317* testing purposes <https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C|Bekijk alarm> Create TopDesk ticket button",
+      "ts": "1683550436.083359",
+      "bot_id": "B0573BPK4QG",
+      "blocks": [
+          {
+              "type": "header",
+              "block_id": "XPa",
+              "text": {
+                  "type": "plain_text",
+                  "text": ":exclamation: Alarm: monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C",
+                  "emoji": true
+              }
+          },
+          {
+              "type": "context",
+              "block_id": "qPumC",
+              "elements": [
+                  {
+                      "type": "mrkdwn",
+                      "text": "type: *CloudWatch Alarm State Change*",
+                      "verbatim": false
+                  },
+                  {
+                      "type": "mrkdwn",
+                      "text": "account: *095798249317*",
+                      "verbatim": false
+                  }
+              ]
+          },
+          {
+              "type": "section",
+              "block_id": "J6b",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": "testing purposes",
+                  "verbatim": false
+              }
+          },
+          {
+              "type": "section",
+              "block_id": "qevbv",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": "<https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/monitoring-development-workload-test-defaultalarmsconcurrentexecutionsA5ABF13D-CN65KJ1VD4C|Bekijk alarm>",
+                  "verbatim": false
+              }
+          },
+          {
+              "type": "actions",
+              "block_id": "vrFS",
+              "elements": [
+                  {
+                      "type": "button",
+                      "action_id": "create-topdesk-ticket",
+                      "text": {
+                          "type": "plain_text",
+                          "text": "Create TopDesk ticket",
+                          "emoji": true
+                      },
+                      "value": "eyJ0aXRsZSI6InJhbmRvbSIsImRlc2NyaXB0aW9uIjoiYmxhIGJsYSIsInByb3JpdHkiOiJsb3cifQ=="
+                  }
+              ]
+          }
+      ]
+  },
+  "state": {
+      "values": {}
+  },
+  "response_url": "https://hooks.slack.com/actions/T01GA48JZL0/5240492545009/QCGDdzNVekkBrpt8jKRwTIxQ",
+  "actions": [
+      {
+          "action_id": "create-topdesk-ticket",
+          "block_id": "vrFS",
+          "text": {
+              "type": "plain_text",
+              "text": "Create TopDesk ticket",
+              "emoji": true
+          },
+          "value": "eyJ0aXRsZSI6InJhbmRvbSIsImRlc2NyaXB0aW9uIjoiYmxhIGJsYSIsInByb3JpdHkiOiJsb3cifQ==",
+          "type": "button",
+          "action_ts": "1683551007.146319"
+      }
+  ]
+}
