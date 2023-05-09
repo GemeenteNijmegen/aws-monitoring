@@ -44,7 +44,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
 
     addCreateTicketInteraction(message, {
       title: `Alarm: ${this.event.detail.alarmName} (${this.account})`,
-      desciption: this.event?.detail.state.reason + ` <a href="${target}">Bekijk alarm</a>`,
+      description: this.event?.detail.state.reason + ` <a href="${target}">Bekijk alarm</a>`,
       priority: 'low', // TODO fix this when interaction works
     });
 
@@ -224,7 +224,7 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
 
     addCreateTicketInteraction(message, {
       title: `SecurityHub: ${this.event?.Title}`,
-      desciption: this.event?.Description,
+      description: this.event?.Description,
       priority: 'low', // TODO fix this when interaction works
     });
 
