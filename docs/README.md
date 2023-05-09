@@ -42,3 +42,7 @@ flowchart TD
         sns-audit --> lambda --> slack
     end
 ```
+
+
+## Slack interaction
+[Slack interaction documentation can be found here](./SlackInteraction.md)

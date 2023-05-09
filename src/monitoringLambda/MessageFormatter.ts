@@ -215,12 +215,12 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
     if (this.event?.Description) {
       message.addSection(`${this.event?.Description}`);
     }
-    
+
     let resourceString = '';
-    for(const resource of this.event?.Resources) {
+    for (const resource of this.event?.Resources) {
       resourceString = resourceString.concat(`- *${resource.Type}*: ${resource.Id}`);
     }
-    if(resourceString != '') { message.addSection(resourceString); }
+    if (resourceString != '') { message.addSection(resourceString); }
 
     addCreateTicketInteraction(message, {
       title: `SecurityHub: ${this.event?.Title}`,
