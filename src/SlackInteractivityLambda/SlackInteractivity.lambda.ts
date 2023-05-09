@@ -8,6 +8,8 @@ const topDeskClient = new TopDeskClient();
 
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
 
+  console.debug(event);
+
   const authenticated = await authenticate(event);
   if (!authenticated) {
     console.log('Unauthorized!');
@@ -18,8 +20,21 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
     console.log('Authenticated!');
   }
 
+  try {
+    return await handleSlackInteraction(event);
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify('Please check the logs for details'),
+    };
+  }
+}
+
+async function handleSlackInteraction(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+
   // Decode the message payload
-  const payload = decodePlayload(event);
+  const payload = parsePayloadFromEvent(event);
   const message = SlackMessage.fromPayload(payload);
 
   // Parse the action details and crate a topdesk ticket
@@ -39,6 +54,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
     statusCode: 200,
     body: JSON.stringify('ok'),
   };
+
 };
 
 /**
@@ -46,14 +62,21 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
  * @param event
  * @returns
  */
-function decodePlayload(event: APIGatewayProxyEventV2) {
-  console.log(event);
-  const decoded = Buffer.from(event.body ?? '', 'base64').toString('utf-8');
-  const body = decodeURIComponent(decoded);
-  const params = new URLSearchParams(body);
-  const payload = JSON.parse(params.get('payload') ?? '{}');
-  console.log(JSON.stringify(payload, null, 4));
-  return payload;
+export function parsePayloadFromEvent(event: APIGatewayProxyEventV2) {
+  if (!event.body) {
+    throw Error('No body found in event.');
+  }
+  const decoded = Buffer.from(event.body, 'base64').toString('utf-8');
+  const params = new URLSearchParams(decoded);
+  const body = params.get('payload');
+  if (!body) {
+    throw Error('Could not parse payload from body.');
+  }
+  const payload = decodeURIComponent(body);
+  if (!payload) {
+    throw Error('Could not parse payload from body.');
+  }
+  return JSON.parse(payload);
 }
 
 
