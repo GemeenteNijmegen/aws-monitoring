@@ -1,9 +1,27 @@
 import axios from 'axios';
+import { MessageProps } from './Message';
 
 const MAX_HEADER_LENGTH = 151;
 const MAX_SECTION_LENGTH = 3000;
 
 export class SlackMessage {
+
+  static from(message: MessageProps) {
+    const slack = new SlackMessage();
+    if (message.header) {
+      slack.addHeader(message.header);
+    }
+    if (message.context) {
+      slack.addContext(message.context);
+    }
+    if (message.sections) {
+      message.sections.forEach(section => slack.addSection(section));
+    }
+    if (message.link) {
+      slack.addLink(message.link.text, message.link.target);
+    }
+    return slack;
+  }
 
   private blocks: any[] = [];
 

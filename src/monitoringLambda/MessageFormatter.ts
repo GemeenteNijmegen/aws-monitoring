@@ -1,31 +1,43 @@
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
+import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
 
 /**
  * Abstract class for formatting differnt types of events
- * the formattedMesssage method returns a SlackMessage object
+ * the formattedMesssage method returns a Message object
  */
 export abstract class MessageFormatter<T> {
 
   event: T;
   account: string;
+  priority: string;
 
-  constructor(event: T, account: string) {
+  constructor(event: T, account: string, priority: string) {
     this.event = event;
     this.account = account;
+    this.priority = priority;
   }
 
   formattedMessage(): SlackMessage {
-    const message = new SlackMessage();
-    return this.constructMessage(message);
+    const message = new Message();
+    this.constructMessage(message);
+    return this.addMessageInteractions(message);
   }
 
-  abstract constructMessage(message: SlackMessage): SlackMessage;
+  abstract constructMessage(message: Message): Message;
+
+  addMessageInteractions(message: Message) {
+    // Topdesk create ticket interaction
+    const topdeskMessage = message.getTopDeskIncident();
+    const slackMessage = message.getSlackMessage();
+    slackMessage.addButton('Create TopDesk ticket', 'create-topdesk-ticket', topdeskMessage.getIncident(this.priority));
+    return slackMessage;
+  }
 }
 
 export class AlarmMessageFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     if (this.event?.detail?.state?.value == 'ALARM') {
       message.addHeader(`❗️ Alarm: ${this.event.detail.alarmName}`);
     } else if (this.event?.detail?.state?.value == 'OK') {
@@ -41,21 +53,13 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
     message.addSection(this.event?.detail.state.reason);
     const target = `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`;
     message.addLink('Bekijk alarm', target);
-
-    addCreateTicketInteraction(message, {
-      title: `Alarm: ${this.event.detail.alarmName} (${this.account})`,
-      description: this.event?.detail.state.reason + ` <a href="${target}">Bekijk alarm</a>`,
-      priority: 'low', // TODO fix this when interaction works
-    });
-
-
     return message;
   }
 }
 
 
 export class EcsMessageFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     const status = this.event?.detail?.lastStatus;
     const desiredStatus = this.event?.detail?.desiredStatus;
     const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
@@ -78,7 +82,7 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
 }
 
 export class DevopsGuruMessageFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     if (this.event?.detail?.insightSeverity == 'high') {
       message.addHeader('❗️ DevopsGuru Insight');
     } else {
@@ -96,7 +100,7 @@ export class DevopsGuruMessageFormatter extends MessageFormatter<any> {
 
 
 export class CertificateExpiryFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader('❗️ Certificate nearing expiration');
     message.addContext({
       type: `${getEventType(this.event)}`,
@@ -110,7 +114,7 @@ export class CertificateExpiryFormatter extends MessageFormatter<any> {
 
 
 export class Ec2MessageFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
 
     const status = this.event?.detail?.state;
     message.addHeader(`EC2 instance ${status}`);
@@ -128,7 +132,7 @@ export class Ec2MessageFormatter extends MessageFormatter<any> {
 }
 
 export class CodePipelineFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     switch (this.event?.detail?.state) {
       case 'STARTED':
         message.addHeader(`⏳ Pipeline started: ${this.event.detail.pipeline}`);
@@ -164,7 +168,7 @@ export class CodePipelineFormatter extends MessageFormatter<any> {
 }
 
 export class HealthDashboardFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader(`Health Dashboard alert: ${this.event?.detail?.eventTypeCode}`);
     message.addContext({
       type: `${getEventType(this.event)}`,
@@ -177,7 +181,7 @@ export class HealthDashboardFormatter extends MessageFormatter<any> {
 }
 
 export class InspectorFindingFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader(`Inspector Finding alert: ${this.event?.detail?.title}`);
     message.addContext({
       type: `${getEventType(this.event)}`,
@@ -191,7 +195,7 @@ export class InspectorFindingFormatter extends MessageFormatter<any> {
 }
 
 export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader('❗️ Stack drift detection alert');
     message.addContext({
       type: `${getEventType(this.event)}`,
@@ -205,7 +209,7 @@ export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
 }
 
 export class SecurityHubFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader(`SecurityHub: ${this.event?.Title}`);
     message.addContext({
       type: 'securityhub',
@@ -222,18 +226,12 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
     }
     if (resourceString != '') { message.addSection(resourceString); }
 
-    addCreateTicketInteraction(message, {
-      title: `SecurityHub: ${this.event?.Title}`,
-      description: this.event?.Description,
-      priority: 'low', // TODO fix this when interaction works
-    });
-
     return message;
   }
 }
 
 export class OrgTrailMessageFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     console.debug(this.event);
     message.addHeader(`${this.event?.eventName} event detected`);
     message.addContext({
@@ -247,7 +245,7 @@ export class OrgTrailMessageFormatter extends MessageFormatter<any> {
 }
 
 export class UnhandledEventFormatter extends MessageFormatter<any> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     message.addHeader('Unhandled event');
     message.addContext({
       type: 'unhandled event from SNS topic',
@@ -261,7 +259,7 @@ export class UnhandledEventFormatter extends MessageFormatter<any> {
 }
 
 export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecodedData> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     const codeBlock = '```';
     message.addHeader('Log subscription');
     message.addContext({
@@ -278,7 +276,7 @@ export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecoded
 
 
 export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecodedData> {
-  constructMessage(message: SlackMessage): SlackMessage {
+  constructMessage(message: Message): Message {
     let headerText: string | undefined = undefined;
     const sections: string[] = [];
     const codeBlock = '```';
@@ -304,15 +302,4 @@ export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudW
     sections.forEach(section => message.addSection(section));
     return message;
   }
-}
-
-
-function addCreateTicketInteraction(message: SlackMessage, payload: any) {
-  const sendPayload = {
-    title: 'Issue opend from slack',
-    description: '(none)',
-    priority: 'low',
-    ...payload,
-  };
-  message.addButton('Create TopDesk ticket', 'create-topdesk-ticket', sendPayload);
 }

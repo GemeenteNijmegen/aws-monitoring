@@ -18,69 +18,69 @@ const excludedAlarms = [
 
 interface Event {
   shouldTriggerAlert: (message?: any) => boolean;
-  formatter: (message: any, account: string) => MessageFormatter<any>;
+  formatter: (message: any, account: string, priority: string) => MessageFormatter<any>;
   priority: Priority;
 }
 
 const events: Record<string, Event> = {
   'CloudWatch Alarm State Change': {
     shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
-    formatter: (message, account) => new AlarmMessageFormatter(message, account),
+    formatter: (message, account, priority) => new AlarmMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'ECS Task State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new EcsMessageFormatter(message, account),
+    formatter: (message, account, priority) => new EcsMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new Ec2MessageFormatter(message, account),
+    formatter: (message, account, priority) => new Ec2MessageFormatter(message, account, priority),
     priority: 'high',
   },
   'DevOps Guru New Insight Open': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new DevopsGuruMessageFormatter(message, account),
+    formatter: (message, account, priority) => new DevopsGuruMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'ACM Certificate Approaching Expiration': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new CertificateExpiryFormatter(message, account),
+    formatter: (message, account, priority) => new CertificateExpiryFormatter(message, account, priority),
     priority: 'high',
   },
   'CodePipeline Pipeline Execution State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new CodePipelineFormatter(message, account),
+    formatter: (message, account, priority) => new CodePipelineFormatter(message, account, priority),
     priority: 'low',
   },
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new HealthDashboardFormatter(message, account),
+    formatter: (message, account, priority) => new HealthDashboardFormatter(message, account, priority),
     priority: 'high',
   },
   'Inspector2 Finding': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new InspectorFindingFormatter(message, account),
+    formatter: (message, account, priority) => new InspectorFindingFormatter(message, account, priority),
     priority: 'high',
   },
   'CloudFormation Drift Detection Status Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new DriftDetectionStatusFormatter(message, account),
+    formatter: (message, account, priority) => new DriftDetectionStatusFormatter(message, account, priority),
     priority: 'high',
   },
   'SecurityHub': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new SecurityHubFormatter(message, account),
+    formatter: (message, account, priority) => new SecurityHubFormatter(message, account, priority),
     priority: 'high',
   },
   'OrgTrailFromMPA': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new OrgTrailMessageFormatter(message, account),
+    formatter: (message, account, priority) => new OrgTrailMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
-    formatter: (message, account) => new UnhandledEventFormatter(message, account),
+    formatter: (message, account, priority) => new UnhandledEventFormatter(message, account, priority),
     priority: 'high',
   },
 };
@@ -101,7 +101,7 @@ export class SnsEventHandler implements IHandler {
     }
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
-    const formatter = events[eventType].formatter(message, account);
+    const formatter = events[eventType].formatter(message, account, events[eventType].priority);
     const priority = events[eventType].priority;
 
     return {
