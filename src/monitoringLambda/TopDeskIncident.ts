@@ -13,19 +13,19 @@ export class TopDeskIncident {
 
     if (this.message.context) {
       Object.entries(this.message.context).forEach(entry => {
-        lines.push(`<p><b>${entry[0]}</b> ${entry[1]}</p>`);
+        lines.push(`<b>${entry[0]}</b> ${entry[1]}`);
       });
     }
 
     if (this.message.sections) {
-      this.message.sections.forEach(section => lines.push(`<p>${section}</p>`));
+      this.message.sections.forEach(section => lines.push(section));
     }
 
     if (this.message.link) {
-      lines.push(`<p><a href="${this.message.link.target}">${this.message.link.text}</a></p>`);
+      lines.push(`<a href="${this.message.link.target}">${this.message.link.text}</a>`);
     }
 
-    return lines.join('\n');
+    return lines.join('<br/>');
   }
 
   getIncident(priority: string) {
