@@ -70,7 +70,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
       alarmInfo = {
         alarmName: this.event.AlarmName,
         type: (this.event?.NewStateValue == 'OK' || this.event?.NewStateValue == 'INSUFFICIENT_DATA') ? 'ENDED' : 'IN_ALARM',
-        eventType: getEventType(this.event),
+        eventType: 'Alarm state change',
         account: this.event.Trigger.Dimensions[0].value,
         reason: this.event?.NewStateReason,
         target: `https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/${encodeURIComponent(this.event.AlarmName)}`,
