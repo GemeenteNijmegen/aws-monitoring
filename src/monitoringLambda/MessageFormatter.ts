@@ -64,7 +64,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
         eventType: getEventType(this.event),
         account: this.account,
         reason: this.event?.detail.state.reason,
-        target: `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`
+        target: `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`,
       };
     } else if (this.event?.AlarmName) {
       alarmInfo = {
@@ -73,7 +73,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
         eventType: getEventType(this.event),
         account: this.event.Trigger.Dimensions[0].value,
         reason: this.event?.NewStateReason,
-        target: `https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/${encodeURIComponent(this.event.AlarmName)}`
+        target: `https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/${encodeURIComponent(this.event.AlarmName)}`,
       };
     }
     return alarmInfo;
