@@ -148,6 +148,10 @@ export function getEventType(message: any, event?: any): keyof typeof events {
     if (patternMatchesString('detected in ', subject)) {
       return 'OrgTrailFromMPA';
     }
+    // detect alarms from mpa account
+    if (message?.AlarmName) {
+      return 'CloudWatch Alarm State Change';
+    }
   }
   return 'unhandledEvent';
 }
@@ -165,12 +169,12 @@ function eventShouldTriggerAlert(event: any): boolean {
  * @param message an SNS message containing a cloudwatch state changed event
  */
 function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
-
-  if (stringMatchesPatternInArray(excludedAlarms, message?.detail?.alarmName)) {
+  const alarmName = message?.detail?.alarmName || message?.AlarmName;
+  if (stringMatchesPatternInArray(excludedAlarms, alarmName)) {
     return false;
   }
-  const state = message?.detail?.state?.value;
-  const previousState = message?.detail?.previousState?.value;
+  const state = message?.detail?.state?.value || message?.NewStateValue;
+  const previousState = message?.detail?.previousState?.value || message?.OldStateValue;
   if (state == 'ALARM' || previousState == 'ALARM') {
     return true;
   }

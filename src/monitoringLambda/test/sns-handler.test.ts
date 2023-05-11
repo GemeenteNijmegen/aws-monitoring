@@ -115,6 +115,19 @@ describe('Alarms via SNS events', () => {
     const handled = snsHandler.handle(event);
     expect(handled).toBe(false);
   });
+
+  test('Alarm event from mpa processed', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'alarm-rootuser-new-lz.json'));
+
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+
+    const message = handled.message.getSlackMessage().blocks;
+    expect(message[0].text.text).toContain('❗️ Alarm: ');
+  });
 });
 
 describe('Security hub event from Subject', () => {

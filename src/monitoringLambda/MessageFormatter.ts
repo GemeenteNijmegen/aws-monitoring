@@ -38,25 +38,47 @@ export abstract class MessageFormatter<T> {
 
 export class AlarmMessageFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {
-    if (this.event?.detail?.state?.value == 'ALARM') {
-      message.addHeader(`❗️ Alarm: ${this.event.detail.alarmName}`);
-    } else if (this.event?.detail?.state?.value == 'OK') {
-      message.addHeader(`✅ Alarm ended: ${this.event.detail.alarmName}`);
-    } else if (this.event?.detail?.state?.value == 'INSUFFICIENT_DATA') {
-      message.addHeader(`Insufficient data: ${this.event.detail.alarmName}`);
+    let alarmInfo;
+    alarmInfo = this.getAlarmInfo(alarmInfo);
+    if (alarmInfo.type == 'IN_ALARM') {
+      message.addHeader(`❗️ Alarm: ${alarmInfo.alarmName}`);
+    } else {
+      message.addHeader(`✅ Alarm ended: ${alarmInfo.alarmName}`);
     }
 
     message.addContext({
-      type: getEventType(this.event),
-      account: this.account,
+      type: alarmInfo.eventType,
+      account: alarmInfo.account,
     });
-    message.addSection(this.event?.detail.state.reason);
-    const target = `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`;
+    message.addSection(alarmInfo.reason);
+    const target = alarmInfo.target;
     message.addLink('Bekijk alarm', target);
     return message;
   }
-}
 
+  private getAlarmInfo(alarmInfo: any) {
+    if (this.event?.detail?.alarmName) {
+      alarmInfo = {
+        alarmName: this.event.detail.alarmName,
+        type: (this.event?.detail?.state?.value == 'OK' || this.event?.detail?.state?.value == 'INSUFFICIENT_DATA') ? 'ENDED' : 'IN_ALARM',
+        eventType: getEventType(this.event),
+        account: this.account,
+        reason: this.event?.detail.state.reason,
+        target: `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`
+      };
+    } else if (this.event?.AlarmName) {
+      alarmInfo = {
+        alarmName: this.event.AlarmName,
+        type: (this.event?.NewStateValue == 'OK' || this.event?.NewStateValue == 'INSUFFICIENT_DATA') ? 'ENDED' : 'IN_ALARM',
+        eventType: getEventType(this.event),
+        account: this.event.Trigger.Dimensions[0].value,
+        reason: this.event?.NewStateReason,
+        target: `https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/${encodeURIComponent(this.event.AlarmName)}`
+      };
+    }
+    return alarmInfo;
+  }
+}
 
 export class EcsMessageFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {

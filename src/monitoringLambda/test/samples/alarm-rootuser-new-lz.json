@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-central-1:<accountid>:landingzone-central-platform-events-high:7819d743-12d8-4ea5-bac1-47924663b5c5",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "cdb3a3c9-2033-5ec1-a83d-ff1f8126e911",
+                "TopicArn": "arn:aws:sns:eu-central-1:<accountid>:landingzone-central-platform-events-high",
+                "Subject": "ALARM: \"landingzone-gn-tribebrplinker-acceptance-RootUserActivity\" in EU (Frankfurt)",
+                "Message": "{\n    \"AlarmName\": \"landingzone-gn-tribebrplinker-acceptance-RootUserActivity\",\n    \"AlarmDescription\": null,\n    \"AWSAccountId\": \"987304085258\",\n    \"AlarmConfigurationUpdatedTimestamp\": \"2023-05-10T15:00:34.340+0000\",\n    \"NewStateValue\": \"ALARM\",\n    \"NewStateReason\": \"Threshold Crossed: 1 out of the last 1 datapoints [9.0 (11/05/23 07:51:00)] was greater than or equal to the threshold (1.0) (minimum 1 datapoint for OK -> ALARM transition).\",\n    \"StateChangeTime\": \"2023-05-11T07:52:52.688+0000\",\n    \"Region\": \"EU (Frankfurt)\",\n    \"AlarmArn\": \"arn:aws:cloudwatch:eu-central-1:987304085258:alarm:landingzone-gn-tribebrplinker-acceptance-RootUserActivity\",\n    \"OldStateValue\": \"OK\",\n    \"OKActions\": [],\n    \"AlarmActions\": [\n        \"arn:aws:sns:eu-central-1:987304085258:landingzone-platform-events-high\"\n    ],\n    \"InsufficientDataActions\": [],\n    \"Trigger\": {\n        \"MetricName\": \"RootUserActivity\",\n        \"Namespace\": \"landingzone/security-events\",\n        \"StatisticType\": \"Statistic\",\n        \"Statistic\": \"SUM\",\n        \"Unit\": null,\n        \"Dimensions\": [\n            {\n                \"value\": \"<actual-accountid>\",\n                \"name\": \"AccountId\"\n            }\n        ],\n        \"Period\": 60,\n        \"EvaluationPeriods\": 1,\n        \"DatapointsToAlarm\": 1,\n        \"ComparisonOperator\": \"GreaterThanOrEqualToThreshold\",\n        \"Threshold\": 1.0,\n        \"TreatMissingData\": \"notBreaching\",\n        \"EvaluateLowSampleCountPercentile\": \"\"\n    }\n}",
+                "Timestamp": "2023-05-11T07:52:53.711Z",
+                "SignatureVersion": "1",
+                "Signature": "psUE8Ya6sL9bUpe3krVyndD0EFv4ktrHvi8i+xilDD2a6HmayuxuTZE8DW7tDMHUQatgad4H2Mwb3cGGmUexNMTkf3CKh5VE/77l8WlcGHqQf42FR5Sjh/+ieJ2nrS31MwxdOI9pf6RibCQezp6o/J0rFiS85oXrL7eER+LbLh03tRLvvFiHe5oIfbUGE+AZe1+CnC3Dgj796h7T9Je8grgV9XcuVSffGuKXd1+DtwaKsY7iNUX9uSn3zeCfGJq+n9pgFjFy3MaHCtq1NYvsol7b858Sz+FIYD4X1CiRaNk/1XoUg0gGa+pMYUhU/qc0WKplt3sui88xBFCJbhJZDQ==",
+                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-central-1:<accountid>:landingzone-central-platform-events-high:7819d743-12d8-4ea5-bac1-47924663b5c5",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}
