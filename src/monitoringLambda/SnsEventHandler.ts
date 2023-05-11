@@ -111,7 +111,7 @@ export class SnsEventHandler implements IHandler {
   }
 
   getAccount(message: any): string {
-    const account = message?.account ?? message?.recipientAccountId;
+    const account = message?.account || message?.recipientAccountId || message?.AccountId;
     return account ?? '';
   }
 }
