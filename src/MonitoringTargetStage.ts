@@ -4,6 +4,7 @@ import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
@@ -48,8 +49,12 @@ export class MonitoringTargetStage extends Stage {
     new AggregatorStack(this, 'aggregator', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
-    })
-    .addDependency(parameterStack);
+    }).addDependency(parameterStack);
+
+    new IntegrationsStack(this, 'integrations', {
+      env: Statics.aggregatorEnvironment,
+      prefix: parameterPrefix,
+    }).addDependency(parameterStack);
 
     // TODO: Roll out cloudtrail-stuff to mpa-account?
   }

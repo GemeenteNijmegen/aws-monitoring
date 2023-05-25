@@ -1,0 +1,96 @@
+{
+  "type": "block_actions",
+  "token": "xxxxx",
+  "enterprise": null,
+  "is_enterprise_install": false,
+  "channel": {
+      "id": "C055YGGEHPE",
+      "name": "privategroup"
+  },
+  "message": {
+      "type": "message",
+      "subtype": "bot_message",
+      "text": "❗️ Alarm: alarm-name type: *CloudWatch Alarm State Change* account: *095798249317* testing purposes <https://nijmegen.nl|Bekijk alarm> Create TopDesk ticket button",
+      "ts": "1683550436.083359",
+      "bot_id": "B0573BPK4QG",
+      "blocks": [
+          {
+              "type": "header",
+              "block_id": "XPa",
+              "text": {
+                  "type": "plain_text",
+                  "text": ":exclamation: Alarm: alarm-name",
+                  "emoji": true
+              }
+          },
+          {
+              "type": "context",
+              "block_id": "qPumC",
+              "elements": [
+                  {
+                      "type": "mrkdwn",
+                      "text": "type: *CloudWatch Alarm State Change*",
+                      "verbatim": false
+                  },
+                  {
+                      "type": "mrkdwn",
+                      "text": "account: *123456789012*",
+                      "verbatim": false
+                  }
+              ]
+          },
+          {
+              "type": "section",
+              "block_id": "J6b",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": "testing purposes",
+                  "verbatim": false
+              }
+          },
+          {
+              "type": "section",
+              "block_id": "qevbv",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": "<https://nijmegen.nl|Bekijk alarm>",
+                  "verbatim": false
+              }
+          },
+          {
+              "type": "actions",
+              "block_id": "vrFS",
+              "elements": [
+                  {
+                      "type": "button",
+                      "action_id": "create-topdesk-ticket",
+                      "text": {
+                          "type": "plain_text",
+                          "text": "Create TopDesk ticket",
+                          "emoji": true
+                      },
+                      "value": "eyJ0aXRsZSI6InJhbmRvbSIsImRlc2NyaXB0aW9uIjoiYmxhIGJsYSIsInByb3JpdHkiOiJsb3cifQ=="
+                  }
+              ]
+          }
+      ]
+  },
+  "state": {
+      "values": {}
+  },
+  "response_url": "https://hooks.slack.com/actions/xxxxx/xxxxx/xxx",
+  "actions": [
+      {
+          "action_id": "create-topdesk-ticket",
+          "block_id": "vrFS",
+          "text": {
+              "type": "plain_text",
+              "text": "Create TopDesk ticket",
+              "emoji": true
+          },
+          "value": "eyJ0aXRsZSI6InJhbmRvbSIsImRlc2NyaXB0aW9uIjoiYmxhIGJsYSIsInByb3JpdHkiOiJsb3cifQ==",
+          "type": "button",
+          "action_ts": "1683551007.146319"
+      }
+  ]
+}

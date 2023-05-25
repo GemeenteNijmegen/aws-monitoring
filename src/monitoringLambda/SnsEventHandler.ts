@@ -1,6 +1,6 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter } from './MessageFormatter';
-import { stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter } from './MessageFormatter';
+import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -18,64 +18,69 @@ const excludedAlarms = [
 
 interface Event {
   shouldTriggerAlert: (message?: any) => boolean;
-  formatter: (message: any, account: string) => MessageFormatter<any>;
+  formatter: (message: any, account: string, priority: string) => MessageFormatter<any>;
   priority: Priority;
 }
 
 const events: Record<string, Event> = {
   'CloudWatch Alarm State Change': {
     shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
-    formatter: (message, account) => new AlarmMessageFormatter(message, account),
+    formatter: (message, account, priority) => new AlarmMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'ECS Task State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new EcsMessageFormatter(message, account),
+    formatter: (message, account, priority) => new EcsMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new Ec2MessageFormatter(message, account),
+    formatter: (message, account, priority) => new Ec2MessageFormatter(message, account, priority),
     priority: 'high',
   },
   'DevOps Guru New Insight Open': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new DevopsGuruMessageFormatter(message, account),
+    formatter: (message, account, priority) => new DevopsGuruMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'ACM Certificate Approaching Expiration': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new CertificateExpiryFormatter(message, account),
+    formatter: (message, account, priority) => new CertificateExpiryFormatter(message, account, priority),
     priority: 'high',
   },
   'CodePipeline Pipeline Execution State Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new CodePipelineFormatter(message, account),
+    formatter: (message, account, priority) => new CodePipelineFormatter(message, account, priority),
     priority: 'low',
   },
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new HealthDashboardFormatter(message, account),
+    formatter: (message, account, priority) => new HealthDashboardFormatter(message, account, priority),
     priority: 'high',
   },
   'Inspector2 Finding': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new InspectorFindingFormatter(message, account),
+    formatter: (message, account, priority) => new InspectorFindingFormatter(message, account, priority),
     priority: 'high',
   },
   'CloudFormation Drift Detection Status Change': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new DriftDetectionStatusFormatter(message, account),
+    formatter: (message, account, priority) => new DriftDetectionStatusFormatter(message, account, priority),
     priority: 'high',
   },
   'SecurityHub': {
     shouldTriggerAlert: () => true,
-    formatter: (message, account) => new SecurityHubFormatter(message, account),
+    formatter: (message, account, priority) => new SecurityHubFormatter(message, account, priority),
+    priority: 'high',
+  },
+  'OrgTrailFromMPA': {
+    shouldTriggerAlert: () => true,
+    formatter: (message, account, priority) => new OrgTrailMessageFormatter(message, account, priority),
     priority: 'high',
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
-    formatter: (message, account) => new UnhandledEventFormatter(message, account),
+    formatter: (message, account, priority) => new UnhandledEventFormatter(message, account, priority),
     priority: 'high',
   },
 };
@@ -96,7 +101,7 @@ export class SnsEventHandler implements IHandler {
     }
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
-    const formatter = events[eventType].formatter(message, account);
+    const formatter = events[eventType].formatter(message, account, events[eventType].priority);
     const priority = events[eventType].priority;
 
     return {
@@ -106,7 +111,7 @@ export class SnsEventHandler implements IHandler {
   }
 
   getAccount(message: any): string {
-    const account = message?.account;
+    const account = message?.account || message?.recipientAccountId || message?.AccountId;
     return account ?? '';
   }
 }
@@ -139,6 +144,14 @@ export function getEventType(message: any, event?: any): keyof typeof events {
     if (eventSubject) {
       return eventSubject;
     }
+    // detect orgtrail notification from mpa account
+    if (patternMatchesString('detected in ', subject)) {
+      return 'OrgTrailFromMPA';
+    }
+    // detect alarms from mpa account
+    if (message?.AlarmName) {
+      return 'CloudWatch Alarm State Change';
+    }
   }
   return 'unhandledEvent';
 }
@@ -156,12 +169,12 @@ function eventShouldTriggerAlert(event: any): boolean {
  * @param message an SNS message containing a cloudwatch state changed event
  */
 function cloudwatchAlarmEventShouldTriggerAlert(message: any): boolean {
-
-  if (stringMatchesPatternInArray(excludedAlarms, message?.detail?.alarmName)) {
+  const alarmName = message?.detail?.alarmName || message?.AlarmName;
+  if (stringMatchesPatternInArray(excludedAlarms, alarmName)) {
     return false;
   }
-  const state = message?.detail?.state?.value;
-  const previousState = message?.detail?.previousState?.value;
+  const state = message?.detail?.state?.value || message?.NewStateValue;
+  const previousState = message?.detail?.previousState?.value || message?.OldStateValue;
   if (state == 'ALARM' || previousState == 'ALARM') {
     return true;
   }

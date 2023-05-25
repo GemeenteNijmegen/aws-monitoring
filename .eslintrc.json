@@ -147,7 +147,8 @@
           "**/test/**",
           "**/build-tools/**",
           "src/monitoringLambda/monitoring.lambda.ts",
-          "src/monitoringLambda/test/monitoring.lambda.ts"
+          "src/monitoringLambda/test/monitoring.lambda.ts",
+          "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

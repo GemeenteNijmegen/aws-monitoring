@@ -28,11 +28,11 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
-    pipeline.addStage(new MonitoringTargetStage(this, `monitoring-${this.environmentName}`, 
-    { 
-      deployToEnvironments: props.deployToEnvironments,
-      isProduction: props.isProduction
-    }));
+    pipeline.addStage(new MonitoringTargetStage(this, `monitoring-${this.environmentName}`,
+      {
+        deployToEnvironments: props.deployToEnvironments,
+        isProduction: props.isProduction,
+      }));
   }
 
   pipeline(source: pipelines.CodePipelineSource): pipelines.CodePipeline {

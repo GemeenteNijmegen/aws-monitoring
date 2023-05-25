@@ -115,6 +115,19 @@ describe('Alarms via SNS events', () => {
     const handled = snsHandler.handle(event);
     expect(handled).toBe(false);
   });
+
+  test('Alarm event from mpa processed', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'alarm-rootuser-new-lz.json'));
+
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+
+    const message = handled.message.getSlackMessage().blocks;
+    expect(message[0].text.text).toContain('❗️ Alarm: ');
+  });
 });
 
 describe('Security hub event from Subject', () => {
@@ -128,14 +141,38 @@ describe('Security hub event from Subject', () => {
   test('Security hub high message formatter works', async () => {
     const snsHandler = new SnsEventHandler();
 
-    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz.json'));
+    const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz-2.json'));
     const handled = snsHandler.handle(event);
     if (handled == false) {
       expect(handled).not.toBeFalsy();
       return;
     }
     const json = JSON.stringify(handled.message.getSlackMessage());
+    console.debug(json);
     expect(json).toContain('state: *NEW*');
+    expect(handled).not.toBeFalsy();
+  });
+});
+
+describe('Cloudtrail log events', () => {
+  const snsHandler = new SnsEventHandler();
+  test('Eventtype is detected', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'orgtrail-notification-sample.json'));
+    const message = parseMessageFromEvent(event);
+    const type = getEventType(message, event);
+    expect(type).toBe('OrgTrailFromMPA');
+  });
+
+  test('Message formatter works', async () => {
+
+    const event = await getEventFromFilePath(path.join('samples', 'orgtrail-notification-sample.json'));
+    const handled = snsHandler.handle(event);
+    if (handled == false) {
+      expect(handled).not.toBeFalsy();
+      return;
+    }
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('DeleteBucket event detected');
     expect(handled).not.toBeFalsy();
   });
 });

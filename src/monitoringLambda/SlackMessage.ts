@@ -1,9 +1,27 @@
 import axios from 'axios';
+import { MessageProps } from './Message';
 
 const MAX_HEADER_LENGTH = 151;
 const MAX_SECTION_LENGTH = 3000;
 
 export class SlackMessage {
+
+  static from(message: MessageProps) {
+    const slack = new SlackMessage();
+    if (message.header) {
+      slack.addHeader(message.header);
+    }
+    if (message.context) {
+      slack.addContext(message.context);
+    }
+    if (message.sections) {
+      message.sections.forEach(section => slack.addSection(section));
+    }
+    if (message.link) {
+      slack.addLink(message.link.text, message.link.target);
+    }
+    return slack;
+  }
 
   private blocks: any[] = [];
 
@@ -55,6 +73,25 @@ export class SlackMessage {
     });
   }
 
+  addButton(text: string, actionName: string, payload: any) {
+    const block = {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: text,
+            emoji: true,
+          },
+          value: Buffer.from(JSON.stringify(payload)).toString('base64'),
+          action_id: actionName,
+        },
+      ],
+    };
+    this.blocks.push(block);
+  }
+
   getSlackMessage() {
     return {
       blocks: this.blocks,
@@ -73,14 +110,24 @@ export class SlackMessage {
       throw Error('No slack webhook url defined');
     }
     const message = this.getSlackMessage();
-    return axios.post(url, message);
+
+    console.debug('Message:', JSON.stringify(message));
+    const resp = await axios.post(url, JSON.stringify(message), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(resp);
   }
 
   getSlackUrl(priority: string) {
-    if(!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
+    console.debug('getting slack webhook for priority ', priority);
+    if (!['low', 'medium', 'high', 'critical'].some(valid => valid == priority)) {
+      console.debug('no webhook set, no known priority', priority);
       return false;
     }
-    return process.env?.[`SLACK_WEBHOOK_URL_${priority}`];
+    console.debug(`returning webhook SLACK_WEBHOOK_URL_${priority.toUpperCase()}`);
+    return process.env?.[`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`];
   }
 
 }

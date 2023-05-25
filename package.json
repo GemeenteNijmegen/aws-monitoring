@@ -8,6 +8,8 @@
     "bundle:monitoringLambda/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/monitoring.lambda:watch",
     "bundle:monitoringLambda/test/monitoring.lambda": "npx projen bundle:monitoringLambda/test/monitoring.lambda",
     "bundle:monitoringLambda/test/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/test/monitoring.lambda:watch",
+    "bundle:SlackInteractivityLambda/SlackInteractivity.lambda": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda",
+    "bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch",
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",
@@ -56,7 +58,10 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "^2.78.0-alpha.0",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.78.0-alpha.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.4",
+    "@gemeentenijmegen/utils": "^0.0.3",
     "@types/aws-lambda": "^8.10.115",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.4.0",

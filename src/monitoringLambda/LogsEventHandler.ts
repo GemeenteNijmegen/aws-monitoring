@@ -40,9 +40,9 @@ export class LogsEventHandler implements IHandler {
 
   private selectMessageFormatter(parsed: CloudWatchLogsDecodedData) {
     if (this.isCloudtrailErrorLog(parsed)) {
-      return new CloudTrailErrorLogsMessageFormatter(parsed, ''); //TODO: pass account (was getAccount())
+      return new CloudTrailErrorLogsMessageFormatter(parsed, '', 'high'); //TODO: pass account (was getAccount()) and priority?
     } else {
-      return new LogsMessageFormatter(parsed, ''); //TODO: pass account (was getAccount())
+      return new LogsMessageFormatter(parsed, '', 'high'); //TODO: pass account (was getAccount()) and priority?
     }
   }
 
