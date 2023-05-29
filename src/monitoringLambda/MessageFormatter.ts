@@ -67,11 +67,21 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
         target: `https://${this.event?.region}.console.aws.amazon.com/cloudwatch/home?region=${this.event?.region}#alarmsV2:alarm/${encodeURIComponent(this.event.detail.alarmName)}`,
       };
     } else if (this.event?.AlarmName) {
+
+      // Events from custom metrics may arrive without account dimension, in that case use the AWSAccountId field from the event.
+      const accountDimension = this.event.Trigger.Dimensions[0];
+      let account = 'unknown';
+      if (accountDimension) {
+        account = accountDimension?.value;
+      } else if ( this.event.AWSAccountId ) {
+        account = this.event.AWSAccountId;
+      }
+
       alarmInfo = {
         alarmName: this.event.AlarmName,
         type: (this.event?.NewStateValue == 'OK' || this.event?.NewStateValue == 'INSUFFICIENT_DATA') ? 'ENDED' : 'IN_ALARM',
         eventType: 'Alarm state change',
-        account: this.event.Trigger.Dimensions[0].value,
+        account: account,
         reason: this.event?.NewStateReason,
         target: `https://eu-central-1.console.aws.amazon.com/cloudwatch/home?region=eu-central-1#alarmsV2:alarm/${encodeURIComponent(this.event.AlarmName)}`,
       };

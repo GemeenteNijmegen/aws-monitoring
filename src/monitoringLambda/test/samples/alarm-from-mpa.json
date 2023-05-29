@@ -1,0 +1,20 @@
+{
+  "Records": [
+      {
+          "EventSource": "aws:sns",
+          "EventVersion": "1.0",
+          "EventSubscriptionArn": "arn:aws:sns:eu-central-1:123456789012:landingzone-central-platform-events-high:7819d743-12d8-4ea5-bac1-47924663b5c5",
+          "Sns": {
+              "Type": "Notification",
+              "MessageId": "054f48ab-b4c5-5af0-bac3-14453bc95c7b",
+              "TopicArn": "arn:aws:sns:eu-central-1:123456789012:landingzone-central-platform-events-high",
+              "Subject": "ALARM: \"landingzone-ep-role-used\" in EU (Frankfurt)",
+              "Message": "{\n    \"AlarmName\": \"landingzone-ep-role-used\",\n    \"AlarmDescription\": \"Alarm if somone assumes an EP role\",\n    \"AWSAccountId\": \"123456789013\",\n    \"AlarmConfigurationUpdatedTimestamp\": \"2023-05-29T10:34:29.843+0000\",\n    \"NewStateValue\": \"ALARM\",\n    \"NewStateReason\": \"Threshold Crossed: 1 datapoint [1.0 (29/05/23 11:25:00)] was greater than or equal to the threshold (1.0).\",\n    \"StateChangeTime\": \"2023-05-29T11:30:19.101+0000\",\n    \"Region\": \"EU (Frankfurt)\",\n    \"AlarmArn\": \"arn:aws:cloudwatch:eu-central-1:123456789013:alarm:landingzone-ep-role-used\",\n    \"OldStateValue\": \"OK\",\n    \"OKActions\": [],\n    \"AlarmActions\": [\n        \"arn:aws:sns:eu-central-1:123456789013:landingzone-platform-events-high\"\n    ],\n    \"InsufficientDataActions\": [],\n    \"Trigger\": {\n        \"MetricName\": \"PlatformOperatorEPRoleUsed\",\n        \"Namespace\": \"CloudTrailMetrics\",\n        \"StatisticType\": \"Statistic\",\n        \"Statistic\": \"SUM\",\n        \"Unit\": null,\n        \"Dimensions\": [],\n        \"Period\": 300,\n        \"EvaluationPeriods\": 1,\n        \"ComparisonOperator\": \"GreaterThanOrEqualToThreshold\",\n        \"Threshold\": 1.0,\n        \"TreatMissingData\": \"notBreaching\",\n        \"EvaluateLowSampleCountPercentile\": \"\"\n    }\n}",
+              "Timestamp": "2023-05-29T11:30:20.094Z",
+              "SignatureVersion": "1",
+              "Signature": "ciogEg4Y3WEgaezSmsQiXNeTlTpPqTsBvZhY0suwOw9Y2zJHaaxqFxCrs5NqHJWyCq4liDN65BZVK1Rj1so9UwaUI2WrUny6TJxmbP25R4P7mgqztd+1SR9FxojBVOgrZCsp5vM2wXNpeUJ5b7bvcWKntbCwOMQo1DGg2O9HkxdZFWXgat4vYcM7DSoLdIjqDQShatYhOu3txE0jPzAe1QYHMbA+7JVcKwFmlVgDEEL/Fj1aWaDAWzf1ArtoH1PapKi6lUDBITlmtuX6cfS/h9h8v7xfiMUVkE59mNFH8OagOV2xfw2xSBHSRHjvTUijsYKRRuP5hOYeuhRlJ98qvQ==",
+              "MessageAttributes": {}
+          }
+      }
+  ]
+}

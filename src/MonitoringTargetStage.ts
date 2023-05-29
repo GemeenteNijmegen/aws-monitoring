@@ -6,6 +6,7 @@ import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { MpaMonitoringStack } from './MpaMonitoringStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
 
@@ -51,11 +52,25 @@ export class MonitoringTargetStage extends Stage {
       prefix: parameterPrefix,
     }).addDependency(parameterStack);
 
+    /**
+     * Note: It suffices to rollout to the main region as cloudtrail
+     * (orgtrail) is aggregated over all regions and all accounts in the org.
+     * Note 2: The stack is designed to be deployed once to MPA. As there is no way to
+     * differentiate between acceptance and production in the platform topics it makes no sense
+     * to deploy the monitoring in parallel.
+     * TODO now only two alarms check for other cloudtrail stuff.
+     */
+    if (props.isProduction) {
+      new MpaMonitoringStack(this, 'mpa', {
+        env: Statics.mpaEnvironment,
+        deployToEnvironments: props.deployToEnvironments,
+      });
+    }
+
     new IntegrationsStack(this, 'integrations', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
     }).addDependency(parameterStack);
 
-    // TODO: Roll out cloudtrail-stuff to mpa-account?
   }
 }

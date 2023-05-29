@@ -97,6 +97,12 @@ describe('Alarms via SNS events', () => {
     expect(handled).toBe(false);
   });
 
+  test('Alarm from MPA forwared', async () => {
+    const event = await getEventFromFilePath(path.join('samples', 'alarm-from-mpa.json'));
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+  });
+
   test('Alarm event processed', async () => {
     const event = await getEventFromFilePath(path.join('samples', 'alarm.json'));
 
