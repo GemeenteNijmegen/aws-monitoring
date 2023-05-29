@@ -6,7 +6,6 @@ import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
-import { MpaMonitoringStack } from './MpaMonitoringStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
 
@@ -59,13 +58,16 @@ export class MonitoringTargetStage extends Stage {
      * differentiate between acceptance and production in the platform topics it makes no sense
      * to deploy the monitoring in parallel.
      * TODO now only two alarms check for other cloudtrail stuff.
+     *
+     * Note 3: Do not deploy, currently not allowed to deploy to MPA. Consider if this is something we want/need
+     * or that the lz framework can also be used for this (EP alarm is implemented there aswell).
      */
-    if (props.isProduction) {
-      new MpaMonitoringStack(this, 'mpa', {
-        env: Statics.mpaEnvironment,
-        deployToEnvironments: props.deployToEnvironments,
-      });
-    }
+    // if (props.isProduction) {
+    //   new MpaMonitoringStack(this, 'mpa', {
+    //     env: Statics.mpaEnvironment,
+    //     deployToEnvironments: props.deployToEnvironments,
+    //   });
+    // }
 
     new IntegrationsStack(this, 'integrations', {
       env: Statics.aggregatorEnvironment,
