@@ -47,7 +47,8 @@ async function handleSlackInteraction(event: APIGatewayProxyEventV2): Promise<AP
 
   // Send back the response to slack
   message.removeAllInteractionBlocks();
-  message.addLink('Go to TopDesk ticket', process.env.TOPDESK_DEEP_LINK_URL + ticketId);
+  const link = process.env.TOPDESK_DEEP_LINK_URL ?? '' + ticketId;
+  message.addLink('Go to TopDesk ticket', link);
   await message.send();
 
   return {

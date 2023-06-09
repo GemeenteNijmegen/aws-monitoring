@@ -103,7 +103,10 @@ export class TopDeskClient {
       const response = await client.post('incidents', serialized);
       console.log(response);
       const topdeskTicket = JSON.parse(response.data);
-      return topdeskTicket.id;
+      if (!topdeskTicket.id) {
+        console.log(JSON.stringify(response, null, 4));
+        throw new Error('Could not create topdesk ticket');
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Axios error', error.stack, error.message);
