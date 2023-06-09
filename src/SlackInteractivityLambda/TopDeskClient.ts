@@ -96,9 +96,12 @@ export class TopDeskClient {
     };
     const serialized = JSON.stringify(ticketJson);
 
+    console.log('Sending ticket', serialized);
+
     try {
       const client = await this.getClient();
       const response = await client.post('incidents', serialized);
+      console.log(response);
       const topdeskTicket = JSON.parse(response.data);
       return topdeskTicket.id;
     } catch (error) {
