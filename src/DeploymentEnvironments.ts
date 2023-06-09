@@ -42,4 +42,32 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       region: 'eu-central-1',
     },
   },
+  {
+    accountName: 'gn-geo-data-acceptance',
+    env: {
+      account: '766983128454',
+      region: 'eu-central-1',
+    },
+  },
+  {
+    accountName: 'gn-yivi-accp',
+    env: {
+      account: '699363516011',
+      region: 'eu-central-1',
+    },
+  },
+  {
+    accountName: 'gn-yivi-prod',
+    env: {
+      account: '185512167111',
+      region: 'eu-central-1',
+    },
+  },
+  {
+    accountName: 'gn-yivi-brp-issue-accp',
+    env: {
+      account: '528030426040',
+      region: 'eu-central-1',
+    },
+  },
 ];
