@@ -70,4 +70,11 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       region: 'eu-central-1',
     },
   },
+  {
+    accountName: 'gn-yivi-brp-issue-prod',
+    env: {
+      account: '079163754011',
+      region: 'eu-central-1',
+    },
+  },
 ];
