@@ -96,10 +96,17 @@ export class TopDeskClient {
     };
     const serialized = JSON.stringify(ticketJson);
 
+    console.log('Sending ticket', serialized);
+
     try {
       const client = await this.getClient();
       const response = await client.post('incidents', serialized);
+      console.log(response);
       const topdeskTicket = JSON.parse(response.data);
+      if (!topdeskTicket.id) {
+        console.log(JSON.stringify(response, null, 4));
+        throw new Error('Could not create topdesk ticket');
+      }
       return topdeskTicket.id;
     } catch (error) {
       if (axios.isAxiosError(error)) {
