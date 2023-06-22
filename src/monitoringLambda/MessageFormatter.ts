@@ -272,6 +272,9 @@ export class OrgTrailMessageFormatter extends MessageFormatter<any> {
       region: this.event?.awsRegion,
     });
     message.addSection(`${this?.event?.userIdentity?.principalId} triggered a ${this.event?.eventName} event. The event ID is *${this?.event?.eventID}*, of type ${this?.event?.eventType}.`);
+    if (this?.event?.requestParameters && this?.event?.eventType == 'AwsApiCall') {
+      message.addContext(this?.event?.requestParameters);
+    }
     return message;
   }
 }
