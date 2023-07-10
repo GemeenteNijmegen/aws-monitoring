@@ -1,6 +1,11 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import {
+  Duration,
+  Stack,
+  StackProps,
+} from 'aws-cdk-lib';
+import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
@@ -44,10 +49,19 @@ export class IntegrationsStack extends Stack {
     slackSecret.grantRead(slackFunction);
     topDeskPassword.grantRead(slackFunction);
 
+    // Setup for async invocation
+    new EventInvokeConfig(this, 'async-interactivity-function', {
+      function: slackFunction,
+    });
+
     api.addRoutes({
-      integration: new HttpLambdaIntegration('api-slack', slackFunction),
+      integration: new HttpLambdaIntegration('api-slack', slackFunction, {
+        // By adding this header we'll invocate the lambda aysnc
+        parameterMapping: new apigatewayv2.ParameterMapping().appendHeader('X-Amz-Invocation-Type', apigatewayv2.MappingValue.custom('Event')),
+      }),
       path: '/slack',
       methods: [apigatewayv2.HttpMethod.POST],
+
     });
   }
 
