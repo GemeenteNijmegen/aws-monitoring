@@ -53,6 +53,9 @@
         },
         {
           "spawn": "bundle:SlackInteractivityLambda/SlackInteractivity.lambda"
+        },
+        {
+          "spawn": "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda"
         }
       ]
     },
@@ -107,6 +110,24 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda": {
+      "name": "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda",
+      "description": "Create a JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda:watch": {
+      "name": "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --external:aws-sdk --watch"
         }
       ]
     },

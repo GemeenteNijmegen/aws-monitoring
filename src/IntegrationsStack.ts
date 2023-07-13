@@ -5,9 +5,8 @@ import {
   StackProps,
   aws_apigateway as apigateway,
 } from 'aws-cdk-lib';
-import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { EventInvokeConfig, Function } from 'aws-cdk-lib/aws-lambda';
-import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Function } from 'aws-cdk-lib/aws-lambda';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -31,9 +30,13 @@ export class IntegrationsStack extends Stack {
 
     const queue = this.setupQueue();
     const api = this.setupApi(props);
-    const slackFunction = this.setupSlackIntegrationFunction(props);
-    this.setupQueueIntegration(api, queue);
-    this.subscribeToQueue(queue, slackFunction);
+
+    // Setup the receiving endpoint called by slack (publishes to queue)
+    this.setupSlackInteractivityReceiverEndpoint(props, queue, api);
+
+    // Setup the topdesk integration (subscribes to queue)
+    const topdeskFunction = this.setupTopdeskIntegrationFunction(props);
+    this.subscribeToQueue(queue, topdeskFunction);
 
   }
 
@@ -84,13 +87,30 @@ export class IntegrationsStack extends Stack {
     return queue;
   }
 
-  setupSlackIntegrationFunction(props: IntegrationsStackProps) {
+  setupSlackInteractivityReceiverEndpoint(props: IntegrationsStackProps, queue: Queue, api: apigateway.RestApi) {
     const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey(props.prefix));
-    const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
 
-    const slackFunction = new SlackInteractivityFunction(this, 'interactivity-function', {
+    const slackInteractivityFunction = new SlackInteractivityFunction(this, 'slack-interactivity-receiver', {
       environment: {
         SLACK_SECRET_ARN: slackSecret.secretArn,
+        QUEUE_URL: queue.queueUrl,
+      },
+      timeout: Duration.seconds(3),
+    });
+
+    queue.grantSendMessages(slackInteractivityFunction);
+    slackSecret.grantRead(slackInteractivityFunction);
+
+    const slack = api.root.addResource('slack');
+    slack.addMethod('POST', new apigateway.LambdaIntegration(slackInteractivityFunction));
+
+    return slackInteractivityFunction;
+  }
+
+  setupTopdeskIntegrationFunction(props: IntegrationsStackProps) {
+    const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
+    const topdeskFunction = new SlackInteractivityFunction(this, 'interactivity-function', {
+      environment: {
         TOPDESK_PASSWORD_ARN: topDeskPassword.secretArn,
         TOPDESK_USERNAME: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskUsername(props.prefix)),
         TOPDESK_API_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskApiUrl(props.prefix)),
@@ -98,70 +118,8 @@ export class IntegrationsStack extends Stack {
       },
       timeout: Duration.seconds(6),
     });
-    slackSecret.grantRead(slackFunction);
-    topDeskPassword.grantRead(slackFunction);
-
-    // Setup for async invocation
-    new EventInvokeConfig(this, 'async-interactivity-function', {
-      function: slackFunction,
-      onFailure: new EventBridgeDestination(), // Send to default eventbus
-      onSuccess: new EventBridgeDestination(), // Send to default eventbus
-    });
-
-    return slackFunction;
-  }
-
-  setupQueueIntegration(api: apigateway.RestApi, queue: Queue) {
-
-    // Setup role for the integration
-    const role = new Role(this, 'gateway-role', {
-      assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
-      description: 'Role used by apigateway to invoke the slack interactivity lambda async',
-    });
-    queue.grantSendMessages(role);
-
-    // Setup the queue integration
-    const integration = new apigateway.AwsIntegration({
-      service: 'sqs',
-      path: `${Stack.of(this).account}/${queue.queueName}`,
-      integrationHttpMethod: 'POST',
-      options: {
-        credentialsRole: role,
-        requestParameters: {
-          'integration.request.header.Content-Type': '\'application/x-www-form-urlencoded\'',
-        },
-        requestTemplates: {
-          'application/x-www-form-urlencoded': 'Action=SendMessage&MessageBody=$input.body',
-        },
-        integrationResponses: [
-          {
-            statusCode: '200',
-          },
-          {
-            statusCode: '400',
-          },
-          {
-            statusCode: '500',
-          },
-        ],
-      },
-    });
-
-    const slack = api.root.addResource('slack');
-    slack.addMethod('POST', integration, {
-      methodResponses: [
-        {
-          statusCode: '200',
-        },
-        {
-          statusCode: '400',
-        },
-        {
-          statusCode: '500',
-        },
-      ],
-    });
-
+    topDeskPassword.grantRead(topdeskFunction);
+    return topdeskFunction;
   }
 
   subscribeToQueue(queue: Queue, handler: Function) {

@@ -1,6 +1,6 @@
 import * as SlackInteractionMessage from './slackInteraction.json';
 import { SlackMessage as MonitoringSlackMessage } from '../src/monitoringLambda/SlackMessage';
-import { SlackMessage as InteractionSlackMessage } from '../src/SlackInteractivityLambda/SlackMessage';
+import { SlackMessage as InteractionSlackMessage } from '../src/TopdeskIntegrationLambda/SlackMessage';
 
 const obj = {
   title: 'random',

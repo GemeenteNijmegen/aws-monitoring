@@ -1,97 +1,48 @@
 import * as crypto from 'crypto';
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { AWS } from '@gemeentenijmegen/utils';
-import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { SlackMessage } from './SlackMessage';
-import { TopDeskClient } from './TopDeskClient';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-/**
- * TopDesk client for creating tickets
- */
-const topDeskClient = new TopDeskClient();
+const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
 /**
  * Signing secrets (SHA265 hmac)
  */
 let slackSecret: string | undefined = undefined;
 
-/**
- * Interface to parse actions from the slack message
- * Different interactions have different actions
- */
-interface Action {
-  id: string;
-  value: any;
-}
-
-
-export async function handler(event: SQSEvent) {
+export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
 
   console.info('Incomming event:', event);
 
-  // Handle records
-  for (let record of event.Records) {
-    await handleInteraction(record);
-  }
-
-}
-
-export async function handleInteraction(record: SQSRecord) {
-
   // Do authentication
-  const authenticated = await authenticate(record);
+  const authenticated = await authenticate(event);
   if (!authenticated) {
-    console.log('Unauthorized!', record.messageId);
-    return;
-  }
-  console.log('Authenticated!', record.messageId);
-
-  try {
-    const payload = getParsedPayload(record);
-    return await handleSlackInteraction(payload);
-  } catch (error) {
-    console.error(error);
+    console.log('Unauthorized!');
     return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Please check the logs for details' }),
+      body: JSON.stringify({ message: 'Unauthorized' }),
+      statusCode: 403,
     };
   }
-}
+  console.log('Authenticated!');
 
-async function handleSlackInteraction(payload: any) {
-
-  const message = SlackMessage.fromPayload(payload);
-
-  // Parse the action details and crate a topdesk ticket
-  const action = getActionFromPayload(payload);
-  const ticketId = await topDeskClient.createNewTicket({
-    title: action.value.title,
-    htmlDescription: action.value.description,
-    priority: action.value.priority,
-  });
-  console.debug('Ticket is created with ID:', ticketId);
-
-  // Send back the response to slack
-  message.removeAllInteractionBlocks();
-  const link = `${process.env.TOPDESK_DEEP_LINK_URL}${ticketId}`;
-  message.addLink('Go to TopDesk ticket', link);
-  await message.send();
+  // Do place message on queue
+  try {
+    const payload = getParsedPayload(event);
+    await sqsClient.send(new SendMessageCommand({
+      MessageBody: payload,
+      QueueUrl: process.env.QUEUE_URL,
+    }));
+  } catch (error) {
+    console.error(error);
+    throw Error(`Could not send message to queue: ${error}`);
+  }
 
   return {
+    body: JSON.stringify({ message: 'Ok' }),
     statusCode: 200,
-    body: JSON.stringify('ok'),
   };
 
-};
-
-function getParsedPayload(record: SQSRecord) {
-  const params = new URLSearchParams(record.body);
-  const payloadStr = params.get('payload');
-  if (payloadStr) {
-    return JSON.parse(payloadStr);
-  }
-  throw Error('No payload found in message');
 }
-
 
 /**
  * Authenticates the event
@@ -101,7 +52,7 @@ function getParsedPayload(record: SQSRecord) {
  * @param event
  * @returns
  */
-async function authenticate(record: SQSRecord) {
+async function authenticate(event: APIGatewayProxyEvent) {
 
   // Get slack secret if still empty
   if (!slackSecret) {
@@ -111,17 +62,11 @@ async function authenticate(record: SQSRecord) {
     slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
   }
 
-  const payload = record.body.substring(8); // remove payload=
-  const encodedPayload = encodeURIComponent(payload);
-  const originalBody = Buffer.from(`payload=${encodedPayload}`).toString('base64');
+  const body = event.body;
+  const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '';
+  const slackSignature = event.headers['x-slack-signature'] ?? '';
 
-  const slackTimestamp = record.messageAttributes.slackTimestamp.stringValue; // x-slack-request-timestamp header is mapped to message attribute
-  const slackSignature = record.messageAttributes.slackSignature.stringValue; // x-slack-signature header is mapped to message attribute
-  if (!slackTimestamp || !slackSignature || !originalBody) {
-    return false;
-  }
-
-  const request = `v0:${slackTimestamp}:${originalBody}`;
+  const request = `v0:${slackTimestamp}:${body}`;
   const signature = 'v0=' + crypto.createHmac('sha256', slackSecret).update(request).digest('hex');
 
   // If the request is > 1 minute old ignore it (replay attack)
@@ -134,19 +79,11 @@ async function authenticate(record: SQSRecord) {
 
 }
 
-
-function getActionFromPayload(payload: any) : Action {
-  if (!payload.actions || payload.actions.length != 1) {
-    throw Error('Could not get action from payload');
+function getParsedPayload(event: APIGatewayProxyEvent) {
+  const params = new URLSearchParams(event.body ?? '');
+  const payloadStr = params.get('payload');
+  if (payloadStr) {
+    return JSON.parse(payloadStr);
   }
-  const payloadAction = payload.actions[0];
-
-  const base64ActionValue = payloadAction.value;
-  const actionValue = Buffer.from(base64ActionValue, 'base64').toString('utf-8');
-  const value = JSON.parse(actionValue);
-
-  return {
-    id: payloadAction.action_id,
-    value: value,
-  };
+  throw Error('No payload found in message');
 }
