@@ -6,6 +6,7 @@ import {
   StackProps,
 } from 'aws-cdk-lib';
 import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
+import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
@@ -52,6 +53,8 @@ export class IntegrationsStack extends Stack {
     // Setup for async invocation
     new EventInvokeConfig(this, 'async-interactivity-function', {
       function: slackFunction,
+      onFailure: new EventBridgeDestination(), // Send to default eventbus
+      onSuccess: new EventBridgeDestination(), // Send to default eventbus
     });
 
     api.addRoutes({
