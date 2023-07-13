@@ -1,14 +1,14 @@
 import * as crypto from 'crypto';
 import { AWS } from '@gemeentenijmegen/utils';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { SlackMessage } from './SlackMessage';
 import { TopDeskClient } from './TopDeskClient';
 
 const topDeskClient = new TopDeskClient();
 
-export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+export async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
 
-  console.debug(event);
+  console.info('Incomming event:', event, context);
 
   const authenticated = await authenticate(event);
   if (!authenticated) {
