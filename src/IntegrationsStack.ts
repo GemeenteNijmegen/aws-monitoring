@@ -93,7 +93,7 @@ export class IntegrationsStack extends Stack {
 
     const slack = api.root.addResource('slack');
     slack.addMethod('POST', new apigateway.LambdaIntegration(slackFunction, {
-      proxy: false,
+      proxy: true,
       requestParameters: {
         'integration.request.header.x-amz-invocation-type': '\'Event\'', // Single quotes mark a static value...
       },
