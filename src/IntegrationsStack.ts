@@ -1,9 +1,8 @@
-import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
-import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import {
   Duration,
   Stack,
   StackProps,
+  aws_apigateway as apigateway,
 } from 'aws-cdk-lib';
 import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
 import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
@@ -25,15 +24,15 @@ export class IntegrationsStack extends Stack {
   constructor(scope: Construct, id: string, props: IntegrationsStackProps) {
     super(scope, id, props);
 
-    const api = new apigatewayv2.HttpApi(this, 'integration-api-gateway', {
-      description: 'Monitoring integration endpoints',
+    const api = new apigateway.RestApi(this, 'integration-api-gateway', {
+      description: `Monitoring integration endpoints (${props.prefix})`,
     });
 
     this.setupSlackIntegration(props, api);
 
   }
 
-  setupSlackIntegration(props: IntegrationsStackProps, api: apigatewayv2.HttpApi) {
+  setupSlackIntegration(props: IntegrationsStackProps, api: apigateway.RestApi) {
     const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey(props.prefix));
     const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
 
@@ -57,15 +56,13 @@ export class IntegrationsStack extends Stack {
       onSuccess: new EventBridgeDestination(), // Send to default eventbus
     });
 
-    api.addRoutes({
-      integration: new HttpLambdaIntegration('api-slack', slackFunction, {
-        // By adding this header we'll invocate the lambda aysnc
-        parameterMapping: new apigatewayv2.ParameterMapping().appendHeader('X-Amz-Invocation-Type', apigatewayv2.MappingValue.custom('Event')),
-      }),
-      path: '/slack',
-      methods: [apigatewayv2.HttpMethod.POST],
-
-    });
+    const slack = api.root.addResource('slack');
+    slack.addMethod('POST', new apigateway.LambdaIntegration(slackFunction, {
+      proxy: false,
+      requestParameters: {
+        'integration.request.header.x-amz-invocation-type': 'Event',
+      },
+    }));
   }
 
 }
