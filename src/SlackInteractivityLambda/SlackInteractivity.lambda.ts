@@ -63,8 +63,10 @@ async function authenticate(event: APIGatewayProxyEvent) {
     slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
   }
 
-  const body = Buffer.from(event.body ?? '', 'base64').toString('utf-8');
-  //const body = event.body;
+  let body = event.body;
+  if(!event.isBase64Encoded){
+    body = Buffer.from(event.body ?? '').toString('base64');
+  }
   const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '';
   const slackSignature = event.headers['x-slack-signature'] ?? '';
 
