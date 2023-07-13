@@ -5,7 +5,7 @@ import {
   StackProps,
   aws_apigateway as apigateway,
 } from 'aws-cdk-lib';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
 import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -91,6 +91,12 @@ export class IntegrationsStack extends Stack {
       onSuccess: new EventBridgeDestination(), // Send to default eventbus
     });
 
+    const role = new Role(this, 'gateway-role', {
+      assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
+      description: 'Role used by apigateway to invoke the slack interactivity lambda async',
+    });
+    slackFunction.grantInvoke(role);
+
     const slack = api.root.addResource('slack');
     slack.addMethod('POST', new apigateway.Integration({
       integrationHttpMethod: 'POST',
@@ -107,8 +113,10 @@ export class IntegrationsStack extends Stack {
         requestParameters: {
           'integration.request.header.X-Amz-Invocation-Type': "'Event'",
         },
+        credentialsRole: role,
       },
     }));
+
   }
 
 }
