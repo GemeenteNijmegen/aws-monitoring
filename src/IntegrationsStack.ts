@@ -135,10 +135,10 @@ export class IntegrationsStack extends Stack {
         },
         integrationResponses: [
           {
-            statusCode: '400',
+            statusCode: '200',
           },
           {
-            statusCode: '200',
+            statusCode: '400',
           },
           {
             statusCode: '500',
@@ -151,10 +151,10 @@ export class IntegrationsStack extends Stack {
     slack.addMethod('POST', integration, {
       methodResponses: [
         {
-          statusCode: '400',
+          statusCode: '200',
         },
         {
-          statusCode: '200',
+          statusCode: '400',
         },
         {
           statusCode: '500',
