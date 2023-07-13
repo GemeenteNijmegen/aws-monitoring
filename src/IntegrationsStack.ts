@@ -132,6 +132,7 @@ export class IntegrationsStack extends Stack {
         },
         requestTemplates: {
           'application/json': 'Action=SendMessage&MessageBody=$input.body',
+          'application/x-www-form-urlencoded': 'Action=SendMessage&MessageBody=$input.body',
         },
         integrationResponses: [
           {
