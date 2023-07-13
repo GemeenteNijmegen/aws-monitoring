@@ -123,7 +123,6 @@ export class IntegrationsStack extends Stack {
     // Setup the queue integration
     const integration = new apigateway.AwsIntegration({
       service: 'sqs',
-      proxy: true,
       path: `${Stack.of(this).account}/${queue.queueName}`,
       integrationHttpMethod: 'POST',
       options: {
