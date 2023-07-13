@@ -15,6 +15,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
+import { TopdeskIntegrationFunction } from './TopdeskIntegrationLambda/TopdeskIntegration-function';
 
 export interface IntegrationsStackProps extends StackProps {
   /**
@@ -109,7 +110,7 @@ export class IntegrationsStack extends Stack {
 
   setupTopdeskIntegrationFunction(props: IntegrationsStackProps) {
     const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
-    const topdeskFunction = new SlackInteractivityFunction(this, 'interactivity-function', {
+    const topdeskFunction = new TopdeskIntegrationFunction(this, 'topdesk-function', {
       environment: {
         TOPDESK_PASSWORD_ARN: topDeskPassword.secretArn,
         TOPDESK_USERNAME: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskUsername(props.prefix)),
