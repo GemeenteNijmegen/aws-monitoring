@@ -1,28 +1,53 @@
 import * as crypto from 'crypto';
 import { AWS } from '@gemeentenijmegen/utils';
-import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { SlackMessage } from './SlackMessage';
 import { TopDeskClient } from './TopDeskClient';
 
+/**
+ * TopDesk client for creating tickets
+ */
 const topDeskClient = new TopDeskClient();
 
-export async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
+/**
+ * Signing secrets (SHA265 hmac)
+ */
+let slackSecret: string | undefined = undefined;
 
-  console.info('Incomming event:', event, context);
+/**
+ * Interface to parse actions from the slack message
+ * Different interactions have different actions
+ */
+interface Action {
+  id: string;
+  value: any;
+}
 
-  const authenticated = await authenticate(event);
-  if (!authenticated) {
-    console.log('Unauthorized!');
-    return {
-      body: JSON.stringify({ message: 'Unauthorized' }),
-      statusCode: 401,
-    };
-  } else {
-    console.log('Authenticated!');
+
+export async function handler(event: SQSEvent) {
+
+  console.info('Incomming event:', event);
+
+  // Handle records
+  for (let record of event.Records) {
+    await handleInteraction(record);
   }
 
+}
+
+export async function handleInteraction(record: SQSRecord) {
+
+  // Do authentication
+  const authenticated = await authenticate(record);
+  if (!authenticated) {
+    console.log('Unauthorized!', record.messageId);
+    return;
+  }
+  console.log('Authenticated!', record.messageId);
+
   try {
-    return await handleSlackInteraction(event);
+    const payload = getParsedPayload(record);
+    return await handleSlackInteraction(payload);
   } catch (error) {
     console.error(error);
     return {
@@ -32,10 +57,8 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
   }
 }
 
-async function handleSlackInteraction(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+async function handleSlackInteraction(payload: any) {
 
-  // Decode the message payload
-  const payload = parsePayloadFromEvent(event);
   const message = SlackMessage.fromPayload(payload);
 
   // Parse the action details and crate a topdesk ticket
@@ -60,30 +83,15 @@ async function handleSlackInteraction(event: APIGatewayProxyEvent): Promise<APIG
 
 };
 
-/**
- * Decodes the slack interaction payload from the
- * @param event
- * @returns
- */
-export function parsePayloadFromEvent(event: APIGatewayProxyEvent) {
-  if (!event.body) {
-    throw Error('No body found in event.');
+function getParsedPayload(record: SQSRecord) {
+  const params = new URLSearchParams(record.body);
+  const payloadStr = params.get('payload');
+  if (payloadStr) {
+    return JSON.parse(payloadStr);
   }
-  const decoded = Buffer.from(event.body, 'base64').toString('utf-8');
-  const params = new URLSearchParams(decoded);
-  const body = params.get('payload');
-  if (!body) {
-    throw Error('Could not parse payload from body.');
-  }
-  const payload = decodeURIComponent(body);
-  if (!payload) {
-    throw Error('Could not parse payload from body.');
-  }
-  return JSON.parse(payload);
+  throw Error('No payload found in message');
 }
 
-
-let slackSecret: string | undefined = undefined;
 
 /**
  * Authenticates the event
@@ -93,7 +101,7 @@ let slackSecret: string | undefined = undefined;
  * @param event
  * @returns
  */
-async function authenticate(event: APIGatewayProxyEvent) {
+async function authenticate(record: SQSRecord) {
 
   // Get slack secret if still empty
   if (!slackSecret) {
@@ -103,11 +111,17 @@ async function authenticate(event: APIGatewayProxyEvent) {
     slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
   }
 
-  const body = Buffer.from(event.body ?? '', 'base64').toString('utf-8');
-  const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '0';
-  const slackSignature = event.headers['x-slack-signature'];
+  const payload = record.body.substring(8); // remove payload=
+  const encodedPayload = encodeURIComponent(payload);
+  const originalBody = Buffer.from(`payload=${encodedPayload}`).toString('base64');
 
-  const request = `v0:${slackTimestamp}:${body}`;
+  const slackTimestamp = record.messageAttributes.slackTimestamp.stringValue; // x-slack-request-timestamp header is mapped to message attribute
+  const slackSignature = record.messageAttributes.slackSignature.stringValue; // x-slack-signature header is mapped to message attribute
+  if (!slackTimestamp || !slackSignature || !originalBody) {
+    return false;
+  }
+
+  const request = `v0:${slackTimestamp}:${originalBody}`;
   const signature = 'v0=' + crypto.createHmac('sha256', slackSecret).update(request).digest('hex');
 
   // If the request is > 1 minute old ignore it (replay attack)
@@ -121,12 +135,7 @@ async function authenticate(event: APIGatewayProxyEvent) {
 }
 
 
-interface Action {
-  id: string;
-  value: any;
-}
-
-export function getActionFromPayload(payload: any) : Action {
+function getActionFromPayload(payload: any) : Action {
   if (!payload.actions || payload.actions.length != 1) {
     throw Error('Could not get action from payload');
   }

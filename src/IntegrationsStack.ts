@@ -8,14 +8,14 @@ import {
 import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { EventInvokeConfig, Function } from 'aws-cdk-lib/aws-lambda';
 import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
-import { Queue } from 'aws-cdk-lib/aws-sqs';
-import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 export interface IntegrationsStackProps extends StackProps {
   /**
@@ -37,7 +37,7 @@ export class IntegrationsStack extends Stack {
 
   }
 
-  setupApi(props: IntegrationsStackProps){
+  setupApi(props: IntegrationsStackProps) {
     const apiLogging = new LogGroup(this, 'access-logging', {
       removalPolicy: RemovalPolicy.DESTROY,
       retention: RetentionDays.ONE_WEEK,
@@ -76,7 +76,7 @@ export class IntegrationsStack extends Stack {
     return api;
   }
 
-  setupQueue(){
+  setupQueue() {
     const queue = new Queue(this, 'interactivity-queue', {
       enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
@@ -111,7 +111,7 @@ export class IntegrationsStack extends Stack {
     return slackFunction;
   }
 
-  setupQueueIntegration(api: apigateway.RestApi, queue: Queue){
+  setupQueueIntegration(api: apigateway.RestApi, queue: Queue) {
 
     // Setup role for the integration
     const role = new Role(this, 'gateway-role', {
@@ -129,17 +129,24 @@ export class IntegrationsStack extends Stack {
       options: {
         credentialsRole: role,
         requestParameters: {
-          'integration.request.header.Content-Type': `'application/x-www-form-urlencoded'`,
+          'integration.request.header.Content-Type': '\'application/x-www-form-urlencoded\'',
         },
         requestTemplates: {
-          'application/json': 'Action=SendMessage&MessageBody=$input.body',
-          'application/x-www-form-urlencoded': 'Action=SendMessage&MessageBody=$input.body',
+          'application/x-www-form-urlencoded': '\
+              Action=SendMessage## \
+              &MessageBody=$input.body## \
+              &MessageAttributes.1.Name=slackTimestamp ## x-slack-request-timestamp \
+              &MessageAttributes.1.Value.DataType=String## \
+              &MessageAttributes.1.Value.StringValue=$input.params.header.x-slack-request-timestamp## \
+              &MessageAttributes.1.Name=slackSignature##x-slack-signature  \
+              &MessageAttributes.1.Value.DataType=String## \
+              &MessageAttributes.1.Value.StringValue=$input.params.header.x-slack-signature##',
         },
         integrationResponses: [
           {
             statusCode: '400',
           },
-          { 
+          {
             statusCode: '200',
           },
           {
@@ -155,18 +162,18 @@ export class IntegrationsStack extends Stack {
         {
           statusCode: '400',
         },
-        { 
+        {
           statusCode: '200',
         },
         {
           statusCode: '500',
         },
-      ]
+      ],
     });
 
   }
 
-  subscribeToQueue(queue: Queue, handler: Function){
+  subscribeToQueue(queue: Queue, handler: Function) {
     const triggerHandler = new SqsEventSource(queue);
     handler.addEventSource(triggerHandler);
   }
