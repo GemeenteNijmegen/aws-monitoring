@@ -131,15 +131,7 @@ export class IntegrationsStack extends Stack {
           'integration.request.header.Content-Type': '\'application/x-www-form-urlencoded\'',
         },
         requestTemplates: {
-          'application/x-www-form-urlencoded': '\
-              Action=SendMessage## \
-              &MessageBody=$input.body## \
-              &MessageAttributes.1.Name=slackTimestamp ## x-slack-request-timestamp \
-              &MessageAttributes.1.Value.DataType=String## \
-              &MessageAttributes.1.Value.StringValue=$input.params.header.x-slack-request-timestamp## \
-              &MessageAttributes.1.Name=slackSignature##x-slack-signature  \
-              &MessageAttributes.1.Value.DataType=String## \
-              &MessageAttributes.1.Value.StringValue=$input.params.header.x-slack-signature##',
+          'application/x-www-form-urlencoded': 'Action=SendMessage&MessageBody=$input.body',
         },
         integrationResponses: [
           {
