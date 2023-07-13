@@ -6,7 +6,7 @@ import {
   aws_apigateway as apigateway,
 } from 'aws-cdk-lib';
 import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
+import { EventInvokeConfig, Function } from 'aws-cdk-lib/aws-lambda';
 import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -14,6 +14,8 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 export interface IntegrationsStackProps extends StackProps {
   /**
@@ -27,6 +29,15 @@ export class IntegrationsStack extends Stack {
   constructor(scope: Construct, id: string, props: IntegrationsStackProps) {
     super(scope, id, props);
 
+    const queue = this.setupQueue();
+    const api = this.setupApi(props);
+    const slackFunction = this.setupSlackIntegrationFunction(props);
+    this.setupQueueIntegration(api, queue);
+    this.subscribeToQueue(queue, slackFunction);
+
+  }
+
+  setupApi(props: IntegrationsStackProps){
     const apiLogging = new LogGroup(this, 'access-logging', {
       removalPolicy: RemovalPolicy.DESTROY,
       retention: RetentionDays.ONE_WEEK,
@@ -62,12 +73,18 @@ export class IntegrationsStack extends Stack {
         ),
       },
     });
-
-    this.setupSlackIntegration(props, api);
-
+    return api;
   }
 
-  setupSlackIntegration(props: IntegrationsStackProps, api: apigateway.RestApi) {
+  setupQueue(){
+    const queue = new Queue(this, 'interactivity-queue', {
+      enforceSSL: true,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    return queue;
+  }
+
+  setupSlackIntegrationFunction(props: IntegrationsStackProps) {
     const slackSecret = Secret.fromSecretNameV2(this, 'slack-secret', Statics.secretSlackSigningKey(props.prefix));
     const topDeskPassword = Secret.fromSecretNameV2(this, 'topdesk-password', Statics.secretTopDeskPassword(props.prefix));
 
@@ -91,33 +108,65 @@ export class IntegrationsStack extends Stack {
       onSuccess: new EventBridgeDestination(), // Send to default eventbus
     });
 
+    return slackFunction;
+  }
+
+  setupQueueIntegration(api: apigateway.RestApi, queue: Queue){
+
+    // Setup role for the integration
     const role = new Role(this, 'gateway-role', {
       assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
       description: 'Role used by apigateway to invoke the slack interactivity lambda async',
     });
-    slackFunction.grantInvoke(role);
+    queue.grantSendMessages(role);
 
-    const slack = api.root.addResource('slack');
-    slack.addMethod('POST', new apigateway.Integration({
+    // Setup the queue integration
+    const integration = new apigateway.AwsIntegration({
+      service: 'sqs',
+      path: `${Stack.of(this).account}/${queue.queueName}`,
       integrationHttpMethod: 'POST',
-      type: apigateway.IntegrationType.AWS,
-      uri: `arn:aws:apigateway:${Stack.of(this).region}:lambda:path/2015-03-31/functions/${slackFunction.functionArn}/invocations`,
       options: {
-        passthroughBehavior: apigateway.PassthroughBehavior.WHEN_NO_MATCH,
-        contentHandling: apigateway.ContentHandling.CONVERT_TO_TEXT,
+        credentialsRole: role,
+        requestParameters: {
+          'integration.request.header.Content-Type': `'application/x-www-form-urlencoded'`,
+        },
+        requestTemplates: {
+          'application/json': 'Action=SendMessage&MessageBody=$input.body',
+        },
         integrationResponses: [
           {
+            statusCode: '400',
+          },
+          { 
             statusCode: '200',
           },
+          {
+            statusCode: '500',
+          },
         ],
-        requestParameters: {
-          'integration.request.header.X-Amz-Invocation-Type': "'Event'",
-          'integration.request.header.Content-Type': "'application/x-www-form-urlencoded'"
-        },
-        credentialsRole: role,
       },
-    }));
+    });
 
+    const slack = api.root.addResource('slack');
+    slack.addMethod('POST', integration, {
+      methodResponses: [
+        {
+          statusCode: '400',
+        },
+        { 
+          statusCode: '200',
+        },
+        {
+          statusCode: '500',
+        },
+      ]
+    });
+
+  }
+
+  subscribeToQueue(queue: Queue, handler: Function){
+    const triggerHandler = new SqsEventSource(queue);
+    handler.addEventSource(triggerHandler);
   }
 
 }
