@@ -93,6 +93,7 @@ export class IntegrationsStack extends Stack {
 
     const slack = api.root.addResource('slack');
     slack.addMethod('POST', new apigateway.Integration({
+      integrationHttpMethod: 'POST',
       type: apigateway.IntegrationType.AWS,
       uri: `arn:aws:apigateway:${Stack.of(this).region}:lambda:path/2015-03-31/functions/${slackFunction.functionArn}/invocations`,
       options: {
@@ -101,12 +102,12 @@ export class IntegrationsStack extends Stack {
         integrationResponses: [
           {
             statusCode: '200',
-          }
+          },
         ],
         requestParameters: {
-          "integration.request.header.X-Amz-Invocation-Type" : "'Event'",
+          'integration.request.header.X-Amz-Invocation-Type': "'Event'",
         },
-      }
+      },
     }));
   }
 

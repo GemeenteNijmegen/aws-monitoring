@@ -14,7 +14,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
   if (!authenticated) {
     console.log('Unauthorized!');
     return {
-      body: JSON.stringify({'message': 'Unauthorized'}),
+      body: JSON.stringify({ message: 'Unauthorized' }),
       statusCode: 401,
     };
   } else {
@@ -27,7 +27,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({'message': 'Please check the logs for details'}),
+      body: JSON.stringify({ message: 'Please check the logs for details' }),
     };
   }
 }
