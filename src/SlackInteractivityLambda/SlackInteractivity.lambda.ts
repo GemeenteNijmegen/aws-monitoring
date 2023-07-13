@@ -28,6 +28,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   // Do place message on queue
   try {
     const payload = getParsedPayload(event);
+    console.log("Sending Message to queue...");
     await sqsClient.send(new SendMessageCommand({
       MessageBody: payload,
       QueueUrl: process.env.QUEUE_URL,
@@ -62,7 +63,8 @@ async function authenticate(event: APIGatewayProxyEvent) {
     slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
   }
 
-  const body = event.body;
+  const body = Buffer.from(event.body ?? '', 'base64').toString('utf-8');
+  //const body = event.body;
   const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '';
   const slackSignature = event.headers['x-slack-signature'] ?? '';
 
