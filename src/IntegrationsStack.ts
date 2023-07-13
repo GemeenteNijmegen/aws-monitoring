@@ -37,7 +37,29 @@ export class IntegrationsStack extends Stack {
       description: `Monitoring integration endpoints (${props.prefix})`,
       deployOptions: {
         accessLogDestination: new apigateway.LogGroupLogDestination(apiLogging),
-        accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
+        accessLogFormat: apigateway.AccessLogFormat.custom(
+          JSON.stringify({
+            requestId: '$context.requestId',
+            userAgent: '$context.identity.userAgent',
+            sourceIp: '$context.identity.sourceIp',
+            requestTime: '$context.requestTime',
+            requestTimeEpoch: '$context.requestTimeEpoch',
+            httpMethod: '$context.httpMethod',
+            path: '$context.path',
+            status: '$context.status',
+            protocol: '$context.protocol',
+            responseLength: '$context.responseLength',
+            domainName: '$context.domainName',
+            errorMessage: '$context.error.message',
+            errorType: '$context.error.responseType',
+            stage: '$context.stage',
+            integrationError: '$context.integration.error',
+            integrationStatus: '$context.integration.integrationStatus',
+            integrationLatency: '$context.integration.latency',
+            integrationRequestId: '$context.integration.requestId',
+            integrationErrorMessage: '$context.integrationErrorMessage',
+          }),
+        ),
       },
     });
 
