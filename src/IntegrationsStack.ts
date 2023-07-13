@@ -1,11 +1,14 @@
 import {
   Duration,
+  RemovalPolicy,
   Stack,
   StackProps,
   aws_apigateway as apigateway,
 } from 'aws-cdk-lib';
+import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { EventInvokeConfig } from 'aws-cdk-lib/aws-lambda';
 import { EventBridgeDestination } from 'aws-cdk-lib/aws-lambda-destinations';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
@@ -24,8 +27,18 @@ export class IntegrationsStack extends Stack {
   constructor(scope: Construct, id: string, props: IntegrationsStackProps) {
     super(scope, id, props);
 
+    const apiLogging = new LogGroup(this, 'access-logging', {
+      removalPolicy: RemovalPolicy.DESTROY,
+      retention: RetentionDays.ONE_WEEK,
+    });
+    apiLogging.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
+
     const api = new apigateway.RestApi(this, 'integration-api-gateway', {
       description: `Monitoring integration endpoints (${props.prefix})`,
+      deployOptions: {
+        accessLogDestination: new apigateway.LogGroupLogDestination(apiLogging),
+        accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
+      },
     });
 
     this.setupSlackIntegration(props, api);
