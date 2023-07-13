@@ -1,12 +1,12 @@
 import * as crypto from 'crypto';
 import { AWS } from '@gemeentenijmegen/utils';
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { SlackMessage } from './SlackMessage';
 import { TopDeskClient } from './TopDeskClient';
 
 const topDeskClient = new TopDeskClient();
 
-export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
 
   console.debug(event);
 
@@ -14,6 +14,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
   if (!authenticated) {
     console.log('Unauthorized!');
     return {
+      body: JSON.stringify({'message': 'Unauthorized'}),
       statusCode: 401,
     };
   } else {
@@ -26,12 +27,12 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify('Please check the logs for details'),
+      body: JSON.stringify({'message': 'Please check the logs for details'}),
     };
   }
 }
 
-async function handleSlackInteraction(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+async function handleSlackInteraction(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
 
   // Decode the message payload
   const payload = parsePayloadFromEvent(event);
@@ -64,7 +65,7 @@ async function handleSlackInteraction(event: APIGatewayProxyEventV2): Promise<AP
  * @param event
  * @returns
  */
-export function parsePayloadFromEvent(event: APIGatewayProxyEventV2) {
+export function parsePayloadFromEvent(event: APIGatewayProxyEvent) {
   if (!event.body) {
     throw Error('No body found in event.');
   }
@@ -92,7 +93,7 @@ let slackSecret: string | undefined = undefined;
  * @param event
  * @returns
  */
-async function authenticate(event: APIGatewayProxyEventV2) {
+async function authenticate(event: APIGatewayProxyEvent) {
 
   // Get slack secret if still empty
   if (!slackSecret) {
