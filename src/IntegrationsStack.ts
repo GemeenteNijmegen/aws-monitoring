@@ -112,6 +112,7 @@ export class IntegrationsStack extends Stack {
         ],
         requestParameters: {
           'integration.request.header.X-Amz-Invocation-Type': "'Event'",
+          'integration.request.header.Content-Type': "'application/x-www-form-urlencoded'"
         },
         credentialsRole: role,
       },
