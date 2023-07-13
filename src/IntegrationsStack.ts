@@ -60,7 +60,7 @@ export class IntegrationsStack extends Stack {
     slack.addMethod('POST', new apigateway.LambdaIntegration(slackFunction, {
       proxy: false,
       requestParameters: {
-        'integration.request.header.x-amz-invocation-type': 'Event',
+        'integration.request.header.x-amz-invocation-type': '\'Event\'', // Single quotes mark a static value...
       },
     }));
   }
