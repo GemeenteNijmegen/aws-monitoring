@@ -5,17 +5,13 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
-/**
- * Signing secrets (SHA265 hmac)
- */
-let slackSecret: string | undefined = undefined;
-
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
 
   console.info('Incomming event:', event);
 
   // Do authentication
-  const authenticated = await authenticate(event);
+  const secret = await getSlackSecret();
+  const authenticated = await authenticate(event, secret);
   if (!authenticated) {
     console.log('Unauthorized!');
     return {
@@ -28,7 +24,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   // Do place message on queue
   try {
     const payload = getParsedPayload(event);
-    console.log("Sending Message to queue...");
+    console.log('Sending Message to queue...');
     await sqsClient.send(new SendMessageCommand({
       MessageBody: payload,
       QueueUrl: process.env.QUEUE_URL,
@@ -45,6 +41,27 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
 }
 
+
+/**
+ * Signing secrets (SHA265 hmac)
+ */
+let slackSecret: string | undefined = undefined;
+
+/**
+ * Call secretsmanager to get the slack secret
+ * @returns
+ */
+async function getSlackSecret() {
+  // Get slack secret if still empty
+  if (!slackSecret) {
+    if (!process.env.SLACK_SECRET_ARN) {
+      throw Error('No slack secret arn provied');
+    }
+    slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
+  }
+  return slackSecret;
+}
+
 /**
  * Authenticates the event
  * Extracts the headers and obtains the secret signing key and does
@@ -53,31 +70,25 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
  * @param event
  * @returns
  */
-async function authenticate(event: APIGatewayProxyEvent) {
-
-  // Get slack secret if still empty
-  if (!slackSecret) {
-    if (!process.env.SLACK_SECRET_ARN) {
-      throw Error('No slack secret arn provied');
-    }
-    slackSecret = await AWS.getSecret(process.env.SLACK_SECRET_ARN);
-  }
+export async function authenticate(event: APIGatewayProxyEvent, secret: string) {
 
   let body = event.body;
-  if(!event.isBase64Encoded){
-    body = Buffer.from(event.body ?? '').toString('base64');
-  }
   const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '';
   const slackSignature = event.headers['x-slack-signature'] ?? '';
 
   const request = `v0:${slackTimestamp}:${body}`;
-  const signature = 'v0=' + crypto.createHmac('sha256', slackSecret).update(request).digest('hex');
+  const signature = 'v0=' + crypto.createHmac('sha256', secret).update(request).digest('hex');
+  console.log(`Generated signature (to match): ${signature} (${slackSignature})`);
+
 
   // If the request is > 1 minute old ignore it (replay attack)
   if ((Date.now()/1000) - parseInt(slackTimestamp) > 60 * 1) {
     console.log('Replay attack', slackTimestamp);
     return false;
   }
+
+  console.debug('Calculated signature:', signature);
+  console.debug('Provided signature:', slackSignature);
 
   return signature == slackSignature;
 
