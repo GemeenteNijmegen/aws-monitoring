@@ -73,8 +73,8 @@ async function getSlackSecret() {
 export async function authenticate(event: APIGatewayProxyEvent, secret: string) {
 
   let body = event.body;
-  const slackTimestamp = event.headers['x-slack-request-timestamp'] ?? '';
-  const slackSignature = event.headers['x-slack-signature'] ?? '';
+  const slackTimestamp = event.headers['X-Slack-Request-Timestamp'] ?? '';
+  const slackSignature = event.headers['X-Slack-Signature'] ?? '';
 
   const request = `v0:${slackTimestamp}:${body}`;
   const signature = 'v0=' + crypto.createHmac('sha256', secret).update(request).digest('hex');
