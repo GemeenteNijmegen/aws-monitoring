@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { SlackMessage } from '../TopdeskIntegrationLambda/SlackMessage';
 
 const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 
@@ -24,14 +25,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   // Do place message on queue
   try {
     const payload = getParsedPayload(event);
-    console.log('Sending Message to queue...');
-    await sqsClient.send(new SendMessageCommand({
-      MessageBody: JSON.stringify(payload),
-      QueueUrl: process.env.QUEUE_URL,
-    }));
+    await Promise.all([
+      sendToQueue(payload),
+      replyToSlack(payload),
+    ]);
   } catch (error) {
     console.error(error);
-    throw Error(`Could not send message to queue: ${error}`);
+    throw Error(`Could not process message: ${error}`);
   }
 
   return {
@@ -39,6 +39,20 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     statusCode: 200,
   };
 
+}
+
+async function sendToQueue(payload: any) {
+  const message = SlackMessage.fromPayload(payload);
+  message.removeAllInteractionBlocks();
+  message.addSection('Creating topdek ticket...');
+}
+
+async function replyToSlack(payload: any) {
+  console.log('Sending Message to queue...');
+  await sqsClient.send(new SendMessageCommand({
+    MessageBody: JSON.stringify(payload),
+    QueueUrl: process.env.QUEUE_URL,
+  }));
 }
 
 
