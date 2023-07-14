@@ -18,23 +18,18 @@ interface Action {
 
 
 export async function handler(event: SQSEvent) {
-
   console.info('Incomming event:', event);
-
   // Handle records
   for (let record of event.Records) {
-    await handleInteraction(record);
+    await handleRecord(record);
   }
-
 }
 
-export async function handleInteraction(record: SQSRecord) {
-
-  // Already authenticated
-
+export async function handleRecord(record: SQSRecord) {
+  // Already authenticated (before send to queue)
   try {
     const payload = JSON.parse(record.body);
-    return await handleSlackInteraction(payload);
+    return await handleTopdeskTicketCreation(payload);
   } catch (error) {
     console.error(error);
     return {
@@ -44,7 +39,7 @@ export async function handleInteraction(record: SQSRecord) {
   }
 }
 
-async function handleSlackInteraction(payload: any) {
+async function handleTopdeskTicketCreation(payload: any) {
 
   const message = SlackMessage.fromPayload(payload);
 
