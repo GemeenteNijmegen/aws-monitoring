@@ -26,7 +26,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const payload = getParsedPayload(event);
     console.log('Sending Message to queue...');
     await sqsClient.send(new SendMessageCommand({
-      MessageBody: payload,
+      MessageBody: JSON.stringify(payload),
       QueueUrl: process.env.QUEUE_URL,
     }));
   } catch (error) {
