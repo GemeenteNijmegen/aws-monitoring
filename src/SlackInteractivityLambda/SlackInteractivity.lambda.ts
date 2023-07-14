@@ -42,9 +42,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 }
 
 async function sendToQueue(payload: any) {
+  console.log('Replying to slack...')
   const message = SlackMessage.fromPayload(payload);
   message.removeAllInteractionBlocks();
   message.addSection('Creating topdek ticket...');
+  await message.send();
 }
 
 async function replyToSlack(payload: any) {
