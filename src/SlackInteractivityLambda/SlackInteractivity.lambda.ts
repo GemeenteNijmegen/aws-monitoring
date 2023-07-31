@@ -45,7 +45,7 @@ async function sendToQueue(payload: any) {
   console.log('Replying to slack...')
   const message = SlackMessage.fromPayload(payload);
   message.removeAllInteractionBlocks();
-  message.addSection('Creating topdek ticket...');
+  message.addSection('Creating topdesk ticket...');
   await message.send();
 }
 
