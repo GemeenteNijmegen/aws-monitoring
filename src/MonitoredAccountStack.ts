@@ -115,7 +115,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.inspector2'],
           detailType: ['Inspector2 Finding'],
           detail: {
-            severity: ['CRITICAL'],
+            severity: ['CRITICAL', 'HIGH'],
           },
         },
         ruleDescription: 'Send Inspector2 Finding notifications to SNS',
