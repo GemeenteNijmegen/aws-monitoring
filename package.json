@@ -10,6 +10,8 @@
     "bundle:monitoringLambda/test/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/test/monitoring.lambda:watch",
     "bundle:SlackInteractivityLambda/SlackInteractivity.lambda": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda",
     "bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch",
+    "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda": "npx projen bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda",
+    "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda:watch": "npx projen bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda:watch",
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",
@@ -60,6 +62,7 @@
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.78.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.78.0-alpha.0",
+    "@aws-sdk/client-sqs": "^3.369.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.4",
     "@gemeentenijmegen/utils": "^0.0.3",
     "@types/aws-lambda": "^8.10.115",

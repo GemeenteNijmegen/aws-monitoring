@@ -62,9 +62,12 @@ export class TopDeskClient {
   async createNewTicket(ticket: TicketOptions) {
     await this.obtainRequiredIds();
 
+    // Topdesk brief description length is max 80
+    const title = ticket.title.length <= 79 ? ticket.title : `${ticket.title.substring(0, 75)}...`;
+
     const ticketJson = {
       request: ticket.htmlDescription,
-      briefDescription: ticket.title,
+      briefDescription: title,
       status: 'secondLine',
       caller: {
         dynamicName: 'AWS automation',

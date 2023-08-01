@@ -148,7 +148,8 @@
           "**/build-tools/**",
           "src/monitoringLambda/monitoring.lambda.ts",
           "src/monitoringLambda/test/monitoring.lambda.ts",
-          "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts"
+          "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
+          "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

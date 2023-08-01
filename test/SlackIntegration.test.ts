@@ -1,24 +1,33 @@
-import * as SlackInteraction from './slackInteraction.json';
-import { parsePayloadFromEvent } from '../src/SlackInteractivityLambda/SlackInteractivity.lambda';
+import * as crypto from 'crypto';
+import { authenticate } from '../src/SlackInteractivityLambda/SlackInteractivity.lambda';
 
-function buildBase64Payload() {
-  const a = JSON.stringify(SlackInteraction);
-  const b = encodeURIComponent(a);
-  const c = `payload=${b}`;
-  const d = Buffer.from(c).toString('base64');
-  return d;
-}
+process.env.SLACK_SECRET_ARN = 'arn:blabla';
+process.env.AWS_REGION = 'eu-central-1';
 
-test('decode payload', () => {
+test('No tests yet', () => {
 
-  // Well... event is a large object, circumventing the typechecker 😬
+  const timestamp = Math.floor(Date.now() / 1000);
+  console.log(timestamp);
+  const body = 'payload=%7Btest%7D';
+  const slackSecret = 'OAEIJegjwogj0239230598weogijf';
+
+  const request = `v0:${timestamp}:${body}`;
+  const signature = 'v0=' + crypto.createHmac('sha256', slackSecret).update(request).digest('hex');
+
+  // Circument the typechecker
   const event: any = {
-    body: buildBase64Payload(),
+    body,
+    headers: {
+      'x-slack-request-timestamp': `${timestamp}`,
+      'x-slack-signature': signature,
+    },
+    httpMethod: 'POST',
+    isBase64Encoded: false,
+    path: '/slack',
   };
 
-  const payload = parsePayloadFromEvent(event);
+  const authenticated = authenticate(event, slackSecret);
 
-  console.log(payload);
-
+  expect(authenticated).toBeTruthy();
 
 });
