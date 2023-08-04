@@ -77,4 +77,18 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       region: 'eu-central-1',
     },
   },
+  {
+    accountName: 'gn-mijn-nijmegen-accp',
+    env: {
+      account: '021929636313',
+      region: 'eu-central-1',
+    },
+  },
+  {
+    accountName: 'gn-mijn-nijmegen-prod',
+    env: {
+      account: '740606269759',
+      region: 'eu-central-1',
+    },
+  },
 ];
