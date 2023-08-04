@@ -1,5 +1,6 @@
 import { Environment } from 'aws-cdk-lib';
 import { Statics } from './statics';
+import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
 
 export interface DeploymentEnvironment {
   accountName: string;
@@ -20,6 +21,15 @@ export interface DeploymentEnvironment {
    * Flag to enable DevOps guru (AWS service)
    */
   enableDevopsGuru?: boolean;
+
+  /**
+   * Query definitions that will run during the
+   * scheduled log query job.
+   * Note: the lambda assumes the log-query-job-role present in the gn-audit account. 
+   * To incldue a query here gant that role permissions to the corresponding log groups.
+   * @default none
+   */
+  queryDefinitons?: CloudWatchInsightsQueryProps[];
 }
 
 /**
@@ -56,6 +66,23 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: '699363516011',
       region: 'eu-central-1',
     },
+    queryDefinitons: [
+      {
+        name: 'errors-in-yivi-issue-app',
+        description: 'Errors in yivi-issue-app',
+        region: 'eu-central-1',
+        queryString: '\
+        fields @timestamp, @message \
+        | sort @timestamp desc\
+        | limit 10',
+        logGroupNames: [
+          '/aws/lambda/yivi-issue-api-api-stack-yiviissueloginfunctionlam-M4LZu8YoWQHL',
+          '/aws/lambda/yivi-issue-api-api-stack-yiviissuelogoutfunctionla-fIeoeLcB5aZG',
+          '/aws/lambda/yivi-issue-api-api-stack-yiviissueauthfunctionlamb-cO8UwjkYQQu9',
+          '/aws/lambda/yivi-issue-api-api-stack-yiviissueissuefunctionlam-BskPkOS1v9B9',
+        ],
+      }
+    ]
   },
   {
     accountName: 'gn-yivi-prod',
