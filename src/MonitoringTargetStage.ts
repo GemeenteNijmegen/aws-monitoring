@@ -51,24 +51,6 @@ export class MonitoringTargetStage extends Stage {
       prefix: parameterPrefix,
     }).addDependency(parameterStack);
 
-    /**
-     * Note: It suffices to rollout to the main region as cloudtrail
-     * (orgtrail) is aggregated over all regions and all accounts in the org.
-     * Note 2: The stack is designed to be deployed once to MPA. As there is no way to
-     * differentiate between acceptance and production in the platform topics it makes no sense
-     * to deploy the monitoring in parallel.
-     * TODO now only two alarms check for other cloudtrail stuff.
-     *
-     * Note 3: Do not deploy, currently not allowed to deploy to MPA. Consider if this is something we want/need
-     * or that the lz framework can also be used for this (EP alarm is implemented there aswell).
-     */
-    // if (props.isProduction) {
-    //   new MpaMonitoringStack(this, 'mpa', {
-    //     env: Statics.mpaEnvironment,
-    //     deployToEnvironments: props.deployToEnvironments,
-    //   });
-    // }
-
     new IntegrationsStack(this, 'integrations', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
