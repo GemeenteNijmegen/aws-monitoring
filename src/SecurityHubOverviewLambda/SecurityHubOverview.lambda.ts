@@ -22,20 +22,24 @@ async function sendOverviewToSlack() {
   const message = new SlackMessage();
   message.addHeader('SecurityHub finding overview');
 
-  message.addSection('❗️ Critical findings');
   const criticalFindings = await getFindingsWithSeverity('CRITICAL');
   if (criticalFindings && criticalFindings.length > 0) {
+    message.addSection('❗️ Critical findings');
     criticalFindings.forEach(finding => {
       message.addSection(`${finding.Title} (${finding.AwsAccountId}, ${finding.ProductName ?? 'unknown product'})`);
     });
   }
 
-  message.addSection('⚠️ High findings');
   const highFindings = await getFindingsWithSeverity('HIGH');
   if (highFindings && highFindings.length > 0) {
+    message.addSection('⚠️ High findings');
     highFindings.forEach(finding => {
       message.addSection(`${finding.Title} (${finding.AwsAccountId}, ${finding.ProductName ?? 'unknown product'})`);
     });
+  }
+
+  if(!criticalFindings && !highFindings) {
+    message.addSection('✅ No findings');
   }
 
   await message.send('high');
