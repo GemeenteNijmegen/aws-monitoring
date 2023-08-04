@@ -50,6 +50,20 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
         Comparison: 'EQUALS',
         Value: severityLabel,
       }],
+      WorkflowStatus: [ // Show new and notified findings
+        {
+          Comparison: 'EQUALS',
+          Value: 'NEW',
+        },
+        {
+          Comparison: 'EQUALS',
+          Value: 'NOTIFIED',
+        },
+      ],
+      RecordState: [{ // Only show active findings
+        Comparison: 'EQUALS',
+        Value: 'ACTIVE',
+      }]
     },
   });
 
