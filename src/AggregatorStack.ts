@@ -1,13 +1,13 @@
 import { Stack, StackProps, aws_events_targets as targets } from 'aws-cdk-lib';
+import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
-import { Statics } from './statics';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
+import { Statics } from './statics';
 
 interface AggregatorStackProps extends StackProps {
   /**
@@ -44,7 +44,7 @@ class Notifier extends Construct {
     this.setupSecurityHubOverviewFunction(props.prefix);
   }
 
-  setupSecurityHubOverviewFunction(prefix: string){
+  setupSecurityHubOverviewFunction(prefix: string) {
 
     // Create the lambda and inject the webhook urls
     const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda');
@@ -62,8 +62,8 @@ class Notifier extends Construct {
       targets: [
         new targets.LambdaFunction(lambda, {
           retryAttempts: 2,
-        })
-      ]
+        }),
+      ],
     });
 
     // Allow the overview lambda to list the findings in securityhub
@@ -77,7 +77,7 @@ class Notifier extends Construct {
 
   }
 
-  setupMonitoringFunction(prefix: string){
+  setupMonitoringFunction(prefix: string) {
     const lambda = new MonitoringFunction(this, 'slack-lambda');
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
@@ -86,7 +86,6 @@ class Notifier extends Construct {
     this.subscribeLambda(lambda);
   }
 
-  
 
   /**
    *
