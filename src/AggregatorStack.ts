@@ -1,4 +1,4 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Stack, StackProps, aws_events_targets as targets } from 'aws-cdk-lib';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -7,6 +7,7 @@ import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { Statics } from './statics';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 
 interface AggregatorStackProps extends StackProps {
   /**
@@ -44,12 +45,28 @@ class Notifier extends Construct {
   }
 
   setupSecurityHubOverviewFunction(prefix: string){
+
+    // Create the lambda and inject the webhook urls
     const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda');
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
 
+    // Trigger the overview lambda on a schedule
+    new Rule(this, 'SecurityHubOverviewRule', {
+      schedule: Schedule.cron({
+        hour: '4',
+        minute: '0',
+      }),
+      targets: [
+        new targets.LambdaFunction(lambda, {
+          retryAttempts: 2,
+        })
+      ]
+    });
+
+    // Allow the overview lambda to list the findings in securityhub
     lambda.addToRolePolicy(new PolicyStatement({
       effect: Effect.ALLOW,
       actions: [
