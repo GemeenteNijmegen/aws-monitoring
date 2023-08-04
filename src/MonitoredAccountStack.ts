@@ -5,6 +5,7 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventSubscription } from './EventSubscription';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
+import { DevopsGuruMonitoring } from './DevopsGuruNotifications';
 
 
 export class MonitoredAccountStack extends Stack {
@@ -20,6 +21,11 @@ export class MonitoredAccountStack extends Stack {
 
     this.addEventSubscriptions(props);
     new DefaultAlarms(this, 'default-alarms');
+
+    if(props.enableDevopsGuru){
+      new DevopsGuruMonitoring(this, 'devopsguru');
+    }
+
   }
 
   /**
