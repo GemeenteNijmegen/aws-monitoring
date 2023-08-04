@@ -38,7 +38,7 @@ async function sendOverviewToSlack() {
     });
   }
 
-  if(!criticalFindings && !highFindings) {
+  if (!criticalFindings && !highFindings) {
     message.addSection('✅ No high or critical findings');
   }
 
@@ -67,7 +67,7 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
       RecordState: [{ // Only show active findings
         Comparison: 'EQUALS',
         Value: 'ACTIVE',
-      }]
+      }],
     },
   });
 
