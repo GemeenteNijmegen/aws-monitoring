@@ -101,6 +101,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-securityhub",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-sqs",
       "type": "runtime"
     },

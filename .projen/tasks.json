@@ -52,6 +52,9 @@
           "spawn": "bundle:monitoringLambda/test/monitoring.lambda"
         },
         {
+          "spawn": "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda"
+        },
+        {
           "spawn": "bundle:SlackInteractivityLambda/SlackInteractivity.lambda"
         },
         {
@@ -92,6 +95,24 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/monitoringLambda/test/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/test/monitoring.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda": {
+      "name": "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda",
+      "description": "Create a JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda:watch": {
+      "name": "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --external:aws-sdk --watch"
         }
       ]
     },

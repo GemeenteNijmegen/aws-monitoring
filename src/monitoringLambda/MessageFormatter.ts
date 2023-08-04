@@ -2,6 +2,7 @@ import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
+import { deploymentEnvironments } from '../DeploymentEnvironments';
 
 /**
  * Abstract class for formatting differnt types of events
@@ -34,6 +35,18 @@ export abstract class MessageFormatter<T> {
     slackMessage.addButton('Create TopDesk ticket', 'create-topdesk-ticket', topdeskMessage.getIncident(this.priority));
     return slackMessage;
   }
+
+  /**
+   * Use the deployment environments in this project
+   * to retreive the account name
+   * @param account
+   * @returns
+   */
+  lookupAccountName(account: string) {
+    const config = deploymentEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+    return config?.accountName ?? account;
+  }
+
 }
 
 export class AlarmMessageFormatter extends MessageFormatter<any> {
@@ -48,7 +61,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
 
     message.addContext({
       type: alarmInfo.eventType,
-      account: alarmInfo.account,
+      account: this.lookupAccountName(alarmInfo.account),
     });
     message.addSection(alarmInfo.reason);
     const target = alarmInfo.target;
@@ -105,7 +118,7 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
     }
     message.addContext({
       type: `${getEventType(this.event)}, cluster ${clusterName}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(`Containers involved: \\n - ${containerString}`);
     message.addLink('Bekijk cluster', target);
@@ -122,7 +135,7 @@ export class DevopsGuruMessageFormatter extends MessageFormatter<any> {
     }
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(this.event?.detail?.insightDescription);
     message.addLink('Bekijk insight', this.event?.detail?.insightUrl);
@@ -136,7 +149,7 @@ export class CertificateExpiryFormatter extends MessageFormatter<any> {
     message.addHeader('❗️ Certificate nearing expiration');
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(`${this.event?.detail?.CommonName} verloopt over *${this.event?.detail?.DaysToExpiry} dagen.`);
     message.addLink('Bekijk certificaten', 'https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1');
@@ -152,7 +165,7 @@ export class Ec2MessageFormatter extends MessageFormatter<any> {
     message.addHeader(`EC2 instance ${status}`);
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(`Instance id: ${this.event?.detail?.['instance-id']}`);
 
@@ -188,7 +201,7 @@ export class CodePipelineFormatter extends MessageFormatter<any> {
 
     message.addContext({
       type: getEventType(this.event),
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
 
     message.addSection('Codepipeline state changed');
@@ -204,7 +217,7 @@ export class HealthDashboardFormatter extends MessageFormatter<any> {
     message.addHeader(`Health Dashboard alert: ${this.event?.detail?.eventTypeCode}`);
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n') }`)}`);
     message.addLink('Bekijk Health Dashboard', 'https://health.aws.amazon.com/health/home#/account/dashboard/');
@@ -217,7 +230,7 @@ export class InspectorFindingFormatter extends MessageFormatter<any> {
     message.addHeader(`Inspector Finding alert: ${this.event?.detail?.title}`);
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(this.event?.detail?.description);
     const target = 'https://eu-west-1.console.aws.amazon.com/securityhub/home?region=eu-west-1';
@@ -231,7 +244,7 @@ export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
     message.addHeader('❗️ Stack drift detection alert');
     message.addContext({
       type: `${getEventType(this.event)}`,
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     if (this.event?.detail) {
       message.addSection(this.event?.detail['stack-id']);
@@ -245,7 +258,7 @@ export class SecurityHubFormatter extends MessageFormatter<any> {
     message.addHeader(`SecurityHub: ${this.event?.Title}`);
     message.addContext({
       type: 'securityhub',
-      account: this.account,
+      account: this.lookupAccountName(this.account),
       state: `${this.event?.WorkflowState}`,
     });
     if (this.event?.Description) {
@@ -268,7 +281,7 @@ export class OrgTrailMessageFormatter extends MessageFormatter<any> {
     message.addHeader(`${this.event?.eventName} event detected`);
     message.addContext({
       type: 'orgtrail',
-      account: this.account,
+      account: this.lookupAccountName(this.account),
       region: this.event?.awsRegion,
     });
     message.addSection(`${this?.event?.userIdentity?.principalId} triggered a ${this.event?.eventName} event. The event ID is *${this?.event?.eventID}*, of type ${this?.event?.eventType}.`);
@@ -284,7 +297,7 @@ export class UnhandledEventFormatter extends MessageFormatter<any> {
     message.addHeader('Unhandled event');
     message.addContext({
       type: 'unhandled event from SNS topic',
-      account: this.account,
+      account: this.lookupAccountName(this.account),
     });
     message.addSection(`Monitoring topic received an unhandled event. No message format available. Message: \n\`\`\`${JSON.stringify(this.event)}\`\`\` `);
     const target = 'https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1';
@@ -298,7 +311,7 @@ export class LogsMessageFormatter extends MessageFormatter<CloudWatchLogsDecoded
     const codeBlock = '```';
     message.addHeader('Log subscription');
     message.addContext({
-      'account': this.account,
+      'account': this.lookupAccountName(this.account),
       'log group': this.event.logGroup,
     });
     this.event.logEvents.forEach(log => {
@@ -331,7 +344,7 @@ export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudW
 
     message.addHeader(headerText);
     message.addContext({
-      'account': this.account,
+      'account': this.lookupAccountName(this.account),
       'log group': this.event.logGroup,
     });
     sections.forEach(section => message.addSection(section));

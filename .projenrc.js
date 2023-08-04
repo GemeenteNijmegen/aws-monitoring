@@ -19,6 +19,7 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-cdk/aws-apigatewayv2-alpha',
     '@aws-cdk/aws-apigatewayv2-integrations-alpha',
     '@aws-sdk/client-sqs',
+    '@aws-sdk/client-securityhub',
   ],
   devDeps: [
     '@gemeentenijmegen/modules-projen',

@@ -2,6 +2,7 @@ import { Stack, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
 import { EventSubscription } from './EventSubscription';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
@@ -20,6 +21,11 @@ export class MonitoredAccountStack extends Stack {
 
     this.addEventSubscriptions(props);
     new DefaultAlarms(this, 'default-alarms');
+
+    if (props.enableDevopsGuru) {
+      new DevopsGuruMonitoring(this, 'devopsguru');
+    }
+
   }
 
   /**

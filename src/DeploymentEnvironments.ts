@@ -17,7 +17,7 @@ export interface DeploymentEnvironment {
   excludedEventSubscriptions?: string[];
 
   /**
-   *
+   * Flag to enable DevOps guru (AWS service)
    */
   enableDevopsGuru?: boolean;
 }
@@ -34,6 +34,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: Statics.gnBuildAccount,
       region: 'eu-central-1',
     },
+    enableDevopsGuru: true,
   },
   {
     accountName: 'gn-geo-data-production',
