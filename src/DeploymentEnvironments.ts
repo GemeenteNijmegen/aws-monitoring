@@ -59,6 +59,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-yivi-prod',
+    enableDevopsGuru: true,
     env: {
       account: '185512167111',
       region: 'eu-central-1',
@@ -73,6 +74,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-yivi-brp-issue-prod',
+    enableDevopsGuru: true,
     env: {
       account: '079163754011',
       region: 'eu-central-1',
@@ -87,6 +89,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-mijn-nijmegen-prod',
+    enableDevopsGuru: true,
     env: {
       account: '740606269759',
       region: 'eu-central-1',
