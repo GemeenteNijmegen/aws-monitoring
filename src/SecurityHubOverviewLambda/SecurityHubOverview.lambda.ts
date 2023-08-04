@@ -39,7 +39,7 @@ async function sendOverviewToSlack() {
   }
 
   if(!criticalFindings && !highFindings) {
-    message.addSection('✅ No findings');
+    message.addSection('✅ No high or critical findings');
   }
 
   await message.send('high');
