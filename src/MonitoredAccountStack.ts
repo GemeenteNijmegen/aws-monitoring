@@ -5,7 +5,7 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventSubscription } from './EventSubscription';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
-import { DevopsGuruMonitoring } from './DevopsGuruNotifications';
+import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
 
 
 export class MonitoredAccountStack extends Stack {
