@@ -1,4 +1,4 @@
-import { Stack, StackProps, aws_events_targets as targets } from 'aws-cdk-lib';
+import { Duration, Stack, StackProps, aws_events_targets as targets } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
@@ -47,7 +47,10 @@ class Notifier extends Construct {
   setupSecurityHubOverviewFunction(prefix: string) {
 
     // Create the lambda and inject the webhook urls
-    const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda');
+    const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda', {
+      description: `SecurityHub Overview Lambda for ${prefix}`,
+      timeout: Duration.minutes(5),
+    });
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);

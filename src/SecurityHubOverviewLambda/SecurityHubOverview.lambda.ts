@@ -4,7 +4,7 @@ import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
 const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
 
-export async function handle(_event: ScheduledEvent) {
+export async function handler(_event: ScheduledEvent) {
 
   // Send to slack
   try {
