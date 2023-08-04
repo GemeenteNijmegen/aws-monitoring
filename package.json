@@ -8,6 +8,8 @@
     "bundle:monitoringLambda/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/monitoring.lambda:watch",
     "bundle:monitoringLambda/test/monitoring.lambda": "npx projen bundle:monitoringLambda/test/monitoring.lambda",
     "bundle:monitoringLambda/test/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/test/monitoring.lambda:watch",
+    "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda": "npx projen bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda",
+    "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda:watch": "npx projen bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda:watch",
     "bundle:SlackInteractivityLambda/SlackInteractivity.lambda": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda",
     "bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch": "npx projen bundle:SlackInteractivityLambda/SlackInteractivity.lambda:watch",
     "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda": "npx projen bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda",
@@ -62,6 +64,7 @@
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.78.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.78.0-alpha.0",
+    "@aws-sdk/client-securityhub": "^3.382.0",
     "@aws-sdk/client-sqs": "^3.369.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.4",
     "@gemeentenijmegen/utils": "^0.0.3",

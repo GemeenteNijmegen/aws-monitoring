@@ -5,6 +5,8 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { Statics } from './statics';
+import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 interface AggregatorStackProps extends StackProps {
   /**
@@ -37,13 +39,37 @@ interface NotifierProps {
 class Notifier extends Construct {
   constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
+    this.setupMonitoringFunction(props.prefix);
+    this.setupSecurityHubOverviewFunction(props.prefix);
+  }
+
+  setupSecurityHubOverviewFunction(prefix: string){
+    const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda');
+    for (const priority of Statics.monitoringPriorities) {
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
+      lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
+    }
+
+    lambda.addToRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'securityhub:GetFindings',
+      ],
+      resources: ['*'],
+    }));
+
+  }
+
+  setupMonitoringFunction(prefix: string){
     const lambda = new MonitoringFunction(this, 'slack-lambda');
     for (const priority of Statics.monitoringPriorities) {
-      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${props.prefix}-${priority}`);
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
     this.subscribeLambda(lambda);
   }
+
+  
 
   /**
    *
