@@ -1,6 +1,6 @@
 import { Environment } from 'aws-cdk-lib';
-import { Statics } from './statics';
 import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
+import { Statics } from './statics';
 
 export interface DeploymentEnvironment {
   accountName: string;
@@ -25,7 +25,7 @@ export interface DeploymentEnvironment {
   /**
    * Query definitions that will run during the
    * scheduled log query job.
-   * Note: the lambda assumes the log-query-job-role present in the gn-audit account. 
+   * Note: the lambda assumes the log-query-job-role present in the gn-audit account.
    * To incldue a query here gant that role permissions to the corresponding log groups.
    * @default none
    */
@@ -81,8 +81,8 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
           '/aws/lambda/yivi-issue-api-api-stack-yiviissueauthfunctionlamb-cO8UwjkYQQu9',
           '/aws/lambda/yivi-issue-api-api-stack-yiviissueissuefunctionlam-BskPkOS1v9B9',
         ],
-      }
-    ]
+      },
+    ],
   },
   {
     accountName: 'gn-yivi-prod',

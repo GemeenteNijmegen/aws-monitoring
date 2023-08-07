@@ -59,11 +59,11 @@ export class CloudWatchInsightsQuery {
   private queryId?: string;
   private result?: any;
 
-  constructor(settings: CloudWatchInsightsQueryProps) {
+  constructor(settings: CloudWatchInsightsQueryProps, client: CloudWatchLogsClient) {
     this.settings = settings;
     this.settings.startTime = this.settings.startTime ?? new Date(new Date().getTime() - CloudWatchInsightsQuery.MILIS_1_WEEK).getTime() / 1000;
     this.settings.endTime = this.settings.endTime ?? new Date().getTime() / 1000 ;
-    this.client = new CloudWatchLogsClient({ region: settings.region });
+    this.client = client;
   }
 
   /**

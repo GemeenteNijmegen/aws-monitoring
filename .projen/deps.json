@@ -117,6 +117,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-sts",
+      "type": "runtime"
+    },
+    {
       "name": "@gemeentenijmegen/aws-constructs",
       "type": "runtime"
     },

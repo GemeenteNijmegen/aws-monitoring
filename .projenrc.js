@@ -22,6 +22,7 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-securityhub',
     '@aws-sdk/client-cloudwatch-logs',
     '@aws-sdk/client-s3',
+    '@aws-sdk/client-sts',
   ],
   devDeps: [
     '@gemeentenijmegen/modules-projen',

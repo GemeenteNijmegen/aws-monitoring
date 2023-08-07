@@ -28,6 +28,10 @@ export abstract class Statics {
     region: 'eu-central-1',
   };
 
+  /**
+   * Prefix for a predictible log query job role name
+   */
+  static readonly logQueryJobRoleNamePrefix = 'log-query-job-role-';
 
   /**
    * MPA orgtrail
