@@ -148,6 +148,7 @@
           "**/build-tools/**",
           "src/monitoringLambda/monitoring.lambda.ts",
           "src/monitoringLambda/test/monitoring.lambda.ts",
+          "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
           "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts"
         ],

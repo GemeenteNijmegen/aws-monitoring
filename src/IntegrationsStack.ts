@@ -117,7 +117,7 @@ export class IntegrationsStack extends Stack {
         TOPDESK_API_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskApiUrl(props.prefix)),
         TOPDESK_DEEP_LINK_URL: StringParameter.valueForStringParameter(this, Statics.ssmTopDeskDeepLinkUrl(props.prefix)),
       },
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(30),
     });
     topDeskPassword.grantRead(topdeskFunction);
     return topdeskFunction;

@@ -60,6 +60,7 @@ junit.xml
 .parcel-cache/
 !/src/monitoringLambda/monitoring-function.ts
 !/src/monitoringLambda/test/monitoring-function.ts
+!/src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts
 !/src/SlackInteractivityLambda/SlackInteractivity-function.ts
 !/src/TopdeskIntegrationLambda/TopdeskIntegration-function.ts
 !/.github/workflows/emergency.yml

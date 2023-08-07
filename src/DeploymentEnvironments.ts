@@ -17,7 +17,7 @@ export interface DeploymentEnvironment {
   excludedEventSubscriptions?: string[];
 
   /**
-   *
+   * Flag to enable DevOps guru (AWS service)
    */
   enableDevopsGuru?: boolean;
 }
@@ -34,6 +34,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
       account: Statics.gnBuildAccount,
       region: 'eu-central-1',
     },
+    enableDevopsGuru: true,
   },
   {
     accountName: 'gn-geo-data-production',
@@ -58,6 +59,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-yivi-prod',
+    enableDevopsGuru: true,
     env: {
       account: '185512167111',
       region: 'eu-central-1',
@@ -72,6 +74,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-yivi-brp-issue-prod',
+    enableDevopsGuru: true,
     env: {
       account: '079163754011',
       region: 'eu-central-1',
@@ -86,6 +89,7 @@ export const deploymentEnvironments: DeploymentEnvironment[] = [
   },
   {
     accountName: 'gn-mijn-nijmegen-prod',
+    enableDevopsGuru: true,
     env: {
       account: '740606269759',
       region: 'eu-central-1',
