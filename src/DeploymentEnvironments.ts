@@ -22,77 +22,123 @@ export interface DeploymentEnvironment {
   enableDevopsGuru?: boolean;
 }
 
+export interface Configuration {
+  /**
+   * The branch name to build
+   */
+  branchName: string;
+
+  /**
+   * The name of the environment to deploy to
+   */
+  environmentName: 'development' | 'production';
+
+  /**
+   * The list of environments to deploy to
+   */
+  deployToEnvironments: DeploymentEnvironment[];
+
+  /**
+   * The CDK id for the pipeline stack (in main.ts)
+   */
+  pipelineStackCdkName: string;
+}
+
 /**
  * List all environments for which which a monitoring
  * pipeline should be deployed in prod
  * Note: separate monitoring resources are deployed to the MPA account
  */
-export const deploymentEnvironments: DeploymentEnvironment[] = [
-  {
-    accountName: 'gn-build',
-    env: {
-      account: Statics.gnBuildAccount,
-      region: 'eu-central-1',
-    },
-    enableDevopsGuru: true,
+export const deploymentEnvironments: { [key: string]: Configuration } = {
+  'main-new-lz': {
+    branchName: 'main-new-lz',
+    environmentName: 'production',
+    pipelineStackCdkName: 'aws-monitoring-prod',
+    deployToEnvironments: [
+      {
+        accountName: 'gn-build',
+        env: {
+          account: Statics.gnBuildAccount,
+          region: 'eu-central-1',
+        },
+        enableDevopsGuru: true,
+      },
+      {
+        accountName: 'gn-geo-data-production',
+        env: {
+          account: '549334216741',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-geo-data-acceptance',
+        env: {
+          account: '766983128454',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-yivi-accp',
+        env: {
+          account: '699363516011',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-yivi-prod',
+        enableDevopsGuru: true,
+        env: {
+          account: '185512167111',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-yivi-brp-issue-accp',
+        env: {
+          account: '528030426040',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-yivi-brp-issue-prod',
+        enableDevopsGuru: true,
+        env: {
+          account: '079163754011',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mijn-nijmegen-accp',
+        env: {
+          account: '021929636313',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mijn-nijmegen-prod',
+        enableDevopsGuru: true,
+        env: {
+          account: '740606269759',
+          region: 'eu-central-1',
+        },
+      },
+    ],
   },
-  {
-    accountName: 'gn-geo-data-production',
-    env: {
-      account: '549334216741',
-      region: 'eu-central-1',
-    },
+  'sandbox-new-lz': {
+    branchName: 'sandbox-new-lz',
+    environmentName: 'development',
+    pipelineStackCdkName: 'aws-monitoring-sandbox',
+    deployToEnvironments: [
+      { accountName: 'workload-test', env: Statics.sandboxEnvironment, enableDevopsGuru: true },
+    ],
   },
-  {
-    accountName: 'gn-geo-data-acceptance',
-    env: {
-      account: '766983128454',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-yivi-accp',
-    env: {
-      account: '699363516011',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-yivi-prod',
-    enableDevopsGuru: true,
-    env: {
-      account: '185512167111',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-yivi-brp-issue-accp',
-    env: {
-      account: '528030426040',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-yivi-brp-issue-prod',
-    enableDevopsGuru: true,
-    env: {
-      account: '079163754011',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-mijn-nijmegen-accp',
-    env: {
-      account: '021929636313',
-      region: 'eu-central-1',
-    },
-  },
-  {
-    accountName: 'gn-mijn-nijmegen-prod',
-    enableDevopsGuru: true,
-    env: {
-      account: '740606269759',
-      region: 'eu-central-1',
-    },
-  },
-];
+};
+
+
+export function getConfiguration(branchName: string): Configuration {
+  const config = deploymentEnvironments[branchName];
+  if (!config) {
+    throw new Error(`No configuration found for branch ${branchName}`);
+  }
+  return config;
+}

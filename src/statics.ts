@@ -28,6 +28,10 @@ export abstract class Statics {
     region: 'eu-central-1',
   };
 
+  static readonly sandboxEnvironment = {
+    account: Statics.gnTestAccount,
+    region: 'eu-central-1',
+  };
 
   /**
    * MPA orgtrail

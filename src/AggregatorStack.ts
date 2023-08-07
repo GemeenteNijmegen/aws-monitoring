@@ -14,6 +14,11 @@ interface AggregatorStackProps extends StackProps {
    * prefix for named params, because multiple copies of this stack can exist in account
    */
   prefix: string;
+
+  /**
+   * Branch name of the branch that is deployed
+   */
+  branchName: string;
 }
 
 export class AggregatorStack extends Stack {
@@ -27,7 +32,7 @@ export class AggregatorStack extends Stack {
    */
   constructor(scope: Construct, id: string, props: AggregatorStackProps) {
     super(scope, id, props);
-    new Notifier(this, 'notifier', { prefix: props.prefix });
+    new Notifier(this, 'notifier', { prefix: props.prefix, branchName: props.branchName });
   }
 }
 
@@ -36,11 +41,15 @@ interface NotifierProps {
    * Prefix for the monitoring parameter (`dev` in `monitoring-dev-low`)
    */
   prefix: string;
+  /**
+   * Branch name of the branch that is deployed
+   */
+  branchName: string;
 }
 class Notifier extends Construct {
   constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
-    this.setupMonitoringFunction(props.prefix);
+    this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix);
   }
 
@@ -80,8 +89,13 @@ class Notifier extends Construct {
 
   }
 
-  setupMonitoringFunction(prefix: string) {
-    const lambda = new MonitoringFunction(this, 'slack-lambda');
+  setupMonitoringFunction(prefix: string, branchName: string) {
+    const lambda = new MonitoringFunction(this, 'slack-lambda', {
+      environment: {
+        BRANCH_NAME: branchName,
+      },
+      description: `Slack notification lambda (${prefix})`,
+    });
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);

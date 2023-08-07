@@ -12,6 +12,7 @@ import { Statics } from './statics';
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
   isProduction?: boolean;
+  branchName: string;
 }
 
 export interface EventSubscriptionConfiguration {
@@ -49,6 +50,7 @@ export class MonitoringTargetStage extends Stage {
     new AggregatorStack(this, 'aggregator', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
+      branchName: props.branchName,
     }).addDependency(parameterStack);
 
     new IntegrationsStack(this, 'integrations', {
