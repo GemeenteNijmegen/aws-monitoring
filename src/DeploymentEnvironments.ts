@@ -47,7 +47,6 @@ export interface Configuration {
 /**
  * List all environments for which which a monitoring
  * pipeline should be deployed in prod
- * Note: separate monitoring resources are deployed to the MPA account
  */
 export const deploymentEnvironments: { [key: string]: Configuration } = {
   'main-new-lz': {
