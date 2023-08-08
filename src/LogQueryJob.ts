@@ -119,7 +119,7 @@ export class LogQueryJob extends Construct {
       },
     });
     resultsBucket.grantWrite(lambda);
-    
+
 
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${this.envIndicator}-${priority}`);

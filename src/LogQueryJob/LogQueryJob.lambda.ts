@@ -4,9 +4,9 @@ import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts';
 import { Environment } from 'aws-cdk-lib';
 import { ScheduledEvent } from 'aws-lambda';
 import { CloudWatchInsightsQuery, CloudWatchInsightsQueryProps } from './Query';
+import { QueryFormatter } from './QueryFormatter';
 import { DeploymentEnvironment, getConfiguration } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
-import { QueryFormatter } from './QueryFormatter';
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 const sts = new STSClient({ region: process.env.AWS_REGION });

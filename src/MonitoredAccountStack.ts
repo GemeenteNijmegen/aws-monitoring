@@ -199,7 +199,7 @@ export class MonitoredAccountStack extends Stack {
     });
 
     // Allow both the dev and prod lambas to assume this role
-    role.grantAssumeRole(new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`))
+    role.grantAssumeRole(new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`));
 
     // Allow the role to use CloudWatch queries
     role.addToPolicy(new iam.PolicyStatement({
