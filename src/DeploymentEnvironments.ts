@@ -172,13 +172,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
               'test-log-group',
             ],
           },
-        ],
-      },
-      {
-        accountName: 'workload-test',
-        env: Statics.sandboxEnvironment,
-        enableDevopsGuru: true,
-        queryDefinitons: [
           {
             name: 'another-random-log-group-query',
             description: 'Some random testing query',
