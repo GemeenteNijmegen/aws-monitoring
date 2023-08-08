@@ -28,11 +28,6 @@ export abstract class Statics {
   };
 
   /**
-   * Prefix for a predictible log query job role name
-   */
-  static readonly logQueryJobRoleNamePrefix = 'log-query-job-role-';
-
-  /**
    * Priorities for monitoring
    */
   static readonly monitoringPriorities = ['low', 'medium', 'high', 'critical'];
@@ -41,6 +36,11 @@ export abstract class Statics {
    * Slack webhook url for low priority notifications
    */
   static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url';
+
+  /**
+   * Prefix for a predictible log query job role name
+   */
+  static readonly logQueryJobAccessRoleName = 'log-query-job-access-role';
 
 
   static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;

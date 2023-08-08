@@ -1,8 +1,9 @@
-import { Duration, Stack, aws_events_targets as targets } from 'aws-cdk-lib';
+import { Duration, aws_events_targets as targets } from 'aws-cdk-lib';
 import { CronOptions, Rule, Schedule } from 'aws-cdk-lib/aws-events';
-import { Effect, PolicyStatement, Role, ArnPrincipal } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { LogQueryJobFunction } from './LogQueryJob/LogQueryJob-function';
@@ -34,126 +35,92 @@ interface LogQueryJobProps {
 
 export class LogQueryJob extends Construct {
 
+  private envIndicator = '';
+
   constructor(scope: Construct, id: string, props: LogQueryJobProps) {
     super(scope, id);
+    this.envIndicator = props.prefix;
 
-    // We'll have to give this a proper name so we can reference it cross account
-    // Note: this role is created later on, we use the arn to prevent circular dependencies between resrouces.
-    const logQueryRoleArn = `arn:aws:iam::${Stack.of(this).account}:role/${Statics.logQueryJobRoleNamePrefix}${props.prefix}`;
+    // Setup the job's role
+    const role = this.setupLambdaRole();
+    this.allowJobRoleToAssumeLogQueryRoles(role, props.deployToEnvironments);
 
-    const resultsBucket = this.setupResultsBucket(props.prefix);
-    const lambda = this.setupLogQueryJobFunction(props.prefix, props.branchName, resultsBucket, logQueryRoleArn);
-    this.setupLogQueryJobRole(props.prefix, lambda, props.deployToEnvironments);
+    // Setup and schedule the job
+    const resultsBucket = this.setupResultsBucket();
+    const lambda = this.setupLogQueryJobFunction(role, props.branchName, resultsBucket);
     this.scheduleLogQueryJob(lambda, props);
 
   }
 
   /**
    * Creats the bucket where all log query results will be stored
-   * @param prefix to differentiate between multiple copies of this construct
    * @returns
    */
-  setupResultsBucket(prefix: string) {
+  setupResultsBucket() {
     const resultsBucket = new Bucket(this, 'log-query-results-bucket', {
-      bucketName: `${Statics.logQueryJobRoleNamePrefix}${prefix}`,
+      bucketName: `log-query-job-results-bucket-${this.envIndicator}`,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,
     });
     return resultsBucket;
   }
 
-  /**
-   * Creats the role that will be used to run the log query job in different accounts.
-   * Depending on the [DeploymentEnvironments]{@link ../DeploymentEnvironments.ts} the role is given
-   * permission to call CloudWatch logs insights in each account.
-   * @param prefix to differentiate between multiple copies of this construct
-   * @param lambda the lambda that will be used to run the log query job (assumes this role)
-   */
-  setupLogQueryJobRole(prefix: string, lambda: IFunction, deploymentEnvironments: DeploymentEnvironment[]) {
-
-    if (!lambda.role) {
-      throw new Error('Lambda does not have a role');
-    }
-
-    const role = new Role(this, 'log-query-role', {
-      roleName: `log-query-job-role-${prefix}`,
-      assumedBy: new ArnPrincipal(lambda.role.roleArn),
+  setupLambdaRole() {
+    return new Role(this, 'log-query-job-role', {
+      roleName: `log-query-job-role-${this.envIndicator}`,
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      description: `Role for log query job execution lambda (${this.envIndicator})`,
     });
-
-    deploymentEnvironments.forEach((env) => {
-      if (!env.queryDefinitons) {
-        return;
-      }
-
-      console.log(`Adding permission to query logs in ${env.env.account}`);
-      const allowGeneralCloudWatchAccess = new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          'logs:GetQueryResults',
-          'logs:StartQuery',
-          'logs:StopQuery',
-        ],
-        resources: ['*'],
-        conditions: {
-          StringEquals: { // only allow access to the accounts from the config
-            'aws:ResourceAccount': [
-              env.env.account,
-            ],
-          },
-        },
-      });
-      role.addToPolicy(allowGeneralCloudWatchAccess);
-
-      env.queryDefinitons.forEach((queryDef) => {
-
-        const logGroupArns = queryDef.logGroupNames.map(name => `arn:aws:logs:${env.env.region}:${env.env.account}:log-group:${name}`);
-        const logGroupContentsArns = logGroupArns.map(arn => `${arn}:*`);
-        const allLogGroupArns = logGroupArns.concat(logGroupContentsArns);
-
-        console.log(`Adding permission for logs query ${queryDef.name}`);
-        const allowAccessToLogGroups = new PolicyStatement({
-          effect: Effect.ALLOW,
-          actions: [
-            'logs:DescribeLogGroups',
-            'logs:GetLogGroupFields',
-            'logs:GetLogEvents',
-          ],
-          resources: allLogGroupArns,
-        });
-        role.addToPolicy(allowAccessToLogGroups);
-
-      });
-    });
-
-    return role;
   }
 
   /**
-   * Setup the lambda that will run the log query job.
-   * @param prefix
-   * @param resultsBucket
-   * @param logQueryRoleArn
-   * @returns
+   * Allows the lambda role to assume the log query job roles in monitored accounts.
+   * @param role
+   * @param deploymentEnvironments
    */
-  setupLogQueryJobFunction(prefix: string, branchName: string, resultsBucket: Bucket, logQueryRoleArn: string) {
+  allowJobRoleToAssumeLogQueryRoles(role: Role, deploymentEnvironments: DeploymentEnvironment[]) {
+
+    const accountsToQuery: string[] = [];
+    deploymentEnvironments.forEach((env) => {
+      if (env.queryDefinitons && env.env.account) {
+        console.log(`Adding permission to assume the query logs role in ${env.env.account}`);
+        accountsToQuery.push(env.env.account);
+      }
+    });
+
+    role.addToPolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'sts:AssumeRole',
+      ],
+      resources: ['*'],
+      conditions: {
+        StringEquals: { // only allow access to the accounts from the config
+          'aws:ResourceAccount': accountsToQuery,
+        },
+      },
+    }));
+
+  }
+
+  setupLogQueryJobFunction(role: Role, branchName: string, resultsBucket: Bucket) {
 
     const lambda = new LogQueryJobFunction(this, 'log-query-lambda', {
+      role: role,
       environment: {
         LOG_QUERIES_RESULT_BUCKET_NAME: resultsBucket.bucketName,
-        LOG_QUERY_ROLE_ARN: logQueryRoleArn,
+        LOG_QUERY_ROLE_NAME: Statics.logQueryJobAccessRoleName,
         BRANCH_NAME: branchName,
       },
       timeout: Duration.minutes(14),
-      description: `Log Query Job execution lambda (${prefix})`,
+      description: `Log Query Job execution lambda (${this.envIndicator})`,
     });
     resultsBucket.grantWrite(lambda);
 
-    // Allow the lambda to assume the role that allows cross account query invocation
-    lambda.addToRolePolicy(new PolicyStatement({
-      effect: Effect.ALLOW,
-      actions: ['sts:AssumeRole'],
-      resources: [logQueryRoleArn],
-    }));
+    for (const priority of Statics.monitoringPriorities) {
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${this.envIndicator}-${priority}`);
+      lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
+    }
 
     return lambda;
 
