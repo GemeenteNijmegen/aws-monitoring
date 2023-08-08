@@ -133,9 +133,11 @@ export class LogQueryJob extends Construct {
   scheduleLogQueryJob(lambda: IFunction, props: LogQueryJobProps) {
 
     const schedule = props.schedule ?? {
-      hour: '4',
       minute: '0',
-      weekDay: '0', // Sundays only
+      hour: '4',
+      month: '*',
+      weekDay: '1', // Sundays only
+      year: '*',
     };
 
     new Rule(this, 'log-query-lambda-trigger', {
