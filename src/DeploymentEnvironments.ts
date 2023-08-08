@@ -174,6 +174,25 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           },
         ],
       },
+      {
+        accountName: 'workload-test',
+        env: Statics.sandboxEnvironment,
+        enableDevopsGuru: true,
+        queryDefinitons: [
+          {
+            name: 'another-random-log-group-query',
+            description: 'Some random testing query',
+            region: 'eu-central-1',
+            queryString: '\
+            fields @timestamp, @message \
+            | sort @timestamp asc\
+            | limit 10',
+            logGroupNames: [
+              'test-log-group',
+            ],
+          },
+        ],
+      },
     ],
   },
 };
