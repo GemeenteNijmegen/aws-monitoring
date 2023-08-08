@@ -70,6 +70,9 @@ export class LogQueryJob extends Construct {
       roleName: `log-query-job-lambda-role-${this.envIndicator}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       description: `Role for log query job execution lambda (${this.envIndicator})`,
+      managedPolicies: [{
+        managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
+      }],
     });
   }
 
@@ -106,17 +109,17 @@ export class LogQueryJob extends Construct {
   setupLogQueryJobFunction(role: Role, branchName: string, resultsBucket: Bucket) {
 
     const lambda = new LogQueryJobFunction(this, 'log-query-lambda', {
+      description: `Log Query Job execution lambda (${this.envIndicator})`,
+      timeout: Duration.minutes(14),
       role: role,
       environment: {
         LOG_QUERIES_RESULT_BUCKET_NAME: resultsBucket.bucketName,
         LOG_QUERY_ROLE_NAME: Statics.logQueryJobAccessRoleName,
         BRANCH_NAME: branchName,
       },
-      timeout: Duration.minutes(14),
-      description: `Log Query Job execution lambda (${this.envIndicator})`,
     });
     resultsBucket.grantWrite(lambda);
-    lambda.logGroup.grantWrite(role);
+    
 
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${this.envIndicator}-${priority}`);
