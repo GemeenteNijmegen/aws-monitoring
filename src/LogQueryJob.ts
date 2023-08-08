@@ -67,7 +67,7 @@ export class LogQueryJob extends Construct {
 
   setupLambdaRole() {
     return new Role(this, 'log-query-job-role', {
-      roleName: `log-query-job-role-${this.envIndicator}`,
+      roleName: `log-query-job-lambda-role-${this.envIndicator}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       description: `Role for log query job execution lambda (${this.envIndicator})`,
     });
