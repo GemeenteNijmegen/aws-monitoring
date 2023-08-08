@@ -194,7 +194,7 @@ export class MonitoredAccountStack extends Stack {
 
     const role = new iam.Role(this, 'log-query-job-access-role', {
       roleName: Statics.logQueryJobAccessRoleName,
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      assumedBy: new iam.ArnPrincipal(`arn:aws:sts::${Statics.gnAuditAccount}:assumed-role/log-query-job-lambda-role-*`),
       description: 'Role to assume from the log query lambda function',
     });
 
