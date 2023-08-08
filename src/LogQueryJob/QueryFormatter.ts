@@ -14,8 +14,9 @@ export class QueryFormatter {
     }
 
     const lines: string[] = [];
-    response.results.forEach(line => {
-      lines.push(line.join(' - '));
+    response.results.forEach(logEvent => {
+      const line = logEvent.map(field => field.value).join(' - ');
+      lines.push(line);
     });
     return lines.join('\n');
   }

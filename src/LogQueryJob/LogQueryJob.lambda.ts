@@ -93,7 +93,7 @@ async function executeQuery(environment: Environment, queryDefinition: CloudWatc
 }
 
 async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: string) {
-  const key = `${timestamp}/${query.settings.name}.json`;
+  const key = `${timestamp}/${query.settings.name}.txt`;
 
   const queryResults = query.getResults();
   let result = undefined;
