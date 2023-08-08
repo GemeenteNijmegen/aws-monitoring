@@ -2,6 +2,7 @@ import {
   CloudWatchLogsClient,
   StartQueryCommand,
   GetQueryResultsCommand,
+  GetQueryResultsCommandOutput,
 } from '@aws-sdk/client-cloudwatch-logs';
 
 export interface CloudWatchInsightsQueryProps {
@@ -57,7 +58,7 @@ export class CloudWatchInsightsQuery {
   readonly settings: CloudWatchInsightsQueryProps;
   private client: CloudWatchLogsClient;
   private queryId?: string;
-  private result?: any;
+  private result?: GetQueryResultsCommandOutput;
 
   constructor(settings: CloudWatchInsightsQueryProps, client: CloudWatchLogsClient) {
     this.settings = settings;

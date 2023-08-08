@@ -92,11 +92,12 @@ async function executeQuery(environment: Environment, queryDefinition: CloudWatc
 }
 
 async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: string) {
-  const key = `${timestamp}/${query.settings.name}/logs.txt`;
+  const key = `${timestamp}/${query.settings.name}.json`;
 
+  const queryResults = query.getResults();
   let result = undefined;
-  if (query.getResults()) {
-    result = JSON.stringify(result, null, 4);
+  if (queryResults) {
+    result = JSON.stringify(queryResults, null, 4);
   } else {
     result = JSON.stringify({ message: 'No results found' }, null, 4);
   }
