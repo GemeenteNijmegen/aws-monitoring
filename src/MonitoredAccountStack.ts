@@ -194,9 +194,12 @@ export class MonitoredAccountStack extends Stack {
 
     const role = new iam.Role(this, 'log-query-job-access-role', {
       roleName: Statics.logQueryJobAccessRoleName,
-      assumedBy: new iam.ArnPrincipal(`arn:aws:sts::${Statics.gnAuditAccount}:assumed-role/log-query-job-lambda-role-*`),
+      assumedBy: new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-dev`),
       description: 'Role to assume from the log query lambda function',
     });
+
+    // Allow both the dev and prod lambas to assume this role
+    role.grantAssumeRole(new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`))
 
     // Allow the role to use CloudWatch queries
     role.addToPolicy(new iam.PolicyStatement({
