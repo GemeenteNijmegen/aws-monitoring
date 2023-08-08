@@ -155,14 +155,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployToEnvironments: [
-      { 
-        accountName: 'workload-test', 
-        env: Statics.sandboxEnvironment, 
+      {
+        accountName: 'workload-test',
+        env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
       },
     ],
   },
-}
+};
 
 export function getConfiguration(branchName: string): Configuration {
   const config = deploymentEnvironments[branchName];

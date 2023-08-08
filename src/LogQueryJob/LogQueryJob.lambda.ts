@@ -3,7 +3,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts';
 import { ScheduledEvent } from 'aws-lambda';
 import { CloudWatchInsightsQuery } from './Query';
-import { DeploymentEnvironment, deploymentEnvironments } from '../DeploymentEnvironments';
+import { DeploymentEnvironment, getConfiguration } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
@@ -11,7 +11,8 @@ const sts = new STSClient({ region: process.env.AWS_REGION });
 
 export async function handler(_event: ScheduledEvent) {
   try {
-    const errors = await runLogQueryJob(deploymentEnvironments);
+    const deploymentConfiguration = getConfiguration(process.env.BRANCH_NAME ?? '');
+    const errors = await runLogQueryJob(deploymentConfiguration.deployToEnvironments);
     if (errors.length > 0) {
       await sendNotificationToSlack(`❗️ Error during CloudWatch logs queries: \n ${errors.join('\n - ')}`);
       return;

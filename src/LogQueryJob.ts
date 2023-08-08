@@ -4,7 +4,7 @@ import { Effect, PolicyStatement, Role, ArnPrincipal } from 'aws-cdk-lib/aws-iam
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-import { deploymentEnvironments } from './DeploymentEnvironments';
+import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { LogQueryJobFunction } from './LogQueryJob/LogQueryJob-function';
 import { Statics } from './statics';
 
@@ -15,9 +15,21 @@ interface LogQueryJobProps {
   prefix: string;
 
   /**
+   * The name of the current branch is used to obtain the right
+   * configuration in the log query job lambda.
+   */
+  branchName: string;
+
+  /**
    * Schedule for this job
    */
   schedule?: CronOptions;
+
+  /**
+   * The environments that are monitored and thus require access to
+   * the role
+   */
+  deployToEnvironments: DeploymentEnvironment[];
 }
 
 export class LogQueryJob extends Construct {
@@ -30,8 +42,8 @@ export class LogQueryJob extends Construct {
     const logQueryRoleArn = `arn:aws:iam::${Stack.of(this).account}:role/${Statics.logQueryJobRoleNamePrefix}${props.prefix}`;
 
     const resultsBucket = this.setupResultsBucket(props.prefix);
-    const lambda = this.setupLogQueryJobFunction(props.prefix, resultsBucket, logQueryRoleArn);
-    this.setupLogQueryJobRole(props.prefix, lambda);
+    const lambda = this.setupLogQueryJobFunction(props.prefix, props.branchName, resultsBucket, logQueryRoleArn);
+    this.setupLogQueryJobRole(props.prefix, lambda, props.deployToEnvironments);
     this.scheduleLogQueryJob(lambda, props);
 
   }
@@ -57,7 +69,7 @@ export class LogQueryJob extends Construct {
    * @param prefix to differentiate between multiple copies of this construct
    * @param lambda the lambda that will be used to run the log query job (assumes this role)
    */
-  setupLogQueryJobRole(prefix: string, lambda: IFunction) {
+  setupLogQueryJobRole(prefix: string, lambda: IFunction, deploymentEnvironments: DeploymentEnvironment[]) {
 
     if (!lambda.role) {
       throw new Error('Lambda does not have a role');
@@ -123,12 +135,13 @@ export class LogQueryJob extends Construct {
    * @param logQueryRoleArn
    * @returns
    */
-  setupLogQueryJobFunction(prefix: string, resultsBucket: Bucket, logQueryRoleArn: string) {
+  setupLogQueryJobFunction(prefix: string, branchName: string, resultsBucket: Bucket, logQueryRoleArn: string) {
 
     const lambda = new LogQueryJobFunction(this, 'log-query-lambda', {
       environment: {
         LOG_QUERIES_RESULT_BUCKET_NAME: resultsBucket.bucketName,
         LOG_QUERY_ROLE_ARN: logQueryRoleArn,
+        BRANCH_NAME: branchName,
       },
       timeout: Duration.minutes(14),
       description: `Log Query Job execution lambda (${prefix})`,
