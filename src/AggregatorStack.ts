@@ -5,6 +5,8 @@ import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
+import { getConfiguration } from './DeploymentEnvironments';
+import { LogQueryJob } from './LogQueryJob';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
 import { Statics } from './statics';
@@ -51,6 +53,7 @@ class Notifier extends Construct {
     super(scope, id);
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix);
+    this.setupLogQueryJob(props.prefix, props.branchName);
   }
 
   setupSecurityHubOverviewFunction(prefix: string) {
@@ -103,6 +106,13 @@ class Notifier extends Construct {
     this.subscribeLambda(lambda);
   }
 
+  setupLogQueryJob(prefix: string, brancName: string) {
+    new LogQueryJob(this, 'log-query-job', {
+      prefix: prefix,
+      branchName: brancName,
+      deployToEnvironments: getConfiguration(brancName).deployToEnvironments,
+    });
+  }
 
   /**
    *

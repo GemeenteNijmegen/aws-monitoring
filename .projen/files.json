@@ -16,6 +16,7 @@
     ".projen/tasks.json",
     "cdk.json",
     "LICENSE",
+    "src/LogQueryJob/LogQueryJob-function.ts",
     "src/monitoringLambda/monitoring-function.ts",
     "src/monitoringLambda/test/monitoring-function.ts",
     "src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts",

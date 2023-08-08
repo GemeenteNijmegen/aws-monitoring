@@ -28,6 +28,11 @@ export abstract class Statics {
   };
 
   /**
+   * Prefix for a predictible log query job role name
+   */
+  static readonly logQueryJobRoleNamePrefix = 'log-query-job-role-';
+
+  /**
    * Priorities for monitoring
    */
   static readonly monitoringPriorities = ['low', 'medium', 'high', 'critical'];
