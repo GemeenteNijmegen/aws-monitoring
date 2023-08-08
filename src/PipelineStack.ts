@@ -32,6 +32,7 @@ export class PipelineStack extends Stack {
       {
         deployToEnvironments: props.deployToEnvironments,
         isProduction: props.isProduction,
+        branchName: props.branchName,
       }));
   }
 

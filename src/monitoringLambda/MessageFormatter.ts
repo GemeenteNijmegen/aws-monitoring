@@ -2,7 +2,7 @@ import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
-import { deploymentEnvironments } from '../DeploymentEnvironments';
+import { getConfiguration } from '../DeploymentEnvironments';
 
 /**
  * Abstract class for formatting differnt types of events
@@ -43,8 +43,9 @@ export abstract class MessageFormatter<T> {
    * @returns
    */
   lookupAccountName(account: string) {
-    const config = deploymentEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
-    return config?.accountName ?? account;
+    const config = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+    const monitoringConfig = config.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+    return monitoringConfig?.accountName ?? account;
   }
 
 }

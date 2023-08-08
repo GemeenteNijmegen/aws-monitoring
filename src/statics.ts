@@ -16,15 +16,14 @@ export abstract class Statics {
   static readonly gnBuildAccount: string = '836443378780';
   static readonly gnAggregatorAccount: string = '302838002127';
   static readonly gnTestAccount: string = '095798249317';
-  static readonly gnMpa: string = '427617903428';
 
   static readonly aggregatorEnvironment = {
     account: Statics.gnAggregatorAccount,
     region: 'eu-central-1',
   };
 
-  static readonly mpaEnvironment = {
-    account: Statics.gnMpa,
+  static readonly sandboxEnvironment = {
+    account: Statics.gnTestAccount,
     region: 'eu-central-1',
   };
 
@@ -32,15 +31,6 @@ export abstract class Statics {
    * Prefix for a predictible log query job role name
    */
   static readonly logQueryJobRoleNamePrefix = 'log-query-job-role-';
-
-  /**
-   * MPA orgtrail
-   */
-  static readonly orgTrailLogGroupName = 'aws-controltower/CloudTrailLogs';
-  static readonly assumedRolesToAlarmOn: {[key: string]: Priority} = {
-    'lz-platform-operator-ep': 'high',
-    'landingzone-break-glass': 'critical',
-  };
 
   /**
    * Priorities for monitoring
