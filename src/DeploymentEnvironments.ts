@@ -167,9 +167,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             queryString: '\
             fields @timestamp, @message \
             | sort @timestamp desc\
-            | limit 10',
+            | limit 8',
             logGroupNames: [
-              'non-existent-log-group',
+              'test-log-group',
             ],
           },
         ],
