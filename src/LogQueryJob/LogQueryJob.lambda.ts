@@ -6,6 +6,7 @@ import { ScheduledEvent } from 'aws-lambda';
 import { CloudWatchInsightsQuery, CloudWatchInsightsQueryProps } from './Query';
 import { DeploymentEnvironment, getConfiguration } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
+import { QueryFormatter } from './QueryFormatter';
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 const sts = new STSClient({ region: process.env.AWS_REGION });
@@ -97,7 +98,7 @@ async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: s
   const queryResults = query.getResults();
   let result = undefined;
   if (queryResults) {
-    result = JSON.stringify(queryResults, null, 4);
+    result = QueryFormatter.format(queryResults);
   } else {
     result = JSON.stringify({ message: 'No results found' }, null, 4);
   }
