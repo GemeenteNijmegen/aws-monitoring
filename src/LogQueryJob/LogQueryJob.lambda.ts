@@ -40,7 +40,7 @@ async function runLogQueryJob(deploymentConfiguration: DeploymentEnvironment[]) 
   const assumedRole = await sts.send(new AssumeRoleCommand({
     RoleArn: process.env.LOG_QUERY_ROLE_ARN,
     RoleSessionName: 'LogQueryJob',
-    DurationSeconds: 800, // Around max runtime of the lambda anyway
+    DurationSeconds: 3600,
   }));
 
   if (!assumedRole || !assumedRole.Credentials?.AccessKeyId || !assumedRole.Credentials?.SecretAccessKey) {
