@@ -4,9 +4,9 @@ import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
 import { EventSubscription } from './EventSubscription';
+import { LogQueryAccessRole } from './LogQueryAccessRole';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
-import { LogQueryAccessRole } from './LogQueryAccessRole';
 
 
 export class MonitoredAccountStack extends Stack {
@@ -22,14 +22,14 @@ export class MonitoredAccountStack extends Stack {
 
     this.addEventSubscriptions(props);
     new DefaultAlarms(this, 'default-alarms');
-    
+
     /**
      * If the account needs to be queried by the log query job (eg. props.queryDefinitons is defined)
      * setup a role to be assumed by the (centralized) log query lambda.
      */
-    if(props.queryDefinitions) {
-      new LogQueryAccessRole(this, 'logqueryrole', { 
-        queryDefinitions: props.queryDefinitions
+    if (props.queryDefinitions) {
+      new LogQueryAccessRole(this, 'logqueryrole', {
+        queryDefinitions: props.queryDefinitions,
       });
     }
 
