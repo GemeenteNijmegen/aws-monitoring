@@ -13,29 +13,19 @@ export abstract class Statics {
   /**
    * Account information
    */
+  static readonly gnAuditAccount: string = '302838002127';
   static readonly gnBuildAccount: string = '836443378780';
   static readonly gnAggregatorAccount: string = '302838002127';
   static readonly gnTestAccount: string = '095798249317';
-  static readonly gnMpa: string = '427617903428';
 
   static readonly aggregatorEnvironment = {
     account: Statics.gnAggregatorAccount,
     region: 'eu-central-1',
   };
 
-  static readonly mpaEnvironment = {
-    account: Statics.gnMpa,
+  static readonly sandboxEnvironment = {
+    account: Statics.gnTestAccount,
     region: 'eu-central-1',
-  };
-
-
-  /**
-   * MPA orgtrail
-   */
-  static readonly orgTrailLogGroupName = 'aws-controltower/CloudTrailLogs';
-  static readonly assumedRolesToAlarmOn: {[key: string]: Priority} = {
-    'lz-platform-operator-ep': 'high',
-    'landingzone-break-glass': 'critical',
   };
 
   /**
@@ -47,6 +37,11 @@ export abstract class Statics {
    * Slack webhook url for low priority notifications
    */
   static readonly ssmSlackWebhookUrlPriorityPrefix: string = '/monitoring/slack-webhook-url';
+
+  /**
+   * Prefix for a predictible log query job role name
+   */
+  static readonly logQueryJobAccessRoleName = 'log-query-job-access-role';
 
 
   static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;

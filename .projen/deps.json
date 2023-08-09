@@ -101,11 +101,23 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-cloudwatch-logs",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-s3",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-securityhub",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/client-sqs",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-sts",
       "type": "runtime"
     },
     {
