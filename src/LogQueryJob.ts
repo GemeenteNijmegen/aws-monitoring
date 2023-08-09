@@ -85,7 +85,7 @@ export class LogQueryJob extends Construct {
 
     const accountsToQuery: string[] = [];
     deploymentEnvironments.forEach((env) => {
-      if (env.queryDefinitons && env.env.account) {
+      if (env.queryDefinitions && env.env.account) {
         console.log(`Adding permission to assume the query logs role in ${env.env.account}`);
         accountsToQuery.push(env.env.account);
       }

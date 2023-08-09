@@ -1,4 +1,4 @@
-import { Stack, Tags, aws_iam as iam } from 'aws-cdk-lib';
+import { Stack, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
@@ -6,6 +6,7 @@ import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
 import { EventSubscription } from './EventSubscription';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
+import { LogQueryAccessRole } from './LogQueryAccessRole';
 
 
 export class MonitoredAccountStack extends Stack {
@@ -21,7 +22,16 @@ export class MonitoredAccountStack extends Stack {
 
     this.addEventSubscriptions(props);
     new DefaultAlarms(this, 'default-alarms');
-    this.setupLogQueryJobAccess(props);
+    
+    /**
+     * If the account needs to be queried by the log query job (eg. props.queryDefinitons is defined)
+     * setup a role to be assumed by the (centralized) log query lambda.
+     */
+    if(props.queryDefinitions) {
+      new LogQueryAccessRole(this, 'logqueryrole', { 
+        queryDefinitions: props.queryDefinitions
+      });
+    }
 
     if (props.enableDevopsGuru) {
       new DevopsGuruMonitoring(this, 'devopsguru');
@@ -168,60 +178,5 @@ export class MonitoredAccountStack extends Stack {
       .filter(excludeFilter)
       .forEach(subscription => new EventSubscription(this, subscription.id, { ...subscription }),
       );
-  }
-
-  /**
-   * If the account needs to be queried by the log query job (eg. props.queryDefinitons is defined),
-   * this function defines a new role to be assumed from the log query lambda function.
-   * The role allows access to cloudwatch logs (queries start, stop and get results),
-   * and the log groups defined in the querydefinitions.
-   * @param props
-   */
-  private setupLogQueryJobAccess(props: DeploymentEnvironment) {
-    if (!props.queryDefinitons) {
-      return;
-    }
-
-    const logGroupArns: string[] = [];
-    const account = Stack.of(this).account;
-    const region = Stack.of(this).region;
-    props.queryDefinitons.forEach(queryDefinition => {
-      queryDefinition.logGroupNames.forEach(logGroupName => {
-        logGroupArns.push(`arn:aws:logs:${region}:${account}:log-group:${logGroupName}`);
-        logGroupArns.push(`arn:aws:logs:${region}:${account}:log-group:${logGroupName}:*`);
-      });
-    });
-
-    const role = new iam.Role(this, 'log-query-job-access-role', {
-      roleName: Statics.logQueryJobAccessRoleName,
-      assumedBy: new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-dev`),
-      description: 'Role to assume from the log query lambda function',
-    });
-
-    // Allow both the dev and prod lambas to assume this role
-    role.grantAssumeRole(new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`));
-
-    // Allow the role to use CloudWatch queries
-    role.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'logs:GetQueryResults',
-        'logs:StartQuery',
-        'logs:StopQuery',
-      ],
-      resources: ['*'],
-    }));
-
-    // Provide the role access to the log groups that are queried
-    role.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'logs:DescribeLogGroups',
-        'logs:GetLogGroupFields',
-        'logs:GetLogEvents',
-      ],
-      resources: logGroupArns,
-    }));
-
   }
 }
