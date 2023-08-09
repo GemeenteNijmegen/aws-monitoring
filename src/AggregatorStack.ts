@@ -106,11 +106,11 @@ class Notifier extends Construct {
     this.subscribeLambda(lambda);
   }
 
-  setupLogQueryJob(prefix: string, brancName: string) {
+  setupLogQueryJob(prefix: string, branchName: string) {
     new LogQueryJob(this, 'log-query-job', {
       prefix: prefix,
-      branchName: brancName,
-      deployToEnvironments: getConfiguration(brancName).deployToEnvironments,
+      branchName: branchName,
+      deployToEnvironments: getConfiguration(branchName).deployToEnvironments,
     });
   }
 

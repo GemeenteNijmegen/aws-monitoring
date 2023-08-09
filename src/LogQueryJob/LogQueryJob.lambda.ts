@@ -50,10 +50,10 @@ async function runLogQueryJob(deploymentConfiguration: DeploymentEnvironment[]) 
   const queries: Promise<string>[] = [];
 
   deploymentConfiguration.forEach(configuration => {
-    if (!configuration.queryDefinitons) {
+    if (!configuration.queryDefinitions) {
       return;
     }
-    configuration.queryDefinitons.forEach(queryDefiniton => {
+    configuration.queryDefinitions.forEach(queryDefiniton => {
       queries.push(executeQuery(configuration.env, queryDefiniton, timestamp));
     });
   });

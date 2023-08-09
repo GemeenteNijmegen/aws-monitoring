@@ -29,7 +29,7 @@ export interface DeploymentEnvironment {
    * To incldue a query here gant that role permissions to the corresponding log groups.
    * @default none
    */
-  queryDefinitons?: CloudWatchInsightsQueryProps[];
+  queryDefinitions?: CloudWatchInsightsQueryProps[];
 }
 
 export interface Configuration {
@@ -92,7 +92,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '699363516011',
           region: 'eu-central-1',
         },
-        queryDefinitons: [
+        queryDefinitions: [
           {
             name: 'errors-in-yivi-issue-app',
             description: 'Errors in yivi-issue-app',
@@ -159,7 +159,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         accountName: 'workload-test',
         env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
-        queryDefinitons: [
+        queryDefinitions: [
           {
             name: 'random-log-group-query',
             description: 'Some random testing query',
