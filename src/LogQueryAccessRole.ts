@@ -28,8 +28,12 @@ export class LogQueryAccessRole extends Construct {
       description: 'Role to assume from the log query lambda function',
     });
 
-    // Allow both the dev and prod lambas to assume this role
-    role.grantAssumeRole(new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`));
+    // Do not use grantAssumeRole (see: https://github.com/aws/aws-cdk/issues/24507)
+    role.assumeRolePolicy?.addStatements(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['sts:AssumeRole'],
+      principals: [new iam.ArnPrincipal(`arn:aws:iam::${Statics.gnAuditAccount}:role/log-query-job-lambda-role-prod`)],
+    }));
 
     // Allow the role to use CloudWatch queries
     role.addToPolicy(new iam.PolicyStatement({
