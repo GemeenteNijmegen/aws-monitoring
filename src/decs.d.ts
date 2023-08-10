@@ -1,4 +1,4 @@
 declare module '*.mustache' {
-  const content: string;
+  const content: any;
   export default content;
 }

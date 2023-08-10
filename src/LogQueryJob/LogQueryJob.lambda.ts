@@ -3,7 +3,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts';
 import { Environment } from 'aws-cdk-lib';
 import { ScheduledEvent } from 'aws-lambda';
-import { CloudWatchInsightsQuery, CloudWatchInsightsQueryProps } from './Query';
+import { CloudWatchInsightsQuery, CloudWatchInsightsQueryProps, CloudWatchInsightsQueryResult } from './Query';
 import { QueryFormatter } from './QueryFormatter';
 import { DeploymentEnvironment, getConfiguration } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
@@ -11,16 +11,18 @@ import { SlackMessage } from '../monitoringLambda/SlackMessage';
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 const sts = new STSClient({ region: process.env.AWS_REGION });
 
+interface QueryExecutionResult {
+  message: string;
+  queryResult?: CloudWatchInsightsQueryResult;
+}
+
 export async function handler(_event: ScheduledEvent) {
   try {
 
     const deploymentConfiguration = getConfiguration(process.env.BRANCH_NAME ?? '');
     console.log('Starting log query job using configuration for branch:', process.env.BRANCH_NAME);
     console.log('Deployment configuration used:', JSON.stringify(deploymentConfiguration, null, 2));
-
-    const results = await runLogQueryJob(deploymentConfiguration.deployToEnvironments);
-    console.log(results);
-    await sendNotificationToSlack(results);
+    await runLogQueryJob(deploymentConfiguration.deployToEnvironments);
 
   } catch (error) {
     console.error('Unhandled error in handler');
@@ -29,25 +31,10 @@ export async function handler(_event: ScheduledEvent) {
   }
 }
 
-async function sendNotificationToSlack(result: string | string[]) {
-  try {
-    const message = new SlackMessage();
-    message.addHeader('Scheduled log query job');
-    if (Array.isArray(result)) {
-      result.forEach(r => message.addSection(r));
-    } else {
-      message.addSection(result);
-    }
-    await message.send('high');
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 async function runLogQueryJob(deploymentConfiguration: DeploymentEnvironment[]) {
 
   const timestamp = new Date().toISOString();
-  const queries: Promise<string>[] = [];
+  const queries: Promise<QueryExecutionResult>[] = [];
 
   deploymentConfiguration.forEach(configuration => {
     if (!configuration.queryDefinitions) {
@@ -59,12 +46,14 @@ async function runLogQueryJob(deploymentConfiguration: DeploymentEnvironment[]) 
   });
 
   const results = await Promise.all(queries);
-  results.push(`💾 Log query job finished, results are stored in ${process.env.LOG_QUERIES_RESULT_BUCKET_NAME} bucket (in directory /${timestamp}/)`);
-  return results;
 
+  await Promise.all([
+    makeReport(results, timestamp),
+    notifySlack(results, timestamp),
+  ]);
 }
 
-async function executeQuery(environment: Environment, queryDefinition: CloudWatchInsightsQueryProps, timestamp: string): Promise<string> {
+async function executeQuery(environment: Environment, queryDefinition: CloudWatchInsightsQueryProps, timestamp: string): Promise<QueryExecutionResult> {
 
   console.log('Starting query', queryDefinition.name, environment.account);
 
@@ -73,7 +62,9 @@ async function executeQuery(environment: Environment, queryDefinition: CloudWatc
   const region = queryDefinition.region ?? environment.region;
   if (!account || !region) {
     console.log('Could not execute, missing account or region', account, region);
-    return `❗️ ${queryDefinition.name} could not be executed. Missing account or region. Account: ${account}, Region: ${region}`;
+    return {
+      message: `❗️ ${queryDefinition.name} could not be executed. Missing account or region. Account: ${account}, Region: ${region}`,
+    };
   }
 
   try {
@@ -81,20 +72,41 @@ async function executeQuery(environment: Environment, queryDefinition: CloudWatc
     const query = new CloudWatchInsightsQuery(queryDefinition, logsClient);
     await query.run();
     await storeQueryResultInS3(query, timestamp);
+    console.log('Finished query', queryDefinition.name, environment.account);
+    return {
+      message: `✅ ${queryDefinition.name} executed successfully`,
+      queryResult: query.getResults(),
+    };
   } catch (error) {
     console.error('Error while executing query', queryDefinition.name, environment.account);
     console.error(error);
-    return `❗️ ${queryDefinition.name} could not be executed. ${error}`;
+    return {
+      message: `❗️ ${queryDefinition.name} could not be executed. ${error}`,
+    };
   }
 
-  console.log('Finished query', queryDefinition.name, environment.account);
-  return `✅ ${queryDefinition.name} executed successfully`;
 
 }
 
-async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: string) {
-  const key = `${timestamp}/${query.settings.name}.txt`;
+async function notifySlack(results: QueryExecutionResult[], timestamp: string) {
+  const messages = results.map(r => r.message);
+  messages.push(`💾 Log query job finished`);
+  messages.push(`results are stored in ${process.env.LOG_QUERIES_RESULT_BUCKET_NAME} bucket (in directory /${timestamp}/)`);
+  console.log(messages);
+  await sendNotificationToSlack(messages);
+}
 
+async function makeReport(results: QueryExecutionResult[], timestamp: string) {
+  // hack: make any otherswise typechecker prevents us from using this list after filtering out undefined values
+  const queryResults: any = results.filter(r => r.queryResult != undefined).map(r => r.queryResult);
+  const html = QueryFormatter.renderAsHtmlReport(queryResults);
+  await storeInS3(html, 'report.html', timestamp);
+}
+
+
+// Utility methods below
+
+async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: string) {
   const queryResults = query.getResults();
   let result = undefined;
   if (queryResults) {
@@ -103,14 +115,17 @@ async function storeQueryResultInS3(query: CloudWatchInsightsQuery, timestamp: s
     result = JSON.stringify({ message: 'No results found' }, null, 4);
   }
 
+  await storeInS3(result, `${query.settings.name}.txt`, timestamp);
+}
+
+async function storeInS3(value: string, name: string, timestamp: string) {
+  const key = `${timestamp}/${name}`;
   const command = new PutObjectCommand({
     Bucket: process.env.LOG_QUERIES_RESULT_BUCKET_NAME,
     Key: key,
-    Body: result,
+    Body: value,
   });
-
   await s3.send(command);
-
 }
 
 async function getLogClientForAccount(accountId: string, region: string) {
@@ -135,4 +150,19 @@ async function getLogClientForAccount(accountId: string, region: string) {
   });
 
   return logsClient;
+}
+
+async function sendNotificationToSlack(result: string | string[]) {
+  try {
+    const message = new SlackMessage();
+    message.addHeader('Scheduled log query job');
+    if (Array.isArray(result)) {
+      result.forEach(r => message.addSection(r));
+    } else {
+      message.addSection(result);
+    }
+    await message.send('high');
+  } catch (error) {
+    console.error(error);
+  }
 }

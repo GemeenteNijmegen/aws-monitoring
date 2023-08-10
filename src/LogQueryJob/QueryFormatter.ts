@@ -1,6 +1,5 @@
-import { GetQueryResultsCommandOutput } from '@aws-sdk/client-cloudwatch-logs';
 import Mustache from 'mustache';
-import { CloudWatchInsightsQuery } from './Query';
+import { CloudWatchInsightsQuery, CloudWatchInsightsQueryResult } from './Query';
 import * as htmlTemplate from './template/template.mustache';
 
 export interface QueryFormatterLine {
@@ -15,7 +14,7 @@ export class QueryFormatter {
    * @param response
    * @returns
    */
-  static format(response: GetQueryResultsCommandOutput): string {
+  static format(response: CloudWatchInsightsQueryResult): string {
     if (!response.results) {
       return '';
     }
@@ -27,7 +26,7 @@ export class QueryFormatter {
    * @param response
    * @returns
    */
-  static formatedLines(response?: GetQueryResultsCommandOutput): QueryFormatterLine[] {
+  static formatedLines(response?: CloudWatchInsightsQueryResult): QueryFormatterLine[] {
     if (!response || !response.results) {
       return [];
     }

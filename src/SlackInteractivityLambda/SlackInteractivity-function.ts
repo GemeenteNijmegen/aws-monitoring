@@ -17,7 +17,7 @@ export class SlackInteractivityFunction extends lambda.Function {
     super(scope, id, {
       description: 'src/SlackInteractivityLambda/SlackInteractivity.lambda.ts',
       ...props,
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: new lambda.Runtime('nodejs18.x', lambda.RuntimeFamily.NODEJS),
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../../assets/SlackInteractivityLambda/SlackInteractivity.lambda')),
     });

@@ -1,4 +1,4 @@
-const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/modules-projen');
+const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/projen-project-type');
 const project = new GemeenteNijmegenCdkApp({
   cdkVersion: '2.1.0',
   defaultReleaseBranch: 'main',
@@ -27,7 +27,7 @@ const project = new GemeenteNijmegenCdkApp({
     '@types/mustache',
   ],
   devDeps: [
-    '@gemeentenijmegen/modules-projen',
+    '@gemeentenijmegen/projen-project-type',
     'axios-mock-adapter',
     '@glen/jest-raw-loader',
   ],

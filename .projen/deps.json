@@ -1,7 +1,7 @@
 {
   "dependencies": [
     {
-      "name": "@gemeentenijmegen/modules-projen",
+      "name": "@gemeentenijmegen/projen-project-type",
       "type": "build"
     },
     {
@@ -14,7 +14,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^14",
+      "version": "^16",
       "type": "build"
     },
     {
@@ -63,16 +63,12 @@
     },
     {
       "name": "jest-junit",
-      "version": "^13",
-      "type": "build"
-    },
-    {
-      "name": "json-schema",
+      "version": "^15",
       "type": "build"
     },
     {
       "name": "npm-check-updates",
-      "version": "^15",
+      "version": "^16",
       "type": "build"
     },
     {
