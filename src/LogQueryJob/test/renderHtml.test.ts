@@ -49,6 +49,66 @@ function getMockQuery() {
           [
             {
               field: '@timestamp',
+              value: '2023-08-08 19:19:18.427',
+            },
+            {
+              field: '@message',
+              value: JSON.stringify({
+                some: 'fields',
+                and: 'more',
+                fields: 42,
+              }),
+            },
+            {
+              field: '@ptr',
+              value: 'ClsKHwobMDk1Nzk4MjQ5MzE3OnRlc3QtbG9nLWdyb3VwEAMSNBoYAgZJgErcAAAAAIfrZnAABk0pTEAAAAPCIAEom7nbtJ0xMJu527SdMTgBQCZI+QVQqAIYACABEAAYAQ==',
+            },
+          ],
+          [
+            {
+              field: '@timestamp',
+              value: '2023-08-08 19:19:14.528',
+            },
+            {
+              field: '@message',
+              value: 'test-10',
+            },
+            {
+              field: '@ptr',
+              value: 'ClsKHwobMDk1Nzk4MjQ5MzE3OnRlc3QtbG9nLWdyb3VwEAISNBoYAgZHsyv4AAAAA5JGOiwABk0pTWAAAAOCIAEotOfYtJ0xMOCa27SdMTgCQEtIswZQ4gIYACABEAEYAQ==',
+            },
+          ],
+          [
+            {
+              field: '@timestamp',
+              value: '2023-08-08 19:19:14.528',
+            },
+            {
+              field: '@message',
+              value: 'test-10',
+            },
+            {
+              field: '@ptr',
+              value: 'ClsKHwobMDk1Nzk4MjQ5MzE3OnRlc3QtbG9nLWdyb3VwEAISNBoYAgZHsyv4AAAAA5JGOiwABk0pTWAAAAOCIAEotOfYtJ0xMOCa27SdMTgCQEtIswZQ4gIYACABEAEYAQ==',
+            },
+          ],
+          [
+            {
+              field: '@timestamp',
+              value: '2023-08-08 19:19:14.528',
+            },
+            {
+              field: '@message',
+              value: 'test-10',
+            },
+            {
+              field: '@ptr',
+              value: 'ClsKHwobMDk1Nzk4MjQ5MzE3OnRlc3QtbG9nLWdyb3VwEAISNBoYAgZHsyv4AAAAA5JGOiwABk0pTWAAAAOCIAEotOfYtJ0xMOCa27SdMTgCQEtIswZQ4gIYACABEAEYAQ==',
+            },
+          ],
+          [
+            {
+              field: '@timestamp',
               value: '2023-08-08 19:19:14.528',
             },
             {

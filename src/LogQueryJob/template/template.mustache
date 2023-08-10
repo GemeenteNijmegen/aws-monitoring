@@ -41,10 +41,10 @@
     display: flex;
     justify-content: space-between;
   }
-  .log-entry.even {
+  .log-entry:nth-child(odd) {
     background-color: #e8e8e8;
   }
-  .log-entry.odd {
+  .log-entry:nth-child(even) {
     background-color: #fff;
   }
   .timestamp {
@@ -83,7 +83,7 @@
   <div class="report-content">
     
     {{#lines}}
-    <div class="log-entry even">
+    <div class="log-entry">
       <div class="log-details collapsed">
         <p>{{timestamp}} - {{message}}</p>
         <pre class="block">{{message}}</pre>
