@@ -173,9 +173,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             ],
           },
           {
-            name: 'another-random-log-group-query',
+            name: 'random-log-group-query-us-east-1',
             description: 'Some random testing query',
-            region: 'eu-central-1',
+            region: 'us-east-1',
             queryString: '\
             fields @timestamp, @message \
             | sort @timestamp asc\
