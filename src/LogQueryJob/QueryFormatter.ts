@@ -15,7 +15,13 @@ export class QueryFormatter {
 
     const lines: string[] = [];
     response.results.forEach(logEvent => {
-      const line = logEvent.map(field => field.value).join(' - ');
+      const fields: string[] = [];
+      logEvent.forEach(field => {
+        if (field.value && field.field != '@ptr') {
+          fields.push(field.value);
+        }
+      });
+      const line = fields.join(' - ');
       lines.push(line);
     });
     return lines.join('\n');
