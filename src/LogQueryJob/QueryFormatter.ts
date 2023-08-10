@@ -17,10 +17,10 @@ export class QueryFormatter {
     response.results.forEach(logEvent => {
       const fields: string[] = [];
       logEvent.forEach(field => {
-        if(field.value && field.value != '@ptr'){
+        if (field.value && field.field != '@ptr') {
           fields.push(field.value);
         }
-      })
+      });
       const line = fields.join(' - ');
       lines.push(line);
     });
