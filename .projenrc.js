@@ -23,13 +23,31 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-cloudwatch-logs',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-sts',
+    'mustache',
+    '@types/mustache',
   ],
   devDeps: [
     '@gemeentenijmegen/modules-projen',
     'axios-mock-adapter',
+    '@glen/jest-raw-loader',
   ],
-  /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  bundlerOptions: {
+    loaders: {
+      mustache: 'text',
+    },
+  },
+  jestOptions: {
+    jestConfig: {
+      moduleFileExtensions: [
+        'js', 'json', 'jsx', 'ts', 'tsx', 'node', 'mustache',
+      ],
+      transform: {
+        '\\.[jt]sx?$': 'ts-jest',
+        '^.+\\.mustache$': '@glen/jest-raw-loader',
+      },
+      testPathIgnorePatterns: ['/node_modules/', '/cdk.out'],
+      roots: ['src', 'test'],
+    },
+  },
 });
 project.synth();

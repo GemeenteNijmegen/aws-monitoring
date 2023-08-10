@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collapsible Log Reports</title>
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<!-- Include your custom CSS for styling -->
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+  }
+  .report {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  .report-title {
+    cursor: pointer;
+  }
+  .report-title .icon {
+    float: right;
+  }
+  .report-content {
+    display: none;
+  }
+  h1 {
+    color: #333333;
+  }
+  .log-entry {
+    border-bottom: 1px solid #dddddd;
+    padding: 3px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  .log-entry.even {
+    background-color: #e8e8e8;
+  }
+  .log-entry.odd {
+    background-color: #fff;
+  }
+  .timestamp {
+    color: #999999;
+  }
+  /* Style the <pre> tag for code display */
+  pre {
+    white-space: pre-wrap;
+    background-color: #f7f7f7;
+    border: 1px solid #dddddd;
+    padding: 10px;
+    overflow-x: auto;
+    font-family: "Courier New", monospace; /* Set a monospace font for code */
+    font-size: 14px;
+  }
+  .log-details > p {
+    cursor: pointer;
+    margin: 2px;
+  }
+  .log-details.collapsed > .block {
+    display: none;
+  }
+</style>
+</head>
+<body>
+<!-- First Log Report -->
+<div class="report">
+  <h1 class="report-title"><i class="icon fas fa-chevron-down"></i>Log Report 1</h1>
+  <p>Description lorum ipsum</p>
+  <div class="report-content">
+    
+    <div class="log-entry even">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">{ "message": "Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here.." }</pre>
+      </div>
+    </div>
+
+    <div class="log-entry odd">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... </pre>
+      </div>
+    </div>
+
+    <div class="log-entry even">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... </pre>
+      </div>
+    </div>
+
+    <!-- More log entries can be added here -->
+  </div>
+</div>
+
+
+<div class="report">
+  <h1 class="report-title"><i class="icon fas fa-chevron-down"></i>Log Report 1</h1>
+  <p>Description lorum ipsum</p>
+  <div class="report-content">
+    
+    <div class="log-entry even">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... </pre>
+      </div>
+    </div>
+
+    <div class="log-entry odd">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... </pre>
+      </div>
+    </div>
+
+    <div class="log-entry even">
+      <div class="log-details collapsed">
+        <p>2023-08-10 10:00 AM - Log entry summary goes here...</p>
+        <pre class="block">Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... Log entry content goes here... </pre>
+      </div>
+    </div>
+
+    <!-- More log entries can be added here -->
+  </div>
+</div>
+
+
+<!-- Include your custom JavaScript -->
+<script>
+  $(document).ready(function() {
+    $('.report-title').click(function() {
+      $(this).find('.icon').toggleClass('fa-chevron-down fa-chevron-up');
+      $(this).siblings('.report-content').slideToggle(200);
+    });
+    $('.log-details > p').click(function() {
+      const contents = $(this).parent().find('.block').text();
+      try {
+        const obj = JSON.parse(contents);
+        const formatted = JSON.stringify(obj, null, 4);
+        $(this).parent().find('.block').text(formatted);
+      } catch(error){
+        console.log('Parsing error, probabbly not JSON');
+      }
+      $(this).parent().toggleClass('collapsed expanded');
+    });
+  });
+</script>
+</body>
+</html>
