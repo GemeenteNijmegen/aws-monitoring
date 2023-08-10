@@ -53,7 +53,11 @@ async function runLogQueryJob(deploymentConfiguration: DeploymentEnvironment[]) 
   ]);
 }
 
-async function executeQuery(environment: Environment, queryDefinition: CloudWatchInsightsQueryProps, timestamp: string): Promise<QueryExecutionResult> {
+async function executeQuery(
+  environment: Environment,
+  queryDefinition: CloudWatchInsightsQueryProps,
+  timestamp: string,
+): Promise<QueryExecutionResult> {
 
   console.log('Starting query', queryDefinition.name, environment.account);
 
@@ -85,13 +89,13 @@ async function executeQuery(environment: Environment, queryDefinition: CloudWatc
     };
   }
 
-
 }
 
 async function notifySlack(results: QueryExecutionResult[], timestamp: string) {
   const messages = results.map(r => r.message);
-  messages.push(`💾 Log query job finished`);
-  messages.push(`results are stored in ${process.env.LOG_QUERIES_RESULT_BUCKET_NAME} bucket (in directory /${timestamp}/)`);
+  const bucketName = process.env.LOG_QUERIES_RESULT_BUCKET_NAME;
+  messages.push('💾 Log query job finished');
+  messages.push(`results are stored in ${bucketName} bucket (in directory /${timestamp}/)`);
   console.log(messages);
   await sendNotificationToSlack(messages);
 }
