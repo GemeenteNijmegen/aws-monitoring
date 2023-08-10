@@ -92,23 +92,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '699363516011',
           region: 'eu-central-1',
         },
-        queryDefinitions: [
-          {
-            name: 'errors-in-yivi-issue-app',
-            description: 'Errors in yivi-issue-app',
-            region: 'eu-central-1',
-            queryString: '\
-            fields @timestamp, @message \
-            | sort @timestamp desc\
-            | limit 10',
-            logGroupNames: [
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueloginfunctionlam-M4LZu8YoWQHL',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissuelogoutfunctionla-fIeoeLcB5aZG',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueauthfunctionlamb-cO8UwjkYQQu9',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueissuefunctionlam-BskPkOS1v9B9',
-            ],
-          },
-        ],
       },
       {
         accountName: 'gn-yivi-prod',
@@ -117,6 +100,35 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '185512167111',
           region: 'eu-central-1',
         },
+        queryDefinitions: [
+          {
+            name: 'yivi-prod-waf-blocked-requests',
+            description: 'Yivi issue app prod blocked WAF requests',
+            region: 'us-east-1',
+            queryString: '\
+            fields @timestamp, @message\
+            | filter action = \'BLOCK\'\
+            | sort @timestamp asc',
+            logGroupNames: [
+              'aws-waf-logs-yivi-issue-app',
+            ],
+          },
+          {
+            name: 'yivi-prod-errors',
+            description: 'Yivi issue app prod errors',
+            region: 'eu-central-1',
+            queryString: '\
+            fields @timestamp, @message\
+            | filter @message like /ERROR/ or @message like /Error/\
+            | sort @timestamp asc',
+            logGroupNames: [
+              '/aws/lambda/yivi-issue-api-api-stack-yiviissuelogoutfunctionla-FxyZ5ytUObuW',
+              '/aws/lambda/yivi-issue-api-api-stack-yiviissueloginfunctionlam-0nhR0wS5nEgc',
+              '/aws/lambda/yivi-issue-api-api-stack-yiviissueissuefunctionlam-SWufqEL4S6q2',
+              '/aws/lambda/yivi-issue-api-api-stack-yiviissueauthfunctionlamb-6eYjqeNtt78W',
+            ],
+          },
+        ],
       },
       {
         accountName: 'gn-yivi-brp-issue-accp',
@@ -147,6 +159,37 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '740606269759',
           region: 'eu-central-1',
         },
+        queryDefinitions: [
+          {
+            name: 'mijn-nijmegen-prod-waf-blocked-requests',
+            description: 'Mijn Nijmegen prod blocked WAF requests',
+            region: 'us-east-1',
+            queryString: '\
+            fields @timestamp, @message\
+            | filter action = \'BLOCK\'\
+            | sort @timestamp asc',
+            logGroupNames: [
+              'aws-waf-logs-mijn-nijmegen',
+            ],
+          },
+          {
+            name: 'mijn-nijmegen-prod-errors',
+            description: 'Mijn Nijmegen prod errors',
+            region: 'eu-central-1',
+            queryString: '\
+            fields @timestamp, @message\
+            | filter @message like /ERROR/ or @message like /Error/\
+            | sort @timestamp asc',
+            logGroupNames: [
+              '/aws/lambda/mijn-api-api-stack-authfunctionlambdaCE7349A6-ZOfMTx9LLk7w',
+              '/aws/lambda/mijn-api-api-stack-homefunctionlambdaC6763389-M1Mv58DtxZZC',
+              '/aws/lambda/mijn-api-api-stack-loginfunctionlambdaD9D22737-Gpk6wqGrrq78',
+              '/aws/lambda/mijn-api-api-stack-logoutfunctionlambda0D09F767-Y5VhsuioUmBk',
+              '/aws/lambda/mijn-gegevens-api-persoon-persoonsgegevensfunction-xjIqWmKd829e',
+              '/aws/lambda/mijn-uitkering-api-uitker-uitkeringenfunctionlambd-uvevaHFvtp0z',
+            ],
+          },
+        ],
       },
     ],
   },
