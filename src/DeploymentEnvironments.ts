@@ -191,6 +191,35 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           },
         ],
       },
+      {
+        accountName: 'gn-webforms-dev',
+        env: {
+          account: '033598396027',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-webforms-accp',
+        env: {
+          account: '338472043295',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-webforms-prod',
+        enableDevopsGuru: false, // No workload yet, enable later
+        env: {
+          account: '147064197580',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-static-websites',
+        env: {
+          account: '654477686593',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
@@ -228,35 +257,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             ],
           },
         ],
-      },
-      {
-        accountName: 'gn-webforms-dev',
-        env: {
-          account: '033598396027',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-webforms-accp',
-        env: {
-          account: '338472043295',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-webforms-prod',
-        enableDevopsGuru: false, // No workload yet, enable later
-        env: {
-          account: '147064197580',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-static-websites',
-        env: {
-          account: '654477686593',
-          region: 'eu-central-1',
-        },
       },
     ],
   },
