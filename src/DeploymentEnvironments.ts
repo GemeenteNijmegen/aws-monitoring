@@ -220,6 +220,21 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-verwerkingenlogging-accp',
+        env: {
+          account: '649781704230',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-verwerkingenlogging-prod',
+        enableDevopsGuru: false, // No workload yet, enable later
+        env: {
+          account: '887474129159',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
