@@ -42,14 +42,15 @@ async function processLogEvents(parsed: CloudWatchLogsDecodedData) {
  * @returns false if no assume rol event
  */
 async function checkForAssumedRole(event: any) {
-  if (event.eventName != 'AssumeRole') {
+  if (event.eventName?.startsWith('AssumeRole')) {
     return false;
   }
   console.debug('AsuumeRole event found!', event);
 
   try {
-    const accountId = event.resources.accountId;
-    const roleArn = event.resources.ARN;
+    const resource = event.resources?.find((r:any) => r.type === 'AWS::IAM::Role');
+    const accountId = resource.accountId;
+    const roleArn = resource.ARN;
     const principal = getUserIdentity(event.userIdentity);
 
     const applicableConfigurations = getApplicableAccountConfigurations(accountId);
@@ -59,7 +60,7 @@ async function checkForAssumedRole(event: any) {
     applicableConfigurations.forEach(async (configuration) => {
 
       const accountName = configuration.accountName;
-      const matchedRoles = configuration.rolesToMonitor?.filter(roleConfiguration => roleArn.endsWith(roleConfiguration.roleName));
+      const matchedRoles = configuration.rolesToMonitor?.filter(roleConfiguration => roleArn.includes(roleConfiguration.roleName));
       if (!matchedRoles) {
         return false;
       }
@@ -97,6 +98,9 @@ function getUserIdentity(userIdentity: any) {
   }
   if (userIdentity?.type === 'IAMUser') {
     return userIdentity.userName;
+  }
+  if (userIdentity?.type === 'SAMLUser'){
+    userIdentity.userName; // Used for SSO
   }
   return 'unknown';
 }
