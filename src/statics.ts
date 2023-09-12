@@ -43,6 +43,11 @@ export abstract class Statics {
    */
   static readonly logQueryJobAccessRoleName = 'log-query-job-access-role';
 
+  /**
+   * String to uniquely identify a mpa-monitoring-event message
+   */
+  static readonly mpaMonitoringEventMessageType = 'GemeenteNijmegen/mpa-monitoring-event';
+
 
   static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;
   static readonly ssmTopDeskUsername = (env: string) => `/slack-integration/${env}/topdesk/api/username`;

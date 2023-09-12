@@ -1,5 +1,5 @@
-import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
-import { Priority, Statics } from "../Statics";
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
+import { Priority, Statics } from '../statics';
 
 export class MonitoringEvent {
 
@@ -8,7 +8,7 @@ export class MonitoringEvent {
   private message: string;
   private context: {[key:string]: string};
 
-  constructor(){
+  constructor() {
     this.priority = 'high';
     this.title = '';
     this.message = '';
@@ -19,7 +19,7 @@ export class MonitoringEvent {
    * Set the title of the event
    * @param title
    */
-  addTitle(title: string){
+  addTitle(title: string) {
     this.title = title;
     return this;
   }
@@ -28,7 +28,7 @@ export class MonitoringEvent {
    * Set the message of the event
    * @param message
    */
-  addMessage(message: string){
+  addMessage(message: string) {
     this.message = message;
     return this;
   }
@@ -38,25 +38,25 @@ export class MonitoringEvent {
    * @param event
    * @param value
    */
-  addContext(name: string, value: string){
+  addContext(name: string, value: string) {
     this.context[name] = value;
     return this;
   }
 
   /**
    * Set priorty for the monitoring event
-   * @param priority 
+   * @param priority
    */
-  setPriority(priority: Priority){
+  setPriority(priority: Priority) {
     this.priority = priority;
     return this;
   }
 
   /**
    * Send the message to the topic corresponding to the priority
-   * @param client 
+   * @param client
    */
-  async send(client: SNSClient){
+  async send(client: SNSClient) {
 
     const topicArn = this.getNotificationTopic(this.priority);
 
@@ -68,10 +68,10 @@ export class MonitoringEvent {
     });
 
     // Get the topic ARN
-    await client.send(new PublishCommand({ 
+    await client.send(new PublishCommand({
       TopicArn: topicArn,
       Message: message,
-      
+
     }));
 
   }

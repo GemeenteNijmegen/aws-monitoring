@@ -67,7 +67,7 @@ export class OrgTrailMonitoring extends Construct {
   private getTopicArn(priority: Priority): string {
     const region = Stack.of(this).region;
     const account = Stack.of(this).account;
-    return `arn:aws:sns:${region}:${account}:landingzone-platform-events-${priority}`
+    return `arn:aws:sns:${region}:${account}:landingzone-platform-events-${priority}`;
   }
 
 }
