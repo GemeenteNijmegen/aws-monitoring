@@ -56,6 +56,8 @@ async function checkForAssumedRole(event: any) {
         return false;
       }
 
+      console.log('Processing', event);
+
       matchedRoles.forEach(async (matchedRole) => {
         const message = new MonitoringEvent();
         message.addTitle(`❗️ Role ${matchedRole.roleName} assumed in ${accountName}`);
