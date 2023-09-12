@@ -25,10 +25,14 @@ export async function handler(event: CloudWatchLogsEvent) {
  */
 async function processLogEvents(parsed: CloudWatchLogsDecodedData) {
   parsed.logEvents.forEach(async logEvent => {
-    const parsedLog = JSON.parse(logEvent.message);
-    //console.log('Processing log event', parsedLog);
-    await checkForAssumedRole(parsedLog);
-    await checkForKmsKeyUsage(parsedLog);
+    try {
+      const parsedLog = JSON.parse(logEvent.message);
+      //console.log('Processing log event', parsedLog);
+      await checkForAssumedRole(parsedLog);
+      await checkForKmsKeyUsage(parsedLog);
+    } catch (error) {
+      console.error('Failed to process OrgTrail event', error);
+    }
   });
 }
 
