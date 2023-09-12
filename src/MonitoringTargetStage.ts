@@ -8,6 +8,7 @@ import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
+import { MpaMonitoringStack } from './MpaMonitoringStack';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -35,8 +36,11 @@ export class MonitoringTargetStage extends Stage {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
-
     Aspects.of(this).add(new PermissionsBoundaryAspect());
+
+    new MpaMonitoringStack(this, 'mpa-monitoring', {
+      env: Statics.mpaEnvironment,
+    });
 
     props.deployToEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);

@@ -33,9 +33,9 @@ export class OrgTrailMonitoring extends Construct {
   }
 
   private addLogSubscriptionToOrgTrail(monitor: OrgTrailMonitorFunction, cloudTrailLogGroupName: string) {
-    const orgTrail = logs.LogGroup.fromLogGroupName(this, 'orgtrail-log-group', cloudTrailLogGroupName);
+    const orgTrail = logs.LogGroup.fromLogGroupName(this, 'log-group', cloudTrailLogGroupName);
 
-    new logs.SubscriptionFilter(this, 'orgtrail-log-subscription', {
+    new logs.SubscriptionFilter(this, 'log-subscription', {
       destination: new destinations.LambdaDestination(monitor),
       logGroup: orgTrail,
       filterPattern: logs.FilterPattern.any(
@@ -47,7 +47,7 @@ export class OrgTrailMonitoring extends Construct {
 
   private setupOrgTrailMonitoringLambda() {
 
-    const monitorFunction = new OrgTrailMonitorFunction(this, 'orgtrail-monitor', {
+    const monitorFunction = new OrgTrailMonitorFunction(this, 'monitor', {
       environment: {
         SNS_ALERTS_LOW: this.low.topicArn,
         SNS_ALERTS_MEDIUM: this.medium.topicArn,

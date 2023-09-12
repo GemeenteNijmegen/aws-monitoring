@@ -46,25 +46,25 @@ async function checkForAssumedRole(event: any) {
     const accountId = event.resources.accountId;
     const roleArn = event.resources.ARN;
     const principal = getUserIdentity(event.userIdentity);
-    
+
     const applicableConfigurations = getApplicableAccountConfigurations(accountId);
-    applicableConfigurations.forEach(async (conf) => {
-    
-      const accountName = conf.accountName;
-      const matchedRoles = conf.rolesToMonitor?.filter(conf => roleArn.endsWith(conf.roleName));
+    applicableConfigurations.forEach(async (configuration) => {
+
+      const accountName = configuration.accountName;
+      const matchedRoles = configuration.rolesToMonitor?.filter(roleConfiguration => roleArn.endsWith(roleConfiguration.roleName));
       if (!matchedRoles) {
         return false;
       }
-    
+
       matchedRoles.forEach(async (matchedRole) => {
-          const message = new MonitoringEvent();
-          message.addTitle(`❗️ Role ${matchedRole.roleName} assumed in ${accountName}`);
-          message.addMessage(matchedRole.description);
-          message.addContext('Account', accountName);
-          message.addContext('Principal', principal);
-          await message.send(client);
+        const message = new MonitoringEvent();
+        message.addTitle(`❗️ Role ${matchedRole.roleName} assumed in ${accountName}`);
+        message.addMessage(matchedRole.description);
+        message.addContext('Account', accountName);
+        message.addContext('Principal', principal);
+        await message.send(client);
       });
-    
+
       return true;
     });
 
@@ -76,16 +76,16 @@ async function checkForAssumedRole(event: any) {
 }
 
 function getUserIdentity(userIdentity: any) {
-  if(userIdentity?.type === 'AssumedRole') {
+  if (userIdentity?.type === 'AssumedRole') {
     return userIdentity.sessionContext?.sessionIssuer?.userName ?? userIdentity.arn;
   }
-  if(userIdentity?.type === 'AWSService') {
+  if (userIdentity?.type === 'AWSService') {
     return userIdentity.invokedBy;
   }
-  if(userIdentity?.type === 'AWSAccount') {
+  if (userIdentity?.type === 'AWSAccount') {
     return userIdentity.accountId;
   }
-  if(userIdentity?.type === 'IAMUser') {
+  if (userIdentity?.type === 'IAMUser') {
     return userIdentity.userName;
   }
   return 'unknown';
@@ -123,10 +123,10 @@ function parseMessageFromEvent(event: CloudWatchLogsEvent): CloudWatchLogsDecode
 
 /**
  * Check the configuration for applicable account configurations
- * @param account 
- * @returns 
+ * @param account
+ * @returns
  */
-function getApplicableAccountConfigurations(account: string){
+function getApplicableAccountConfigurations(account: string) {
   const applicableConfigurations = monitoringConfiguration.filter(conf => conf.accountId === account || conf.accountId === '*');
   return applicableConfigurations ?? [];
 }
