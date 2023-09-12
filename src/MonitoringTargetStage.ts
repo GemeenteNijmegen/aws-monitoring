@@ -6,9 +6,9 @@ import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { MpaMonitoringStack } from './MpaMonitoringStack';
 import { ParameterStack } from './ParameterStack';
 import { Statics } from './statics';
-import { MpaMonitoringStack } from './MpaMonitoringStack';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];

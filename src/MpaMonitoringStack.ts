@@ -1,6 +1,6 @@
-import { Stack } from "aws-cdk-lib";
-import { OrgTrailMonitoring } from "./OrgTrailMonitoring";
-import { Statics } from "./statics";
+import { Stack } from 'aws-cdk-lib';
+import { OrgTrailMonitoring } from './OrgTrailMonitoring';
+import { Statics } from './statics';
 
 export class MpaMonitoringStack extends Stack {
 
