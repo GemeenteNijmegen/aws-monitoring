@@ -42,20 +42,23 @@ async function processLogEvents(parsed: CloudWatchLogsDecodedData) {
  * @returns false if no assume rol event
  */
 async function checkForAssumedRole(event: any) {
-  if (event.eventName?.startsWith('AssumeRole')) {
+  if (event.eventName && event.eventName.startsWith('AssumeRole')) {
     return false;
   }
-  console.debug('AsuumeRole event found!', event);
 
   try {
     const resource = event.resources?.find((r:any) => r.type === 'AWS::IAM::Role');
+    if(!resource) {
+      console.error('No role resource found in event', event);
+      return false;
+    }
     const accountId = resource.accountId;
     const roleArn = resource.ARN;
     const principal = getUserIdentity(event.userIdentity);
 
     const applicableConfigurations = getApplicableAccountConfigurations(accountId);
     if(applicableConfigurations){
-      console.debug('Found applicable configurations');
+      console.debug('Found applicable configurations', applicableConfigurations);
     }
     applicableConfigurations.forEach(async (configuration) => {
 
