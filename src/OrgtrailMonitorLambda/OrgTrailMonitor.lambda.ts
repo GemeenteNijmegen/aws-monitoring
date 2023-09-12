@@ -26,7 +26,7 @@ export async function handler(event: CloudWatchLogsEvent) {
 async function processLogEvents(parsed: CloudWatchLogsDecodedData) {
   parsed.logEvents.forEach(async logEvent => {
     const parsedLog = JSON.parse(logEvent.message);
-    console.log('Processing log event', parsedLog);
+    //console.log('Processing log event', parsedLog);
     await checkForAssumedRole(parsedLog);
     await checkForKmsKeyUsage(parsedLog);
   });
@@ -69,7 +69,7 @@ async function checkForAssumedRole(event: any) {
     });
 
   } catch (error) {
-    console.error('Failed to check log for assed role', error);
+    //console.error('Failed to check log for assed role', error);
     throw error;
   }
   return false;
@@ -100,8 +100,8 @@ async function checkForKmsKeyUsage(event: any) {
   if (event.eventSource != 'kms.amazonaws.com') {
     return false;
   }
-  console.error('KMS KEY CHECK NOT IMPLEMENTED YET');
-  console.log(event);
+  //console.error('KMS KEY CHECK NOT IMPLEMENTED YET');
+  //console.log(event);
   return false;
 }
 
