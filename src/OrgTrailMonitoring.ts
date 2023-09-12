@@ -10,6 +10,7 @@ import { Priority } from './statics';
 
 export interface OrgTrailMonitoringProps {
   cloudTrailLogGroupName: string;
+  configurationBranchName: string;
 }
 
 export class OrgTrailMonitoring extends Construct {
@@ -27,7 +28,7 @@ export class OrgTrailMonitoring extends Construct {
     this.high = Topic.fromTopicArn(this, 'high', this.getTopicArn('high'));
     this.critical = Topic.fromTopicArn(this, 'critical', this.getTopicArn('critical'));
 
-    const monitor = this.setupOrgTrailMonitoringLambda();
+    const monitor = this.setupOrgTrailMonitoringLambda(props.configurationBranchName);
     this.addLogSubscriptionToOrgTrail(monitor, props.cloudTrailLogGroupName);
 
   }
@@ -45,7 +46,7 @@ export class OrgTrailMonitoring extends Construct {
     });
   }
 
-  private setupOrgTrailMonitoringLambda() {
+  private setupOrgTrailMonitoringLambda(configurationBranchName: string) {
 
     const monitorFunction = new OrgTrailMonitorFunction(this, 'monitor', {
       environment: {
@@ -53,6 +54,7 @@ export class OrgTrailMonitoring extends Construct {
         SNS_ALERTS_MEDIUM: this.medium.topicArn,
         SNS_ALERTS_HIGH: this.high.topicArn,
         SNS_ALERTS_CRITICAL: this.critical.topicArn,
+        BRANCH_NAME: configurationBranchName,
       },
     });
 

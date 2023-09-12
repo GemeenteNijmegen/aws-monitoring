@@ -1,12 +1,12 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
 import { MpaMonitoringStage } from './MpaMonitoringStack';
 import { Statics } from './statics';
 
-export interface PipelineStackProps extends StackProps{
+export interface PipelineStackProps extends StackProps, Configurable {
   branchName: string;
   deployToEnvironments: DeploymentEnvironment[];
   environmentName: string;
@@ -39,6 +39,7 @@ export class PipelineStack extends Stack {
 
     const mpaMonitoring = new MpaMonitoringStage(this, `mpa-monitoring-${this.environmentName}`, {
       env: Statics.mpaEnvironment,
+      configuration: props.configuration,
     });
     pipeline.addStage(mpaMonitoring);
   }

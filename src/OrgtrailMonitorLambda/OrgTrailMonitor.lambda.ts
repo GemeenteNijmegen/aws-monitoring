@@ -1,10 +1,11 @@
 import * as zlib from 'zlib';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
-import { monitoringConfiguration } from './Configuration';
-import { MonitoringEvent } from './MonitoringEvent';
+import { OrgTrailMonitorHandler } from './OrgTrailMonitorHandler';
+import { getConfiguration } from '../DeploymentEnvironments';
 
 const client = new SNSClient({ region: process.env.AWS_REGION });
+const deploymentEnvironments = getConfiguration(process.env.BRANCH_NAME!);
 
 /**
  * This lambda will process logs that are aggregated in the organizations
@@ -13,113 +14,11 @@ const client = new SNSClient({ region: process.env.AWS_REGION });
  *  - KMS key usage for specific keys in specific accounts
  *  - Role assumption events
  * @param event
- */
+*/
 export async function handler(event: CloudWatchLogsEvent) {
+  const orgTrailHandler = new OrgTrailMonitorHandler(deploymentEnvironments, client);
   const parsed = parseMessageFromEvent(event);
-  await processLogEvents(parsed);
-}
-
-/**
- * Loop trough multiple log events and process accordingly.
- * @param parsed
- */
-async function processLogEvents(parsed: CloudWatchLogsDecodedData) {
-  parsed.logEvents.forEach(async logEvent => {
-    try {
-      const parsedLog = JSON.parse(logEvent.message);
-      //console.log('Processing log event', parsedLog);
-      await checkForAssumedRole(parsedLog);
-      await checkForKmsKeyUsage(parsedLog);
-    } catch (error) {
-      console.error('Failed to process OrgTrail event', error);
-    }
-  });
-}
-
-/**
- * Check for role assumption events.
- * @param the log event
- * @returns false if no assume rol event
- */
-async function checkForAssumedRole(event: any) {
-  if (event.eventName && event.eventName.startsWith('AssumeRole')) {
-    return false;
-  }
-
-  try {
-    const resource = event.resources?.find((r:any) => r.type === 'AWS::IAM::Role');
-    if(!resource) {
-      console.error('No role resource found in event', event);
-      return false;
-    }
-    const accountId = resource.accountId;
-    const roleArn = resource.ARN;
-    const principal = getUserIdentity(event.userIdentity);
-
-    const applicableConfigurations = getApplicableAccountConfigurations(accountId);
-    if(applicableConfigurations){
-      console.debug('Found applicable configurations', applicableConfigurations);
-    }
-    applicableConfigurations.forEach(async (configuration) => {
-
-      const accountName = configuration.accountName;
-      const matchedRoles = configuration.rolesToMonitor?.filter(roleConfiguration => roleArn.includes(roleConfiguration.roleName));
-      if (!matchedRoles) {
-        return false;
-      }
-
-      console.log('Processing', event);
-
-      matchedRoles.forEach(async (matchedRole) => {
-        const message = new MonitoringEvent();
-        message.addTitle(`❗️ Role ${matchedRole.roleName} assumed in ${accountName}`);
-        message.addMessage(matchedRole.description);
-        message.addContext('Account', accountName);
-        message.addContext('Principal', principal);
-        await message.send(client);
-      });
-
-      return true;
-    });
-
-  } catch (error) {
-    //console.error('Failed to check log for assed role', error);
-    throw error;
-  }
-  return false;
-}
-
-function getUserIdentity(userIdentity: any) {
-  if (userIdentity?.type === 'AssumedRole') {
-    return userIdentity.sessionContext?.sessionIssuer?.userName ?? userIdentity.arn;
-  }
-  if (userIdentity?.type === 'AWSService') {
-    return userIdentity.invokedBy;
-  }
-  if (userIdentity?.type === 'AWSAccount') {
-    return userIdentity.accountId;
-  }
-  if (userIdentity?.type === 'IAMUser') {
-    return userIdentity.userName;
-  }
-  if (userIdentity?.type === 'SAMLUser'){
-    userIdentity.userName; // Used for SSO
-  }
-  return 'unknown';
-}
-
-
-/**
- * Check for KMS key usage.
- * @param logEvents
- */
-async function checkForKmsKeyUsage(event: any) {
-  if (event.eventSource != 'kms.amazonaws.com') {
-    return false;
-  }
-  //console.error('KMS KEY CHECK NOT IMPLEMENTED YET');
-  //console.log(event);
-  return false;
+  await orgTrailHandler.handleLogEvents(parsed);
 }
 
 /**
@@ -138,12 +37,3 @@ function parseMessageFromEvent(event: CloudWatchLogsEvent): CloudWatchLogsDecode
   }
 }
 
-/**
- * Check the configuration for applicable account configurations
- * @param account
- * @returns
- */
-function getApplicableAccountConfigurations(account: string) {
-  const applicableConfigurations = monitoringConfiguration.filter(conf => conf.accountId === account || conf.accountId === '*');
-  return applicableConfigurations ?? [];
-}

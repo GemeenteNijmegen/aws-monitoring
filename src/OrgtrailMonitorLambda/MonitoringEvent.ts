@@ -56,7 +56,7 @@ export class MonitoringEvent {
    * Send the message to the topic corresponding to the priority
    * @param client
    */
-  async send(client: SNSClient) {
+  async publishToPlatformTopic(client: SNSClient) {
 
     const topicArn = this.getNotificationTopic(this.priority);
 
