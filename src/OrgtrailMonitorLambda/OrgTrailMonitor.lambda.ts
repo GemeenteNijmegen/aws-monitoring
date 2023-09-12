@@ -41,6 +41,7 @@ async function checkForAssumedRole(event: any) {
   if (event.eventName != 'AssumeRole') {
     return false;
   }
+  console.debug('AsuumeRole event found!', event);
 
   try {
     const accountId = event.resources.accountId;
@@ -48,6 +49,9 @@ async function checkForAssumedRole(event: any) {
     const principal = getUserIdentity(event.userIdentity);
 
     const applicableConfigurations = getApplicableAccountConfigurations(accountId);
+    if(applicableConfigurations){
+      console.debug('Found applicable configurations');
+    }
     applicableConfigurations.forEach(async (configuration) => {
 
       const accountName = configuration.accountName;
