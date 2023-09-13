@@ -58,21 +58,26 @@ export class MonitoringEvent {
    */
   async publishToPlatformTopic(client: SNSClient) {
 
-    const topicArn = this.getNotificationTopic(this.priority);
+    try {
 
-    const message = JSON.stringify({
-      messageType: Statics.mpaMonitoringEventMessageType,
-      title: this.title,
-      message: this.message,
-      context: this.context,
-    });
-
-    // Get the topic ARN
-    await client.send(new PublishCommand({
-      TopicArn: topicArn,
-      Message: message,
-
-    }));
+      const topicArn = this.getNotificationTopic(this.priority);
+  
+      const message = JSON.stringify({
+        messageType: Statics.mpaMonitoringEventMessageType,
+        title: this.title,
+        message: this.message,
+        context: this.context,
+      });
+  
+      // Get the topic ARN
+      await client.send(new PublishCommand({
+        TopicArn: topicArn,
+        Message: message,
+      }));
+      console.debug('Message send!');
+    } catch (error) {
+      console.error('Failed to publish to platform topic', error);
+    }
 
   }
 
