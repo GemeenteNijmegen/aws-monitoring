@@ -28,6 +28,7 @@ const project = new GemeenteNijmegenCdkApp({
   devDeps: [
     '@gemeentenijmegen/modules-projen',
     'axios-mock-adapter',
+    'aws-sdk-client-mock',
   ],
   /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */

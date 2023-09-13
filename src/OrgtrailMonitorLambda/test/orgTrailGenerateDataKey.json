@@ -1,0 +1,34 @@
+{
+  "eventVersion": "1.08",
+  "userIdentity": { "type": "AWSService", "invokedBy": "logs.amazonaws.com" },
+  "eventTime": "2023-09-12T14:01:07Z",
+  "eventSource": "kms.amazonaws.com",
+  "eventName": "GenerateDataKey",
+  "awsRegion": "eu-central-1",
+  "sourceIPAddress": "logs.amazonaws.com",
+  "userAgent": "logs.amazonaws.com",
+  "requestParameters": {
+    "keyId": "arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx",
+    "encryptionContext": {
+      "aws:s3:arn": "xxxxx",
+      "aws:logs:arn": "arn:aws:logs:eu-central-1:123456789012:log-group:/landingzone/vpc/flow-logs"
+    },
+    "keySpec": "AES_256"
+  },
+  "responseElements": null,
+  "requestID": "8d2d07f4-cf83-41ed-aeb7-2328d5fd1569",
+  "eventID": "0310e606-d400-4cda-8d81-8283cdd5891a",
+  "readOnly": true,
+  "resources": [
+    {
+      "accountId": "123456789012",
+      "type": "AWS::KMS::Key",
+      "ARN": "arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx"
+    }
+  ],
+  "eventType": "AwsApiCall",
+  "managementEvent": true,
+  "recipientAccountId": "123456789012",
+  "sharedEventID": "xxxxx-59cf-4edd-a249-875f300a0b03",
+  "eventCategory": "Management"
+}

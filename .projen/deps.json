@@ -29,6 +29,10 @@
       "type": "build"
     },
     {
+      "name": "aws-sdk-client-mock",
+      "type": "build"
+    },
+    {
       "name": "axios-mock-adapter",
       "type": "build"
     },

@@ -1,0 +1,61 @@
+{
+  "eventVersion": "1.08",
+  "userIdentity": {
+    "type": "SAMLUser",
+    "principalId": "XXXX=:test@example.nl",
+    "userName": "test@example.nl",
+    "identityProvider": "XXXX="
+  },
+  "eventTime": "2023-09-12T12:46:44Z",
+  "eventSource": "sts.amazonaws.com",
+  "eventName": "AssumeRoleWithSAML",
+  "awsRegion": "eu-central-1",
+  "sourceIPAddress": "18.156.91.192",
+  "requestParameters": {
+    "sAMLAssertionID": "_be9ad3e5-7391-4b43-963e-3c678f2adf87",
+    "roleSessionName": "test@example.nl",
+    "roleArn": "arn:aws:iam::123456789012:role/aws-reserved/sso.amazonaws.com/eu-central-1/AWSReservedSSO_role-name_xxxx",
+    "principalArn": "arn:aws:iam::123456789012:saml-provider/AWSSSO_XXX_DO_NOT_DELETE",
+    "durationSeconds": 28800
+  },
+  "responseElements": {
+    "credentials": {
+      "accessKeyId": "XXXX",
+      "sessionToken": "XXXX",
+      "expiration": "Sep 12, 2023, 8:46:43 PM"
+    },
+    "assumedRoleUser": {
+      "assumedRoleId": "XXXX:test@example.nl",
+      "arn": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_role-name_xxxx/test@example.nl"
+    },
+    "subject": "test@example.nl",
+    "subjectType": "persistent",
+    "issuer": "https://portal.sso.eu-central-1.amazonaws.com/saml/assertion/XXXX",
+    "audience": "https://signin.aws.amazon.com/saml",
+    "nameQualifier": "XXXX="
+  },
+  "requestID": "68c69644-2623-411a-badb-ac508d56f2",
+  "eventID": "f9347ada-7c16-415c-b689-0280b4f293",
+  "readOnly": true,
+  "resources": [
+    {
+      "accountId": "123456789012",
+      "type": "AWS::IAM::Role",
+      "ARN": "arn:aws:iam::123456789012:role/aws-reserved/sso.amazonaws.com/eu-central-1/AWSReservedSSO_role-name_xxxx"
+    },
+    {
+      "accountId": "123456789012",
+      "type": "AWS::IAM::SAMLProvider",
+      "ARN": "arn:aws:iam::123456789012:saml-provider/AWSSSO_1038f_DO_NOT_DELETE"
+    }
+  ],
+  "eventType": "AwsApiCall",
+  "managementEvent": true,
+  "recipientAccountId": "123456789012",
+  "eventCategory": "Management",
+  "tlsDetails": {
+    "tlsVersion": "TLSv1.2",
+    "cipherSuite": "ECDHE-RSA-AES128-GCM-SHA256",
+    "clientProvidedHostHeader": "sts.eu-central-1.amazonaws.com"
+  }
+}

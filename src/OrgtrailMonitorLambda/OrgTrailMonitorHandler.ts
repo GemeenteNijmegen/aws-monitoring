@@ -56,7 +56,7 @@ export class OrgTrailMonitorHandler {
   }
 
   private checkEventAgainstKeyRule(cloudTrailEvent: any, rule: MonitoringRule) {
-    if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com' && rule.keyMonitoring?.eventNames.includes(cloudTrailEvent.eventName)) {
+    if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com' || !rule.keyMonitoring?.eventNames.includes(cloudTrailEvent.eventName)) {
       return false; // Not a KMS event
     }
 

@@ -1,6 +1,5 @@
 import { App, Aspects, Stack } from 'aws-cdk-lib';
 import { Annotations, Match, Template } from 'aws-cdk-lib/assertions';
-import { FilterPattern } from 'aws-cdk-lib/aws-logs';
 import { AwsSolutionsChecks } from 'cdk-nag';
 import { MonitoredAccountStack } from '../src/MonitoredAccountStack';
 
@@ -39,22 +38,4 @@ describe('cdk-nag AwsSolutions Pack', () => {
     );
     expect(errors).toHaveLength(0);
   });
-});
-
-
-test('filter pattern', () => {
-  const p = FilterPattern.all(
-    FilterPattern.any(
-      FilterPattern.stringValue('$.errorCode', '=', 'AccessDenied'),
-      FilterPattern.stringValue('$.errorCode', '=', 'UnauthorizedOperation'),
-    ),
-    FilterPattern.stringValue('$.userIdentity.sessionContext.sessionIssuer.userName', '!=', 'oblcc-capacity'),
-    FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:b.withaar'),
-    FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.dessing'),
-    FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:m.vandijk'),
-    FilterPattern.stringValue('$.userIdentity.principalId', '!=', '*:j.vanderborg'),
-  );
-
-  console.log(p.logPatternString);
-  console.log(p.jsonPatternString);
 });
