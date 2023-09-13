@@ -144,7 +144,7 @@ export class OrgTrailMonitorHandler {
       return userIdentity.userName;
     }
     if (userIdentity?.type === 'SAMLUser') {
-      userIdentity.userName; // Used for SSO
+      return userIdentity.userName; // Used for SSO
     }
     return JSON.stringify(userIdentity);
   }
