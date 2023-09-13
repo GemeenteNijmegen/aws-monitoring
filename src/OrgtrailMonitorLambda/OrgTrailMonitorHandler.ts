@@ -38,6 +38,7 @@ export class OrgTrailMonitorHandler {
       if (message) {
         message.addContext('Account', accountConfiguration?.accountName ?? accountId);
         console.info('Event matched, sending message', JSON.stringify(message, null, 4));
+        console.info('Marched rule', JSON.stringify(rule, null, 4));
         await message.publishToPlatformTopic(this.client);
       }
     });
