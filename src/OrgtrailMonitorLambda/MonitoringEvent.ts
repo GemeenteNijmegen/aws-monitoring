@@ -61,14 +61,14 @@ export class MonitoringEvent {
     try {
 
       const topicArn = this.getNotificationTopic(this.priority);
-  
+
       const message = JSON.stringify({
         messageType: Statics.mpaMonitoringEventMessageType,
         title: this.title,
         message: this.message,
         context: this.context,
       });
-  
+
       // Get the topic ARN
       await client.send(new PublishCommand({
         TopicArn: topicArn,

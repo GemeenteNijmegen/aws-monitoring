@@ -309,21 +309,20 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'sandbox-new-lz',
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
-    globalMonitoringRules: [
-      {
-        roleMonitoring: {
-          roleName: 'lz-platform-operator-ep',
-        },
-        description: 'EP role used!',
-        priority: 'critical',
-      },
-    ],
     deployToEnvironments: [
       {
         accountName: 'workload-test',
         env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
-
+        accountSpecificMonitoringRules: [
+          {
+            roleMonitoring: {
+              roleName: 'lz-platform-operator-ep',
+            },
+            description: 'EP role used!',
+            priority: 'critical',
+          },
+        ],
         queryDefinitions: [
           {
             name: 'random-log-group-query',
