@@ -37,6 +37,7 @@ export class OrgTrailMonitorHandler {
       const message = this.checkEventAgainstRule(cloudTrailEvent, rule);
       if (message) {
         message.addContext('Account', accountConfiguration?.accountName ?? accountId);
+        console.info('Event matched', JSON.stringify(message, null, 4));
         await message.publishToPlatformTopic(this.client);
       }
     });
