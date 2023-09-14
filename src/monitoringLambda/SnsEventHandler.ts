@@ -1,6 +1,7 @@
 import { HandledEvent, IHandler, Priority } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
+import { Statics } from '../statics';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -78,6 +79,11 @@ const events: Record<string, Event> = {
     formatter: (message, account, priority) => new OrgTrailMessageFormatter(message, account, priority),
     priority: 'high',
   },
+  'CustomSnsMessage': {
+    shouldTriggerAlert: () => true,
+    formatter: (message, account, priority) => new CustomSnsMessageFormatter(message, account, priority),
+    priority: 'low',
+  },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
     formatter: (message, account, priority) => new UnhandledEventFormatter(message, account, priority),
@@ -151,6 +157,9 @@ export function getEventType(message: any, event?: any): keyof typeof events {
     // detect alarms from mpa account
     if (message?.AlarmName) {
       return 'CloudWatch Alarm State Change';
+    }
+    if (message?.messageType == Statics.mpaMonitoringEventMessageType) {
+      return 'CustomSnsMessage';
     }
   }
   return 'unhandledEvent';
