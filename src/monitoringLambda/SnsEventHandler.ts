@@ -79,7 +79,7 @@ const events: Record<string, Event> = {
     formatter: (message, account, priority) => new OrgTrailMessageFormatter(message, account, priority),
     priority: 'high',
   },
-  'CustomSnsMessage': {
+  'OrgTrailMonitoring': {
     shouldTriggerAlert: () => true,
     formatter: (message, account, priority) => new CustomSnsMessageFormatter(message, account, priority),
     priority: 'low',

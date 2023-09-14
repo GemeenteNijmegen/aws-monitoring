@@ -73,7 +73,7 @@ export class MonitoringEvent {
       // Get the topic ARN
       const publish = new PublishCommand({
         TopicArn: topicArn,
-        Subject: 'MPAMonitoringEvent',
+        Subject: 'OrgTrailMonitoring',
         Message: message,
       });
       console.info('Publish command:', publish);
