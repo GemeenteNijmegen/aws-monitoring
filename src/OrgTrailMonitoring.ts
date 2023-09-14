@@ -57,7 +57,7 @@ export class OrgTrailMonitoring extends Construct {
       description: `Role for OrgTrailMonitorFunction ${envSuffix}`,
       roleName: `orgtrail-monitoring-role-${envSuffix}`,
       managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName('AWSLambdaBasicExecutionRole'),
+        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
       ],
     });
 
