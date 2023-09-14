@@ -71,13 +71,16 @@ export class MonitoringEvent {
       console.info('Prepared message', message);
 
       // Get the topic ARN
-      await client.send(new PublishCommand({
+      const publish = new PublishCommand({
         TopicArn: topicArn,
         Message: message,
-      }));
+      });
+      console.info('Publish command:', publish)
+      await client.send(publish);
       console.info('Message send!');
     } catch (error) {
       console.error('Failed to publish to platform topic', error);
+      throw Error('Failed to publish to platform SNS topic');
     }
 
   }
