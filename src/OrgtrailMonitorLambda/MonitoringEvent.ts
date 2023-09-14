@@ -76,7 +76,7 @@ export class MonitoringEvent {
         Subject: 'MPAMonitoringEvent',
         Message: message,
       });
-      console.info('Publish command:', publish)
+      console.info('Publish command:', publish);
       await client.send(publish);
       console.info('Message send!');
     } catch (error) {

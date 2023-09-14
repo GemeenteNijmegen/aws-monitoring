@@ -1,4 +1,4 @@
-import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
+import { SNSClient } from '@aws-sdk/client-sns';
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { MonitoringEvent } from './MonitoringEvent';
 import { Configuration, MonitoringRule } from '../DeploymentEnvironments';
@@ -39,17 +39,9 @@ export class OrgTrailMonitorHandler {
         message.addContext('Account', accountConfiguration?.accountName ?? accountId);
         console.info('Event matched, sending message', JSON.stringify(message, null, 4));
         console.info('Marched rule', JSON.stringify(rule, null, 4));
-        await this.test();
         await message.publishToPlatformTopic(this.client);
       }
     });
-  }
-
-  private async test(){
-    await new SNSClient().send(new PublishCommand({
-      Message: 'Test',
-      TopicArn: process.env.SNS_ALERTS_CRITICAL!,
-    }));
   }
 
   private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule) {

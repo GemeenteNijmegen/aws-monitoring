@@ -1,5 +1,5 @@
 import * as zlib from 'zlib';
-import { SNSClient } from '@aws-sdk/client-sns';
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import { OrgTrailMonitorHandler } from './OrgTrailMonitorHandler';
 import { getConfiguration } from '../DeploymentEnvironments';
@@ -18,7 +18,20 @@ const deploymentEnvironments = getConfiguration(process.env.BRANCH_NAME!);
 export async function handler(event: CloudWatchLogsEvent) {
   const orgTrailHandler = new OrgTrailMonitorHandler(deploymentEnvironments, client);
   const parsed = parseMessageFromEvent(event);
+
+  if (parsed.logEvents[0].message.includes('095798249317')) {
+    // Some event in gn-workload-test
+    await test();
+  }
+
   await orgTrailHandler.handleLogEvents(parsed);
+}
+
+async function test() {
+  await new SNSClient().send(new PublishCommand({
+    Message: 'Test',
+    TopicArn: process.env.SNS_ALERTS_LOW!,
+  }));
 }
 
 /**
