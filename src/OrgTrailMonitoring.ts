@@ -3,14 +3,17 @@ import {
   aws_logs_destinations as destinations,
   Stack,
 } from 'aws-cdk-lib';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Key } from 'aws-cdk-lib/aws-kms';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { Construct } from 'constructs';
 import { OrgTrailMonitorFunction } from './OrgtrailMonitorLambda/OrgTrailMonitor-function';
-import { Priority } from './statics';
+import { Priority, Statics } from './statics';
 
 export interface OrgTrailMonitoringProps {
   cloudTrailLogGroupName: string;
   configurationBranchName: string;
+  isProduction?: boolean;
 }
 
 export class OrgTrailMonitoring extends Construct {
@@ -28,7 +31,7 @@ export class OrgTrailMonitoring extends Construct {
     this.high = Topic.fromTopicArn(this, 'high', this.getTopicArn('high'));
     this.critical = Topic.fromTopicArn(this, 'critical', this.getTopicArn('critical'));
 
-    const monitor = this.setupOrgTrailMonitoringLambda(props.configurationBranchName);
+    const monitor = this.setupOrgTrailMonitoringLambda(props);
     this.addLogSubscriptionToOrgTrail(monitor, props.cloudTrailLogGroupName);
 
   }
@@ -46,22 +49,37 @@ export class OrgTrailMonitoring extends Construct {
     });
   }
 
-  private setupOrgTrailMonitoringLambda(configurationBranchName: string) {
+  private setupOrgTrailMonitoringLambda(props: OrgTrailMonitoringProps) {
+
+    const envSuffix = props.isProduction ? 'production' : 'development';
+    const lambdaRole = new Role(this, 'monitor-role', {
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      description: `Role for OrgTrailMonitorFunction ${envSuffix}`,
+      roleName: `orgtrail-monitoring-role-${envSuffix}`,
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('AWSLambdaBasicExecutionRole'),
+      ],
+    });
+
+    const topicKey = Key.fromKeyArn(this, 'topic-key', Statics.mpaPlatformTopicKmsKeyArn);
 
     const monitorFunction = new OrgTrailMonitorFunction(this, 'monitor', {
+      role: lambdaRole,
       environment: {
         SNS_ALERTS_LOW: this.low.topicArn,
         SNS_ALERTS_MEDIUM: this.medium.topicArn,
         SNS_ALERTS_HIGH: this.high.topicArn,
         SNS_ALERTS_CRITICAL: this.critical.topicArn,
-        BRANCH_NAME: configurationBranchName,
+        BRANCH_NAME: props.configurationBranchName,
       },
     });
 
+    // Allow use of SNS topics (should also be updated in lz)
     this.low.grantPublish(monitorFunction);
     this.medium.grantPublish(monitorFunction);
     this.high.grantPublish(monitorFunction);
     this.critical.grantPublish(monitorFunction);
+    topicKey.grant(monitorFunction, 'kms:Decrypt', 'kms:GenerateDataKey*');
 
     return monitorFunction;
   }
