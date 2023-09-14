@@ -46,7 +46,7 @@ export class OrgTrailMonitorHandler {
   }
 
   private async test(){
-    await this.client.send(new PublishCommand({
+    await new SNSClient().send(new PublishCommand({
       Message: 'Test',
       TopicArn: process.env.SNS_ALERTS_CRITICAL!,
     }));
