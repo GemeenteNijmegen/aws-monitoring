@@ -68,13 +68,14 @@ export class MonitoringEvent {
         message: this.message,
         context: this.context,
       });
+      console.info('Prepared message', message);
 
       // Get the topic ARN
       await client.send(new PublishCommand({
         TopicArn: topicArn,
         Message: message,
       }));
-      console.debug('Message send!');
+      console.info('Message send!');
     } catch (error) {
       console.error('Failed to publish to platform topic', error);
     }
