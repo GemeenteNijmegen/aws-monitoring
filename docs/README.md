@@ -43,6 +43,69 @@ flowchart TD
     end
 ```
 
+<details>
+  <summary>A more detailed diagram</summary>
+  Below we'll find a more detailed diagram of the monitoring troughout the landingzone.
+  
+```mermaid
+flowchart TD
+    pipeline[[pipeline]]
+    workloadEventbridge[/eventbridge events/]
+    orgtrail[/orgtrail/]
+    sns-account[SNS in workload-account]
+    sns-mpa[SNS in mpa-account]
+    sns-audit[SNS in audit-account]
+    monitoringLambda[[Monitoring-lambda]]
+    securityHubOverviewLambda[[SecurityHubOverview-lambda]]
+    xebiaOrgTrailLambda[[OrgTrail monitor xebia]]
+    nijmegenOrgTrailLambda[[OrgTrail monitor Nijmegen]]
+    slack([Slack])
+    securityhub[Securityhub]
+    inspector[Inspector]
+    guardduty[GuardDuty]
+    cloudwatch[CloudWatch in workload-account]
+    securityHubEventbridgeEvent[/eventbridge event/]
+
+    subgraph mpa-account
+        orgtrail
+        sns-mpa
+        xebiaOrgTrailLambda
+        nijmegenOrgTrailLambda
+        orgtrail -- events --> nijmegenOrgTrailLambda
+        orgtrail -- events --> xebiaOrgTrailLambda
+        nijmegenOrgTrailLambda -- notifications --> sns-mpa
+    end
+    
+    sns-account -- forwarded --> sns-audit
+    sns-mpa -- forwarded --> sns-audit
+
+    subgraph workload-accounts
+        cloudwatch
+        workloadEventbridge
+        sns-account
+        workloadEventbridge -- subscriptions --> sns-account
+        cloudwatch -- alarms and log subscriptions --> sns-account
+        xebiaOrgTrailLambda -- push metrics --> cloudwatch
+    end
+
+    subgraph audit-account
+        monitoringLambda
+        securityHubOverviewLambda
+        securityhub
+        inspector -- findings --> securityhub
+        guardduty -- findings --> securityhub
+        securityhub --> securityHubEventbridgeEvent --> sns-audit
+        sns-audit --> monitoringLambda
+        monitoringLambda --> slack
+        securityhub -- findings --> securityHubOverviewLambda
+        securityHubOverviewLambda -- high and ciritcal findings --> slack
+    end
+
+    pipeline -- MonitoredAccountStack --> workload-accounts
+    pipeline -- "Parameter- and AggregatorStack" --> audit-account
+    pipeline -- MpaMonitoringStack --> mpa-account
+```
+</details> 
 
 ## Slack interaction
 [Slack interaction documentation can be found here](./SlackInteraction.md)
