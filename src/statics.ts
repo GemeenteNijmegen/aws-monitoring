@@ -57,9 +57,9 @@ export abstract class Statics {
   static readonly mpaMonitoringEventMessageType = 'GemeenteNijmegen/mpa-monitoring-event';
 
   /**
-   * MPA sns platform topic kms key arn
+   * MPA sns platform topic kms key arn (ssm)
    */
-  static readonly mpaPlatformTopicKmsKeyArn = 'arn:aws:kms:eu-central-1:427617903428:key/e6d1bfa8-9052-46b1-91ac-6badc6c73191';
+  static readonly ssmMpaPlatformTopicKmsKeyArn = '/landingzone/platform-events/kms-key-arn';
 
   /**
    * Organisation log trail name
