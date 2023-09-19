@@ -1,6 +1,5 @@
 import { SlackMessage } from './SlackMessage';
-
-export type Priority = 'low' | 'avg' | 'high';
+import { Priority } from '../statics';
 
 export interface HandledEvent {
   priority: Priority;

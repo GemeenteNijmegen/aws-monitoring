@@ -1,7 +1,7 @@
-import { HandledEvent, IHandler, Priority } from './IHandler';
+import { HandledEvent, IHandler } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
-import { Statics } from '../statics';
+import { Priority, Statics } from '../statics';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -18,9 +18,25 @@ const excludedAlarms = [
 ];
 
 interface Event {
+  /**
+   * Function that returns if, given the message, it should be send to slack.
+   * @param message
+   * @returns
+   */
   shouldTriggerAlert: (message?: any) => boolean;
+  /**
+   * Function that should return an instance of MessageFormatter
+   * @param message
+   * @param account
+   * @param priority
+   * @returns
+   */
   formatter: (message: any, account: string, priority: string) => MessageFormatter<any>;
-  priority: Priority;
+  /**
+   * Sets the priority of the message.
+   * @default - the sns topic priority is used (e.g. the priority of the topic receiving the event)
+   */
+  priority?: Priority;
 }
 
 const events: Record<string, Event> = {
@@ -79,10 +95,9 @@ const events: Record<string, Event> = {
     formatter: (message, account, priority) => new OrgTrailMessageFormatter(message, account, priority),
     priority: 'high',
   },
-  'OrgTrailMonitoring': {
+  'CustomSnsMessage': {
     shouldTriggerAlert: () => true,
     formatter: (message, account, priority) => new CustomSnsMessageFormatter(message, account, priority),
-    priority: 'low',
   },
   'unhandledEvent': {
     shouldTriggerAlert: () => false,
@@ -101,14 +116,16 @@ export class SnsEventHandler implements IHandler {
 
   handle(event: any): HandledEvent | false {
 
+    const topicPriority = parsePriorityFromEvent(event);
     const message = parseMessageFromEvent(event);
     if (!eventShouldTriggerAlert(event)) {
       return false;
     }
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
-    const formatter = events[eventType].formatter(message, account, events[eventType].priority);
-    const priority = events[eventType].priority;
+
+    const priority = events[eventType].priority ?? topicPriority;
+    const formatter = events[eventType].formatter(message, account, priority);
 
     return {
       priority: priority,
@@ -120,6 +137,24 @@ export class SnsEventHandler implements IHandler {
     const account = message?.account || message?.recipientAccountId || message?.AccountId;
     return account ?? '';
   }
+}
+
+export function parsePriorityFromEvent(event: any) : Priority {
+  try {
+    const topicArn = event?.Records[0]?.Sns?.TopicArn;
+    if (topicArn.endsWith('high')) {
+      return 'high';
+    } else if (topicArn.endsWith('low')) {
+      return 'low';
+    } else if (topicArn.endsWith('medium')) {
+      return 'medium';
+    } else {
+      return 'critical';
+    }
+  } catch (error) {
+    console.error('Could not find priority, defaulting to critical', error);
+  }
+  return 'critical';
 }
 
 export function parseMessageFromEvent(event: any): any {
