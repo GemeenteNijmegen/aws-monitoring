@@ -303,6 +303,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-sociale-recherche-accp',
+        enableDevopsGuru: false,
+        env: {
+          account: '543802458112',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sociale-recherche-prod',
+        enableDevopsGuru: false, // No workload yet, enable later
+        env: {
+          account: '958875843009',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
