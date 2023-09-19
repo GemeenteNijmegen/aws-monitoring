@@ -7,7 +7,7 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
-import { Statics } from './statics';
+import { Priority, Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -17,7 +17,7 @@ export interface MonitoringTargetStageProps extends StageProps {
 
 export interface EventSubscriptionConfiguration {
   id: string;
-  criticality: 'low' | 'medium' | 'high' | 'critical';
+  criticality: Priority;
   pattern: EventPattern;
   ruleDescription: string;
 }
