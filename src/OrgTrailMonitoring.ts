@@ -6,10 +6,10 @@ import {
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Key } from 'aws-cdk-lib/aws-kms';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { OrgTrailMonitorFunction } from './OrgtrailMonitorLambda/OrgTrailMonitor-function';
 import { Priority, Statics } from './statics';
-import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface OrgTrailMonitoringProps {
   cloudTrailLogGroupName: string;
@@ -68,7 +68,7 @@ export class OrgTrailMonitoring extends Construct {
      * We need to allow the role to use the KMS key aswell.
      * @see https://github.com/GemeenteNijmegen/aws-landingzone/blob/main/templates/mpa/platform-events/mpa-platform-events-sns-topics.cfn.yaml#L111
      */
-    const topicKeyArn = StringParameter.valueForStringParameter(this, Statics.ssmMpaPlatformTopicKmsKeyArn)
+    const topicKeyArn = StringParameter.valueForStringParameter(this, Statics.ssmMpaPlatformTopicKmsKeyArn);
     const topicKey = Key.fromKeyArn(this, 'topic-key', topicKeyArn);
 
     const monitorFunction = new OrgTrailMonitorFunction(this, 'monitor', {
