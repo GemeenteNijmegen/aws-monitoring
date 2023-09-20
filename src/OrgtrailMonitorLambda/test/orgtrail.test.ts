@@ -140,7 +140,7 @@ describe('orgtrail', () => {
           priority: 'high',
           keyMonitoring: {
             keyArn: keyArn,
-            eventNames: ['GenerateDataKey'],
+            includeEvents: ['GenerateDataKey'],
           },
         },
       ],
@@ -183,7 +183,38 @@ describe('orgtrail', () => {
               priority: 'high',
               keyMonitoring: {
                 keyArn: keyArn,
-                eventNames: ['ABC'],
+                includeEvents: ['ABC'],
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+    const events = convertToLogEvents(generateDataKeyEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(0);
+  });
+
+  test('kms key exclude event', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+          monitoringRules: [
+            {
+              description: 'test',
+              priority: 'high',
+              keyMonitoring: {
+                keyArn: keyArn,
+                excludeEvents: ['GenerateDataKey'],
               },
             },
           ],
@@ -207,7 +238,7 @@ describe('orgtrail', () => {
           priority: 'high',
           keyMonitoring: {
             keyArn: keyArn,
-            eventNames: ['GenerateDataKey'],
+            includeEvents: ['GenerateDataKey'],
           },
         },
         {

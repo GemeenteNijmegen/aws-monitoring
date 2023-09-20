@@ -215,7 +215,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             priority: 'medium',
             roleMonitoring: {
               roleName: 'yivi-admin',
-            }
+            },
           },
           {
             description: 'Yivi KMS key used! (acceptance)',
@@ -223,8 +223,8 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             keyMonitoring: {
               keyArn: 'arn:aws:kms:eu-central-1:528030426040:key/880d7714-e645-46ea-a158-2adedb71b964',
               excludeEvents: ['GetKeyRotationStatus', 'DescribeKey'],
-            }
-          }
+            },
+          },
         ],
       },
       {
@@ -240,9 +240,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             priority: 'critical',
             roleMonitoring: {
               roleName: 'yivi-admin',
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         accountName: 'gn-mijn-nijmegen-accp',
