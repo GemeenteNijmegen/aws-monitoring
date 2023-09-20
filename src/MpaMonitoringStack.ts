@@ -23,6 +23,7 @@ export class MpaMonitoringStack extends Stack {
     new OrgTrailMonitoring(this, 'orgtrail', {
       cloudTrailLogGroupName: Statics.orgTrailLogGroupName,
       configurationBranchName: props.configuration.branchName,
+      environmentName: props.configuration.environmentName,
     });
   }
 }
