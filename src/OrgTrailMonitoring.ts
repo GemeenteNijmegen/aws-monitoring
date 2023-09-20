@@ -14,7 +14,7 @@ import { Priority, Statics } from './statics';
 export interface OrgTrailMonitoringProps {
   cloudTrailLogGroupName: string;
   configurationBranchName: string;
-  isProduction?: boolean;
+  environmentName: string;
 }
 
 export class OrgTrailMonitoring extends Construct {
@@ -52,11 +52,10 @@ export class OrgTrailMonitoring extends Construct {
 
   private setupOrgTrailMonitoringLambda(props: OrgTrailMonitoringProps) {
 
-    const envSuffix = props.isProduction ? 'production' : 'development';
     const lambdaRole = new Role(this, 'monitor-role', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      description: `Role for OrgTrailMonitorFunction ${envSuffix}`,
-      roleName: `orgtrail-monitoring-role-${envSuffix}`,
+      description: `Role for OrgTrailMonitorFunction ${props.environmentName}`,
+      roleName: `orgtrail-monitoring-role-${props.environmentName}`,
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
       ],
