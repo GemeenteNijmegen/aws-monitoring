@@ -37,11 +37,19 @@ export class PipelineStack extends Stack {
     });
     pipeline.addStage(monitoring);
 
-    const mpaMonitoring = new MpaMonitoringStage(this, `mpa-monitoring-${this.environmentName}`, {
-      env: Statics.mpaEnvironment,
-      configuration: props.configuration,
-    });
-    pipeline.addStage(mpaMonitoring);
+    /**
+     * We kunnen maar 2 log subscriptions hebben op de orgtrail log groep.
+     * Een van deze posities wordt gevuld door de landingzone orgtrail monitoring lambda (van Xebia).
+     * De ander wordt gevuld door dit project. Daarom deployen we dit alleen in productie en niet
+     * development.
+     */
+    if (props.isProduction) {
+      const mpaMonitoring = new MpaMonitoringStage(this, `mpa-monitoring-${this.environmentName}`, {
+        env: Statics.mpaEnvironment,
+        configuration: props.configuration,
+      });
+      pipeline.addStage(mpaMonitoring);
+    }
   }
 
   pipeline(source: pipelines.CodePipelineSource): pipelines.CodePipeline {
