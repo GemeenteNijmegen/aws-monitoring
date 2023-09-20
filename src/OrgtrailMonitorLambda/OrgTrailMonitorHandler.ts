@@ -54,7 +54,7 @@ export class OrgTrailMonitorHandler {
     if (rule.roleMonitoring) {
       return this.checkEventAgainstRoleRule(cloudTrailEvent, rule);
     }
-    if(rule.secretMonitoring) {
+    if (rule.secretMonitoring) {
       return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
     }
     return undefined;

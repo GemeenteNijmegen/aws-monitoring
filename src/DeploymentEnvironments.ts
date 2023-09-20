@@ -134,7 +134,7 @@ export interface MonitoringRule {
      * Alert on all events except events included here
      */
     excludeEvents?: string[];
-  }
+  };
 }
 
 /**
