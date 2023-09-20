@@ -23,10 +23,12 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-cloudwatch-logs',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-sts',
+    '@aws-sdk/client-sns',
   ],
   devDeps: [
     '@gemeentenijmegen/modules-projen',
     'axios-mock-adapter',
+    'aws-sdk-client-mock',
   ],
   /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */

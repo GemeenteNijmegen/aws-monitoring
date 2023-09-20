@@ -55,6 +55,9 @@
           "spawn": "bundle:monitoringLambda/test/monitoring.lambda"
         },
         {
+          "spawn": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda"
+        },
+        {
           "spawn": "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda"
         },
         {
@@ -116,6 +119,24 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/monitoringLambda/test/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/test/monitoring.lambda/index.js\" --external:aws-sdk --watch"
+        }
+      ]
+    },
+    "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda": {
+      "name": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda",
+      "description": "Create a JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --external:aws-sdk"
+        }
+      ]
+    },
+    "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda:watch": {
+      "name": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --external:aws-sdk --watch"
         }
       ]
     },

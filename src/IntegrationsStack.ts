@@ -84,6 +84,7 @@ export class IntegrationsStack extends Stack {
     const queue = new Queue(this, 'interactivity-queue', {
       enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
+      fifo: true,
     });
     return queue;
   }

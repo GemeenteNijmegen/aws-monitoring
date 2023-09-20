@@ -352,3 +352,15 @@ export class CloudTrailErrorLogsMessageFormatter extends MessageFormatter<CloudW
     return message;
   }
 }
+
+
+export class CustomSnsMessageFormatter extends MessageFormatter<any> {
+  constructMessage(message: Message): Message {
+
+    message.addHeader(this.event.title);
+    message.addSection(this.event.message);
+    message.addContext(this.event.context);
+
+    return message;
+  }
+}

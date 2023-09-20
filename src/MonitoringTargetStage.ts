@@ -7,7 +7,7 @@ import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
-import { Statics } from './statics';
+import { Priority, Statics } from './statics';
 
 export interface MonitoringTargetStageProps extends StageProps {
   deployToEnvironments: DeploymentEnvironment[];
@@ -17,7 +17,7 @@ export interface MonitoringTargetStageProps extends StageProps {
 
 export interface EventSubscriptionConfiguration {
   id: string;
-  criticality: 'low' | 'medium' | 'high' | 'critical';
+  criticality: Priority;
   pattern: EventPattern;
   ruleDescription: string;
 }
@@ -35,7 +35,6 @@ export class MonitoringTargetStage extends Stage {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
-
     Aspects.of(this).add(new PermissionsBoundaryAspect());
 
     props.deployToEnvironments.forEach(environment => {

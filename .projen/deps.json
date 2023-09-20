@@ -29,6 +29,10 @@
       "type": "build"
     },
     {
+      "name": "aws-sdk-client-mock",
+      "type": "build"
+    },
+    {
       "name": "axios-mock-adapter",
       "type": "build"
     },
@@ -110,6 +114,10 @@
     },
     {
       "name": "@aws-sdk/client-securityhub",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-sns",
       "type": "runtime"
     },
     {

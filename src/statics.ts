@@ -29,6 +29,14 @@ export abstract class Statics {
   };
 
   /**
+   * Mpa environment
+   */
+  static readonly mpaEnvironment = {
+    account: '427617903428',
+    region: 'eu-central-1',
+  };
+
+  /**
    * Priorities for monitoring
    */
   static readonly monitoringPriorities = ['low', 'medium', 'high', 'critical'];
@@ -42,6 +50,21 @@ export abstract class Statics {
    * Prefix for a predictible log query job role name
    */
   static readonly logQueryJobAccessRoleName = 'log-query-job-access-role';
+
+  /**
+   * String to uniquely identify a mpa-monitoring-event message
+   */
+  static readonly mpaMonitoringEventMessageType = 'GemeenteNijmegen/mpa-monitoring-event';
+
+  /**
+   * MPA sns platform topic kms key arn (ssm)
+   */
+  static readonly ssmMpaPlatformTopicKmsKeyArn = '/landingzone/platform-events/kms-key-arn';
+
+  /**
+   * Organisation log trail name
+   */
+  static readonly orgTrailLogGroupName = 'aws-controltower/CloudTrailLogs';
 
 
   static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;

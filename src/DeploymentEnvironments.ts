@@ -1,6 +1,6 @@
 import { Environment } from 'aws-cdk-lib';
 import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
-import { Statics } from './statics';
+import { Priority, Statics } from './statics';
 
 export interface DeploymentEnvironment {
   accountName: string;
@@ -30,6 +30,13 @@ export interface DeploymentEnvironment {
    * @default none
    */
   queryDefinitions?: CloudWatchInsightsQueryProps[];
+
+  /**
+   * Define key or role monitoring conditions on the OrgTrail
+   * that apply to this specific account
+   * @default none
+   */
+  accountSpecificMonitoringRules?: MonitoringRule[];
 }
 
 export interface Configuration {
@@ -52,6 +59,58 @@ export interface Configuration {
    * The CDK id for the pipeline stack (in main.ts)
    */
   pipelineStackCdkName: string;
+
+  /**
+   * Define key or role monitoring conditions on the OrgTrail
+   * that apply to all accounts
+   * @default none
+   */
+  globalMonitoringRules?: MonitoringRule[];
+}
+
+export interface Configurable {
+  configuration: Configuration;
+}
+
+export interface MonitoringRule {
+  /**
+   * Priority of the alert
+   */
+  priority: Priority;
+  /**
+   * Add a description to the alert
+   */
+  description: string;
+
+  /**
+   * Configuration for monitoring a specific kms key
+   *  Note keyMonitoring and roleMonitoring behave mutually exclusive.
+   */
+  keyMonitoring?: {
+    /**
+     * The ARN of the key to alert on
+     * Note keyArn and ruleName behave mutually exclusive
+     */
+    keyArn?: string;
+    /**
+     * For which KMS events send out an alert
+     * E.g. 'GenerateDataKey', 'Encrypt', 'DescribeKey', 'GetKeyRotationStatus'
+     */
+    eventNames: string[];
+  };
+
+  /**
+   * Configuration for monitoring a specific role
+   *  Note roleM0nitoring and keyMonitoring behave mutually exclusive.
+   */
+  roleMonitoring?: {
+    /**
+     * The name of the role to alert on
+     * Matching is based on the substring of the role ARN
+     * e.g. arn.includes(roleName)
+     */
+    roleName?: string;
+  };
 }
 
 /**
@@ -63,6 +122,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'main-new-lz',
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
+    globalMonitoringRules: [
+      {
+        roleMonitoring: {
+          roleName: 'lz-platform-operator-ep',
+        },
+        description: 'EP role used!',
+        priority: 'critical',
+      },
+    ],
     deployToEnvironments: [
       {
         accountName: 'gn-build',
@@ -235,6 +303,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-sociale-recherche-accp',
+        enableDevopsGuru: false,
+        env: {
+          account: '543802458112',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sociale-recherche-prod',
+        enableDevopsGuru: false, // No workload yet, enable later
+        env: {
+          account: '958875843009',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
@@ -246,6 +330,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         accountName: 'workload-test',
         env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
+        accountSpecificMonitoringRules: [
+          {
+            roleMonitoring: {
+              roleName: 'lz-platform-operator-ep',
+            },
+            description: 'EP role used!',
+            priority: 'critical',
+          },
+        ],
         queryDefinitions: [
           {
             name: 'random-log-group-query',

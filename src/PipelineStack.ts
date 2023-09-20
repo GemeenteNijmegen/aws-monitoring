@@ -1,11 +1,12 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
+import { MpaMonitoringStage } from './MpaMonitoringStack';
 import { Statics } from './statics';
 
-export interface PipelineStackProps extends StackProps{
+export interface PipelineStackProps extends StackProps, Configurable {
   branchName: string;
   deployToEnvironments: DeploymentEnvironment[];
   environmentName: string;
@@ -28,12 +29,19 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
-    pipeline.addStage(new MonitoringTargetStage(this, `monitoring-${this.environmentName}`,
-      {
-        deployToEnvironments: props.deployToEnvironments,
-        isProduction: props.isProduction,
-        branchName: props.branchName,
-      }));
+
+    const monitoring = new MonitoringTargetStage(this, `monitoring-${this.environmentName}`, {
+      deployToEnvironments: props.deployToEnvironments,
+      isProduction: props.isProduction,
+      branchName: props.branchName,
+    });
+    pipeline.addStage(monitoring);
+
+    const mpaMonitoring = new MpaMonitoringStage(this, `mpa-monitoring-${this.environmentName}`, {
+      env: Statics.mpaEnvironment,
+      configuration: props.configuration,
+    });
+    pipeline.addStage(mpaMonitoring);
   }
 
   pipeline(source: pipelines.CodePipelineSource): pipelines.CodePipeline {

@@ -3,9 +3,10 @@ import { EventPattern, Rule } from 'aws-cdk-lib/aws-events';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { Construct } from 'constructs';
+import { Priority } from './statics';
 
 interface EventSubscriptionProps {
-  criticality: 'low' | 'medium' | 'high' | 'critical';
+  criticality: Priority;
   pattern: EventPattern;
   ruleDescription: string;
 }

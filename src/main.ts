@@ -20,6 +20,7 @@ new PipelineStack(app, configuration.pipelineStackCdkName, {
   deployToEnvironments: configuration.deployToEnvironments,
   environmentName: configuration.environmentName,
   isProduction: configuration.environmentName == 'production',
+  configuration: configuration,
 });
 
 app.synth();
