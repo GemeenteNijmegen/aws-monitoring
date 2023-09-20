@@ -79,7 +79,7 @@ describe('orgtrail', () => {
             account: '123456789012',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
@@ -111,7 +111,7 @@ describe('orgtrail', () => {
             account: '111111111111',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
@@ -177,7 +177,7 @@ describe('orgtrail', () => {
             account: '123456789012',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
