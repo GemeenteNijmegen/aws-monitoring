@@ -239,9 +239,8 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           {
             description: 'Yivi KMS key used! (acceptance)',
             priority: 'medium',
-            keyMonitoring: {
-              keyArn: 'arn:aws:kms:eu-central-1:528030426040:key/880d7714-e645-46ea-a158-2adedb71b964',
-              excludeEvents: ['GetKeyRotationStatus', 'DescribeKey'],
+            secretMonitoring: {
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:528030426040:secret:/yivi-brp-issue/container/private-key-BlkDQu',
             },
           },
         ],
@@ -264,9 +263,8 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           {
             description: 'Yivi KMS key used! (production)',
             priority: 'critical',
-            keyMonitoring: {
-              keyArn: 'arn:aws:kms:eu-central-1:079163754011:key/29e0134b-956a-495e-aaea-0b422429209a',
-              excludeEvents: ['GetKeyRotationStatus', 'DescribeKey'],
+            secretMonitoring: {
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:079163754011:secret:/yivi-brp-issue/container/private-key-tBVOMe',
             },
           },
         ],
