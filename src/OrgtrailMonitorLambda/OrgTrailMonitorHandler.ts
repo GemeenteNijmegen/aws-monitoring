@@ -46,13 +46,16 @@ export class OrgTrailMonitorHandler {
 
   private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule) {
     if (rule.keyMonitoring && rule.roleMonitoring) {
-      throw new Error('Rule cannot have both roleMonitoring and keyMonitoring defined');
+      throw new Error('Rule roleMonitoring, keyMonitoring and secretMonitoring are mutually exclusive');
     }
     if (rule.keyMonitoring) {
       return this.checkEventAgainstKeyRule(cloudTrailEvent, rule);
     }
     if (rule.roleMonitoring) {
       return this.checkEventAgainstRoleRule(cloudTrailEvent, rule);
+    }
+    if(rule.secretMonitoring) {
+      return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
     }
     return undefined;
   }
@@ -78,6 +81,35 @@ export class OrgTrailMonitorHandler {
       message.addTitle(`❗️ KMS key ${cloudTrailEvent.eventName} event detected`);
       message.addMessage(rule.description);
       message.addContext('KeyArn', resource.ARN);
+      message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
+      message.setPriority(rule.priority);
+      return message;
+    }
+
+    return false;
+  }
+
+  private checkEventAgainstSecretRule(cloudTrailEvent: any, rule: MonitoringRule) {
+    if (cloudTrailEvent.eventSource !== 'secretsmanager.amazonaws.com') {
+      return false; // Not a KMS event
+    }
+    if (rule.secretMonitoring?.includeEvents && !rule.secretMonitoring.includeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // Not an event included in the rule so ignore it
+    }
+    if (rule.secretMonitoring?.excludeEvents && rule.secretMonitoring.excludeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // An event that is excluded in the rule so ignore it
+    }
+
+    const resource = cloudTrailEvent.requestParameters.secretId;
+    if (!resource) {
+      throw Error('No secret arn found in event');
+    }
+
+    if (resource === rule.secretMonitoring?.secretArn) {
+      const message = new MonitoringEvent();
+      message.addTitle(`❗️ ${cloudTrailEvent.eventName} event detected`);
+      message.addMessage(rule.description);
+      message.addContext('SecretArn', resource);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
       message.setPriority(rule.priority);
       return message;

@@ -116,6 +116,25 @@ export interface MonitoringRule {
      */
     roleName: string;
   };
+
+  /**
+   * Configuratino for monitoring a secret
+   * Note roleM0nitoring and keyMonitoring behave mutually exclusive
+   */
+  secretMonitoring?: {
+    /**
+     * The ARN of the secret to alart on
+     */
+    secretArn: string;
+    /**
+     * Alert only on events included in here
+     */
+    includeEvents?: string[];
+    /**
+     * Alert on all events except events included here
+     */
+    excludeEvents?: string[];
+  }
 }
 
 /**
@@ -240,6 +259,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             priority: 'critical',
             roleMonitoring: {
               roleName: 'yivi-admin',
+            },
+          },
+          {
+            description: 'Yivi KMS key used! (production)',
+            priority: 'critical',
+            keyMonitoring: {
+              keyArn: 'arn:aws:kms:eu-central-1:079163754011:key/29e0134b-956a-495e-aaea-0b422429209a',
+              excludeEvents: ['GetKeyRotationStatus', 'DescribeKey'],
             },
           },
         ],
