@@ -105,7 +105,7 @@ export class OrgTrailMonitorHandler {
       throw Error('No secret arn found in event');
     }
 
-    if (resource === rule.secretMonitoring?.secretArn) {
+    if (resource.startsWith(rule.secretMonitoring?.secretArn)) {
       const message = new MonitoringEvent();
       message.addTitle(`❗️ ${cloudTrailEvent.eventName} event detected`);
       message.addMessage(rule.description);

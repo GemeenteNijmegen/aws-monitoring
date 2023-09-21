@@ -124,6 +124,7 @@ export interface MonitoringRule {
   secretMonitoring?: {
     /**
      * The ARN of the secret to alart on
+     * Note: prefix matched (ie. the last 8 random charcters can be left out)
      */
     secretArn: string;
     /**
@@ -240,7 +241,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             description: 'Yivi KMS key used! (acceptance)',
             priority: 'medium',
             secretMonitoring: {
-              secretArn: 'arn:aws:secretsmanager:eu-central-1:528030426040:secret:/yivi-brp-issue/container/private-key-BlkDQu',
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:528030426040:secret:/yivi-brp-issue/container/private-key-',
             },
           },
         ],
@@ -264,7 +265,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             description: 'Yivi KMS key used! (production)',
             priority: 'critical',
             secretMonitoring: {
-              secretArn: 'arn:aws:secretsmanager:eu-central-1:079163754011:secret:/yivi-brp-issue/container/private-key-tBVOMe',
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:079163754011:secret:/yivi-brp-issue/container/private-key-',
             },
           },
         ],
