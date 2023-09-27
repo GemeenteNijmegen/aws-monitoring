@@ -41,7 +41,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
 }
 
-async function sendToQueue(payload: any) {
+async function replyToSlack(payload: any) {
   console.log('Replying to slack...');
   const message = SlackMessage.fromPayload(payload);
   message.removeAllInteractionBlocks();
@@ -49,9 +49,11 @@ async function sendToQueue(payload: any) {
   await message.send();
 }
 
-async function replyToSlack(payload: any) {
+async function sendToQueue(payload: any) {
   console.log('Sending Message to queue...');
   await sqsClient.send(new SendMessageCommand({
+    MessageGroupId: 'SlackInteractivity',
+    MessageDeduplicationId: crypto.randomUUID(),
     MessageBody: JSON.stringify(payload),
     QueueUrl: process.env.QUEUE_URL,
   }));

@@ -36,7 +36,7 @@ export interface DeploymentEnvironment {
    * that apply to this specific account
    * @default none
    */
-  accountSpecificMonitoringRules?: MonitoringRule[];
+  monitoringRules?: MonitoringRule[];
 }
 
 export interface Configuration {
@@ -91,12 +91,17 @@ export interface MonitoringRule {
      * The ARN of the key to alert on
      * Note keyArn and ruleName behave mutually exclusive
      */
-    keyArn?: string;
+    keyArn: string;
     /**
-     * For which KMS events send out an alert
+     * Alert only on events included in here
      * E.g. 'GenerateDataKey', 'Encrypt', 'DescribeKey', 'GetKeyRotationStatus'
      */
-    eventNames: string[];
+    includeEvents?: string[];
+    /**
+     * Alert on all events except events included here
+     * E.g. 'GenerateDataKey', 'Encrypt', 'DescribeKey', 'GetKeyRotationStatus'
+     */
+    excludeEvents?: string[];
   };
 
   /**
@@ -109,7 +114,27 @@ export interface MonitoringRule {
      * Matching is based on the substring of the role ARN
      * e.g. arn.includes(roleName)
      */
-    roleName?: string;
+    roleName: string;
+  };
+
+  /**
+   * Configuratino for monitoring a secret
+   * Note roleM0nitoring and keyMonitoring behave mutually exclusive
+   */
+  secretMonitoring?: {
+    /**
+     * The ARN of the secret to alart on
+     * Note: prefix matched (ie. the last 8 random charcters can be left out)
+     */
+    secretArn: string;
+    /**
+     * Alert only on events included in here
+     */
+    includeEvents?: string[];
+    /**
+     * Alert on all events except events included here
+     */
+    excludeEvents?: string[];
   };
 }
 
@@ -204,6 +229,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '528030426040',
           region: 'eu-central-1',
         },
+        monitoringRules: [
+          {
+            description: 'Role to manage yivi secrets assumed! (acceptance)',
+            priority: 'medium',
+            roleMonitoring: {
+              roleName: 'yivi-admin',
+            },
+          },
+          {
+            description: 'Yivi KMS key used! (acceptance)',
+            priority: 'medium',
+            secretMonitoring: {
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:528030426040:secret:/yivi-brp-issue/container/private-key-',
+            },
+          },
+        ],
       },
       {
         accountName: 'gn-yivi-brp-issue-prod',
@@ -212,6 +253,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '079163754011',
           region: 'eu-central-1',
         },
+        monitoringRules: [
+          {
+            description: 'Role to manage yivi secrets assumed! (production)',
+            priority: 'critical',
+            roleMonitoring: {
+              roleName: 'yivi-admin',
+            },
+          },
+          {
+            description: 'Yivi KMS key used! (production)',
+            priority: 'critical',
+            secretMonitoring: {
+              secretArn: 'arn:aws:secretsmanager:eu-central-1:079163754011:secret:/yivi-brp-issue/container/private-key-',
+            },
+          },
+        ],
       },
       {
         accountName: 'gn-mijn-nijmegen-accp',
@@ -330,7 +387,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         accountName: 'workload-test',
         env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
-        accountSpecificMonitoringRules: [
+        monitoringRules: [
           {
             roleMonitoring: {
               roleName: 'lz-platform-operator-ep',

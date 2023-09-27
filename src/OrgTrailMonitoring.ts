@@ -46,6 +46,7 @@ export class OrgTrailMonitoring extends Construct {
       filterPattern: logs.FilterPattern.any(
         logs.FilterPattern.stringValue('$.eventSource', '=', 'kms.amazonaws.com'),
         logs.FilterPattern.stringValue('$.eventSource', '=', 'sts.amazonaws.com'),
+        logs.FilterPattern.stringValue('$.eventSource', '=', 'secretsmanager.amazonaws.com'),
       ),
     });
   }

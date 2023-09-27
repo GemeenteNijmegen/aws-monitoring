@@ -28,7 +28,7 @@ export class OrgTrailMonitorHandler {
     const accountId = this.getAccountIdFromEvent(cloudTrailEvent);
     const accountConfiguration = this.lookupAccountConfiguration(accountId);
     const globalRules = this.monitoringConfiguration.globalMonitoringRules ?? [];
-    const accountRules = accountConfiguration?.accountSpecificMonitoringRules ?? [];
+    const accountRules = accountConfiguration?.monitoringRules ?? [];
     const applicableRules = [
       ...globalRules,
       ...accountRules,
@@ -46,7 +46,7 @@ export class OrgTrailMonitorHandler {
 
   private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule) {
     if (rule.keyMonitoring && rule.roleMonitoring) {
-      throw new Error('Rule cannot have both roleMonitoring and keyMonitoring defined');
+      throw new Error('Rule roleMonitoring, keyMonitoring and secretMonitoring are mutually exclusive');
     }
     if (rule.keyMonitoring) {
       return this.checkEventAgainstKeyRule(cloudTrailEvent, rule);
@@ -54,12 +54,21 @@ export class OrgTrailMonitorHandler {
     if (rule.roleMonitoring) {
       return this.checkEventAgainstRoleRule(cloudTrailEvent, rule);
     }
+    if (rule.secretMonitoring) {
+      return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
+    }
     return undefined;
   }
 
   private checkEventAgainstKeyRule(cloudTrailEvent: any, rule: MonitoringRule) {
-    if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com' || !rule.keyMonitoring?.eventNames.includes(cloudTrailEvent.eventName)) {
+    if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com') {
       return false; // Not a KMS event
+    }
+    if (rule.keyMonitoring?.includeEvents && !rule.keyMonitoring?.includeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // Not an event included in the rule so ignore it
+    }
+    if (rule.keyMonitoring?.excludeEvents && rule.keyMonitoring?.excludeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // An event that is excluded in the rule so ignore it
     }
 
     const resource = cloudTrailEvent.resources.find((r:any) => r.type === 'AWS::KMS::Key');
@@ -69,9 +78,38 @@ export class OrgTrailMonitorHandler {
 
     if (resource.ARN === rule.keyMonitoring?.keyArn) {
       const message = new MonitoringEvent();
-      message.addTitle(`❗️ KMS key ${rule.keyMonitoring?.eventNames.join(', ')} event detected`);
+      message.addTitle(`❗️ KMS key ${cloudTrailEvent.eventName} event detected`);
       message.addMessage(rule.description);
       message.addContext('KeyArn', resource.ARN);
+      message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
+      message.setPriority(rule.priority);
+      return message;
+    }
+
+    return false;
+  }
+
+  private checkEventAgainstSecretRule(cloudTrailEvent: any, rule: MonitoringRule) {
+    if (cloudTrailEvent.eventSource !== 'secretsmanager.amazonaws.com') {
+      return false; // Not a KMS event
+    }
+    if (rule.secretMonitoring?.includeEvents && !rule.secretMonitoring.includeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // Not an event included in the rule so ignore it
+    }
+    if (rule.secretMonitoring?.excludeEvents && rule.secretMonitoring.excludeEvents.includes(cloudTrailEvent.eventName)) {
+      return false; // An event that is excluded in the rule so ignore it
+    }
+
+    const resource = cloudTrailEvent.requestParameters.secretId;
+    if (!resource) {
+      throw Error('No secret arn found in event');
+    }
+
+    if (resource.startsWith(rule.secretMonitoring?.secretArn)) {
+      const message = new MonitoringEvent();
+      message.addTitle(`❗️ ${cloudTrailEvent.eventName} event detected`);
+      message.addMessage(rule.description);
+      message.addContext('SecretArn', resource);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
       message.setPriority(rule.priority);
       return message;

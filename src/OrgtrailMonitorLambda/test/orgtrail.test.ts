@@ -23,9 +23,11 @@ describe('orgtrail', () => {
   const sns = new SNSClient() as any;
   const assumeRoleEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailAssumeRoleSAML.json', 'utf-8'));
   const generateDataKeyEvent = JSON.parse( fs.readFileSync(__dirname + '/orgTrailGenerateDataKey.json', 'utf-8'));
+  const retreiveSecretValueEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailSecretEvent.json', 'utf-8'));
 
   // Test related statics
   const keyArn = 'arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx';
+  const secretArn = 'arn:aws:secretsmanager:eu-central-1:123456789012:secret:/cdk/secret/project-secret';
   const roleName = 'role-name';
 
   beforeEach(() => {
@@ -79,7 +81,7 @@ describe('orgtrail', () => {
             account: '123456789012',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
@@ -111,7 +113,7 @@ describe('orgtrail', () => {
             account: '111111111111',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
@@ -140,7 +142,7 @@ describe('orgtrail', () => {
           priority: 'high',
           keyMonitoring: {
             keyArn: keyArn,
-            eventNames: ['GenerateDataKey'],
+            includeEvents: ['GenerateDataKey'],
           },
         },
       ],
@@ -177,13 +179,44 @@ describe('orgtrail', () => {
             account: '123456789012',
             region: 'eu-central-1',
           },
-          accountSpecificMonitoringRules: [
+          monitoringRules: [
             {
               description: 'test',
               priority: 'high',
               keyMonitoring: {
                 keyArn: keyArn,
-                eventNames: ['ABC'],
+                includeEvents: ['ABC'],
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+    const events = convertToLogEvents(generateDataKeyEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(0);
+  });
+
+  test('kms key exclude event', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+          monitoringRules: [
+            {
+              description: 'test',
+              priority: 'high',
+              keyMonitoring: {
+                keyArn: keyArn,
+                excludeEvents: ['GenerateDataKey'],
               },
             },
           ],
@@ -207,7 +240,7 @@ describe('orgtrail', () => {
           priority: 'high',
           keyMonitoring: {
             keyArn: keyArn,
-            eventNames: ['GenerateDataKey'],
+            includeEvents: ['GenerateDataKey'],
           },
         },
         {
@@ -233,6 +266,70 @@ describe('orgtrail', () => {
     const events = convertToLogEvents(generateDataKeyEvent, assumeRoleEvent) as any;
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(2);
+  });
+
+  test('secret event include (global)', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      globalMonitoringRules: [
+        {
+          description: 'test',
+          priority: 'high',
+          secretMonitoring: {
+            secretArn: secretArn,
+            includeEvents: ['GetSecretValue'],
+          },
+        },
+      ],
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+
+    const events = convertToLogEvents(generateDataKeyEvent, assumeRoleEvent, retreiveSecretValueEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(1);
+  });
+
+  test('secret event exclude (global)', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      globalMonitoringRules: [
+        {
+          description: 'test',
+          priority: 'high',
+          secretMonitoring: {
+            secretArn: secretArn,
+            excludeEvents: ['GetSecretValue'],
+          },
+        },
+      ],
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+
+    const events = convertToLogEvents(generateDataKeyEvent, assumeRoleEvent, retreiveSecretValueEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(0);
   });
 
 });
