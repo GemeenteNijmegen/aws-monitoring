@@ -124,7 +124,7 @@ export class TopDeskClient {
   private mapPriority(priority: string) {
     switch (priority) {
       case 'critical':
-        return 'B1 - Krietiek';
+        return 'B1 - Kritiek';
       case 'high':
         return 'B2 - Hoog';
       case 'medium':
@@ -132,7 +132,7 @@ export class TopDeskClient {
       case 'low':
         return 'B4 - Laag';
       default:
-        return 'B1 - Krietiek';
+        return 'B1 - Kritiek';
     }
   }
 
