@@ -5,6 +5,7 @@ import { Priority, Statics } from './statics';
 export interface DeploymentEnvironment {
   accountName: string;
   env: Environment;
+  accountType: 'sandbox' | 'development' | 'test' | 'acceptance' | 'production';
 
   /**
    * If set, only event subscriptions matching ids in this array
@@ -159,6 +160,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     deployToEnvironments: [
       {
         accountName: 'gn-build',
+        accountType: 'production',
         env: {
           account: Statics.gnBuildAccount,
           region: 'eu-central-1',
@@ -167,6 +169,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-geo-data-production',
+        accountType: 'production',
         env: {
           account: '549334216741',
           region: 'eu-central-1',
@@ -174,6 +177,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-geo-data-acceptance',
+        accountType: 'acceptance',
         env: {
           account: '766983128454',
           region: 'eu-central-1',
@@ -181,6 +185,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-yivi-accp',
+        accountType: 'acceptance',
         env: {
           account: '699363516011',
           region: 'eu-central-1',
@@ -188,6 +193,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-yivi-prod',
+        accountType: 'production',
         enableDevopsGuru: true,
         env: {
           account: '185512167111',
@@ -225,6 +231,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-yivi-brp-issue-accp',
+        accountType: 'acceptance',
         env: {
           account: '528030426040',
           region: 'eu-central-1',
@@ -248,6 +255,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-yivi-brp-issue-prod',
+        accountType: 'production',
         enableDevopsGuru: true,
         env: {
           account: '079163754011',
@@ -272,6 +280,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-mijn-nijmegen-accp',
+        accountType: 'acceptance',
         env: {
           account: '021929636313',
           region: 'eu-central-1',
@@ -279,6 +288,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-mijn-nijmegen-prod',
+        accountType: 'production',
         enableDevopsGuru: true,
         env: {
           account: '740606269759',
@@ -318,6 +328,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-webforms-dev',
+        accountType: 'development',
         env: {
           account: '033598396027',
           region: 'eu-central-1',
@@ -325,6 +336,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-webforms-accp',
+        accountType: 'acceptance',
         env: {
           account: '338472043295',
           region: 'eu-central-1',
@@ -332,6 +344,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-webforms-prod',
+        accountType: 'production',
         enableDevopsGuru: false, // No workload yet, enable later
         env: {
           account: '147064197580',
@@ -340,6 +353,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-static-websites',
+        accountType: 'production',
         env: {
           account: '654477686593',
           region: 'eu-central-1',
@@ -347,6 +361,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-verwerkingenlogging-accp',
+        accountType: 'acceptance',
         env: {
           account: '649781704230',
           region: 'eu-central-1',
@@ -354,6 +369,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-verwerkingenlogging-prod',
+        accountType: 'production',
         enableDevopsGuru: false, // No workload yet, enable later
         env: {
           account: '887474129159',
@@ -362,6 +378,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-sociale-recherche-accp',
+        accountType: 'acceptance',
         enableDevopsGuru: false,
         env: {
           account: '543802458112',
@@ -370,6 +387,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-sociale-recherche-prod',
+        accountType: 'production',
         enableDevopsGuru: false, // No workload yet, enable later
         env: {
           account: '958875843009',
@@ -385,6 +403,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     deployToEnvironments: [
       {
         accountName: 'workload-test',
+        accountType: 'development',
         env: Statics.sandboxEnvironment,
         enableDevopsGuru: true,
         monitoringRules: [
