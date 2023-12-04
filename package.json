@@ -8,8 +8,6 @@
     "bundle:LogQueryJob/LogQueryJob.lambda:watch": "npx projen bundle:LogQueryJob/LogQueryJob.lambda:watch",
     "bundle:monitoringLambda/monitoring.lambda": "npx projen bundle:monitoringLambda/monitoring.lambda",
     "bundle:monitoringLambda/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/monitoring.lambda:watch",
-    "bundle:monitoringLambda/test/monitoring.lambda": "npx projen bundle:monitoringLambda/test/monitoring.lambda",
-    "bundle:monitoringLambda/test/monitoring.lambda:watch": "npx projen bundle:monitoringLambda/test/monitoring.lambda:watch",
     "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda": "npx projen bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda",
     "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda:watch": "npx projen bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda:watch",
     "bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda": "npx projen bundle:SecurityHubOverviewLambda/SecurityHubOverview.lambda",
