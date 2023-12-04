@@ -2,7 +2,7 @@ import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
-import { getConfiguration } from '../DeploymentEnvironments';
+import { Configuration, getConfiguration } from '../DeploymentEnvironments';
 
 /**
  * Abstract class for formatting differnt types of events
@@ -13,11 +13,13 @@ export abstract class MessageFormatter<T> {
   event: T;
   account: string;
   priority: string;
+  configuration: Configuration;
 
   constructor(event: T, account: string, priority: string) {
     this.event = event;
     this.account = account;
     this.priority = priority;
+    this.configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
   }
 
   formattedMessage(): SlackMessage {
