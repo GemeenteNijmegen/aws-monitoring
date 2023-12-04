@@ -71,8 +71,8 @@ class Notifier extends Construct {
     // Trigger the overview lambda on a schedule
     new Rule(this, 'SecurityHubOverviewRule', {
       schedule: Schedule.cron({
-        hour: '4',
-        minute: '0',
+        hour: '6',
+        minute: '3',
       }),
       targets: [
         new targets.LambdaFunction(lambda, {

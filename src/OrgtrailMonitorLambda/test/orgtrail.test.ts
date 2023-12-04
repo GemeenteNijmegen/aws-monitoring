@@ -55,6 +55,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -77,6 +78,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -109,6 +111,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '111111111111',
             region: 'eu-central-1',
@@ -149,6 +152,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -175,6 +179,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -206,6 +211,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -254,6 +260,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -286,6 +293,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
@@ -318,6 +326,7 @@ describe('orgtrail', () => {
       deployToEnvironments: [
         {
           accountName: 'test',
+          accountType: 'test',
           env: {
             account: '123456789012',
             region: 'eu-central-1',
