@@ -2,6 +2,7 @@ import { HandledEvent, IHandler } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 import { Priority, Statics } from '../statics';
+import { getConfiguration } from '../DeploymentEnvironments';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -108,6 +109,8 @@ const events: Record<string, Event> = {
 
 export class SnsEventHandler implements IHandler {
 
+  private configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+
   canHandle(event: any): boolean {
     const records = event?.Records;
     const message = records ? records[0]?.Sns?.Message : undefined;
@@ -124,7 +127,7 @@ export class SnsEventHandler implements IHandler {
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
 
-    const priority = this.getPriority(event, eventType);
+    const priority = this.getPriority(event, eventType, account);
     const formatter = events[eventType].formatter(message, account, priority);
 
     return {
@@ -138,13 +141,27 @@ export class SnsEventHandler implements IHandler {
    * Priority is determined by (in ascending order of priority):
    * - priority of the SNS topic originating this event
    * - priority of the event type of this notification
-   * - maximum priority level for the originating account. Only production accounts can set high or critical priorities.
+   * - maximum priority level for the originating account.
    */
-  getPriority(event: any, eventType: string) {
+  getPriority(event: any, eventType: string, account: string) {
     const topicPriority = this.parsePriorityFromEvent(event);
-    const priority = events[eventType].priority ?? topicPriority;
+    let priority = events[eventType].priority ?? topicPriority;
+    priority = this.limitPriorityForNonProductionAccounts(priority, account);
     return priority;
   };
+
+  /** If priority is high or critical, reset to medium for non-production-accounts */
+  private limitPriorityForNonProductionAccounts(priority: Priority, account: string):Priority {
+    if (['high', 'critical'].includes(priority)) {
+      const accountConfiguration = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+      console.debug('account type & name', accountConfiguration?.accountType, accountConfiguration?.accountName);
+      console.trace();
+      if (accountConfiguration?.accountType && accountConfiguration.accountType != 'production') {
+        priority = 'medium';
+      }
+    }
+    return priority;
+  }
 
   getAccount(message: any): string {
     const account = message?.account || message?.recipientAccountId || message?.AccountId;
