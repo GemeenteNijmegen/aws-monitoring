@@ -116,7 +116,7 @@ export class SnsEventHandler implements IHandler {
 
   handle(event: any): HandledEvent | false {
 
-    const topicPriority = this.parsePriorityFromEvent(event);
+
     const message = parseMessageFromEvent(event);
     if (!this.eventShouldTriggerAlert(event)) {
       return false;
@@ -124,7 +124,7 @@ export class SnsEventHandler implements IHandler {
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
 
-    const priority = events[eventType].priority ?? topicPriority;
+    const priority = this.getPriority(event, eventType);
     const formatter = events[eventType].formatter(message, account, priority);
 
     return {
@@ -132,6 +132,19 @@ export class SnsEventHandler implements IHandler {
       message: formatter.formattedMessage(),
     };
   }
+
+  /** Get the priority of this message
+   *
+   * Priority is determined by (in ascending order of priority):
+   * - priority of the SNS topic originating this event
+   * - priority of the event type of this notification
+   * - maximum priority level for the originating account. Only production accounts can set high or critical priorities.
+   */
+  getPriority(event: any, eventType: string) {
+    const topicPriority = this.parsePriorityFromEvent(event);
+    const priority = events[eventType].priority ?? topicPriority;
+    return priority;
+  };
 
   getAccount(message: any): string {
     const account = message?.account || message?.recipientAccountId || message?.AccountId;
