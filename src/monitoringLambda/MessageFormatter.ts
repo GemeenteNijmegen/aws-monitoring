@@ -45,8 +45,7 @@ export abstract class MessageFormatter<T> {
    * @returns
    */
   lookupAccountName(account: string) {
-    const config = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
-    const monitoringConfig = config.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+    const monitoringConfig = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
     return monitoringConfig?.accountName ?? account;
   }
 

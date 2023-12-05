@@ -22,7 +22,7 @@ describe('SNS events', () => {
     expect(logsHandler.canHandle(event)).toBeFalsy();
     expect(handled).not.toBeFalsy();
     if (handled == false) { return; }
-    expect(handled.priority).toBe('high');
+    expect(handled.priority).toBe('medium');
 
     const json = JSON.stringify(handled.message.getSlackMessage());
     expect(json).toContain('type: *ECS Task State Change, cluster joost-test*');
