@@ -9,7 +9,7 @@ const obj = {
 };
 const base64obj = Buffer.from(JSON.stringify(obj)).toString('base64');
 
-test('Action encdoing', () => {
+test('Action encoding', () => {
   const m = new MonitoringSlackMessage();
   m.addButton('text', 'send', obj);
   const message = m.getSlackMessage();
@@ -17,5 +17,8 @@ test('Action encdoing', () => {
 });
 
 test('SlackMessage from payload', () => {
-  InteractionSlackMessage.fromPayload(SlackInteractionMessage);
+  const m = InteractionSlackMessage.fromPayload(SlackInteractionMessage);
+  const message = m.getSlackMessage();
+  expect(message.blocks.filter((block) => block.type == 'actions'))
+  .toHaveLength(1);
 });
