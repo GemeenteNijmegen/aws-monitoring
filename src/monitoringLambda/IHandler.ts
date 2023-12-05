@@ -7,7 +7,6 @@ export interface HandledEvent {
 }
 
 export interface IHandler {
-
   /**
    * Checks if this handler can handle the event
    * (i.e. handle can be called with this event)

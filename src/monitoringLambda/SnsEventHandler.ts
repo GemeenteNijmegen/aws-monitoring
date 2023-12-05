@@ -1,7 +1,7 @@
 import { HandledEvent, IHandler } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
-import { getConfiguration } from '../DeploymentEnvironments';
+import { Configuration } from '../DeploymentEnvironments';
 import { Priority, Statics } from '../statics';
 
 /**
@@ -109,7 +109,10 @@ const events: Record<string, Event> = {
 
 export class SnsEventHandler implements IHandler {
 
-  private configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+  private configuration: Configuration;
+  constructor(configuration: Configuration) {
+    this.configuration = configuration;
+  }
 
   canHandle(event: any): boolean {
     const records = event?.Records;
@@ -118,8 +121,6 @@ export class SnsEventHandler implements IHandler {
   }
 
   handle(event: any): HandledEvent | false {
-
-
     const message = parseMessageFromEvent(event);
     if (!this.eventShouldTriggerAlert(event)) {
       return false;

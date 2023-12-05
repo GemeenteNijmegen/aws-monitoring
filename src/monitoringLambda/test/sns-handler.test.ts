@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { getEventFromFilePath } from './util';
+import { Configuration } from '../../DeploymentEnvironments';
 import { LogsEventHandler } from '../LogsEventHandler';
 import { getEventType, parseMessageFromEvent, SnsEventHandler } from '../SnsEventHandler';
 
@@ -8,10 +9,27 @@ beforeAll(() => {
   process.env.SLACK_WEBHOOK_URL_LOW_PRIO = 'http://nothing.test.low.prio';
 });
 
+const config: Configuration = {
+  branchName: 'sandbox-new-lz',
+  environmentName: 'development',
+  pipelineStackCdkName: 'aws-monitoring-sandbox',
+  deployToEnvironments: [
+    {
+      accountName: 'workload-test',
+      accountType: 'development',
+      env: { account: '12345678', region: 'eu-central-1' },
+    },
+    {
+      accountName: 'workload-prod',
+      accountType: 'production',
+      env: { account: '87654321', region: 'eu-central-1' },
+    },
+  ],
+};
 
 describe('SNS events', () => {
 
-  const snsHandler = new SnsEventHandler();
+  const snsHandler = new SnsEventHandler(config);
   const logsHandler = new LogsEventHandler();
 
   test('ecs task state change', async () => {
@@ -64,7 +82,7 @@ describe('SNS events', () => {
 
 describe('Alarms via SNS events', () => {
 
-  const snsHandler = new SnsEventHandler();
+  const snsHandler = new SnsEventHandler(config);
 
 
   test('New LZ ALARM should report', async () => {
@@ -145,7 +163,7 @@ describe('Security hub event from Subject', () => {
   });
 
   test('Security hub high message formatter works', async () => {
-    const snsHandler = new SnsEventHandler();
+    const snsHandler = new SnsEventHandler(config);
 
     const event = await getEventFromFilePath(path.join('samples', 'securityhub-new-lz-2.json'));
     const handled = snsHandler.handle(event);
@@ -161,7 +179,7 @@ describe('Security hub event from Subject', () => {
 });
 
 describe('Cloudtrail log events', () => {
-  const snsHandler = new SnsEventHandler();
+  const snsHandler = new SnsEventHandler(config);
   test('Eventtype is detected', async () => {
     const event = await getEventFromFilePath(path.join('samples', 'orgtrail-notification-sample.json'));
     const message = parseMessageFromEvent(event);
