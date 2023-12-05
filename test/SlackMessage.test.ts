@@ -20,5 +20,5 @@ test('SlackMessage from payload', () => {
   const m = InteractionSlackMessage.fromPayload(SlackInteractionMessage);
   const message = m.getSlackMessage();
   expect(message.blocks.filter((block) => block.type == 'actions'))
-  .toHaveLength(1);
+    .toHaveLength(1);
 });
