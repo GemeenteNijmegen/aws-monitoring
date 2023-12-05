@@ -155,7 +155,6 @@ export class SnsEventHandler implements IHandler {
     if (['high', 'critical'].includes(priority)) {
       const accountConfiguration = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
       console.debug('account type & name', accountConfiguration?.accountType, accountConfiguration?.accountName);
-      console.trace();
       if (accountConfiguration?.accountType && accountConfiguration.accountType != 'production') {
         priority = 'medium';
       }
