@@ -7,8 +7,11 @@ let axiosMock: MockAdapter;
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'testing';
-  process.env.SLACK_WEBHOOK_URL = 'http://nothing.test';
-  process.env.SLACK_WEBHOOK_URL_LOW_PRIO = 'http://nothing.test.low.prio';
+  process.env.SLACK_WEBHOOK_URL = 'http://local.test';
+  process.env.SLACK_WEBHOOK_URL_LOW = 'http://low.prio.local.test';
+  process.env.SLACK_WEBHOOK_URL_MEDIUM = 'http://MEDIUM.prio.local.test';
+  process.env.SLACK_WEBHOOK_URL_HIGH = 'http://HIGH.prio.local.test';
+  process.env.SLACK_WEBHOOK_URL_CRITIICAL = 'http://CRITIICAL.prio.local.test';
 });
 
 beforeEach(() => {

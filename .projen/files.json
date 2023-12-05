@@ -18,7 +18,6 @@
     "LICENSE",
     "src/LogQueryJob/LogQueryJob-function.ts",
     "src/monitoringLambda/monitoring-function.ts",
-    "src/monitoringLambda/test/monitoring-function.ts",
     "src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts",
     "src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts",
     "src/SlackInteractivityLambda/SlackInteractivity-function.ts",

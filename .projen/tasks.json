@@ -52,9 +52,6 @@
           "spawn": "bundle:monitoringLambda/monitoring.lambda"
         },
         {
-          "spawn": "bundle:monitoringLambda/test/monitoring.lambda"
-        },
-        {
           "spawn": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda"
         },
         {
@@ -101,24 +98,6 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --external:aws-sdk --watch"
-        }
-      ]
-    },
-    "bundle:monitoringLambda/test/monitoring.lambda": {
-      "name": "bundle:monitoringLambda/test/monitoring.lambda",
-      "description": "Create a JavaScript bundle from src/monitoringLambda/test/monitoring.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/monitoringLambda/test/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/test/monitoring.lambda/index.js\" --external:aws-sdk"
-        }
-      ]
-    },
-    "bundle:monitoringLambda/test/monitoring.lambda:watch": {
-      "name": "bundle:monitoringLambda/test/monitoring.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/monitoringLambda/test/monitoring.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/monitoringLambda/test/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/test/monitoring.lambda/index.js\" --external:aws-sdk --watch"
         }
       ]
     },

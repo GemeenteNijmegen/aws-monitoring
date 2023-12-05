@@ -148,7 +148,6 @@
           "**/build-tools/**",
           "src/LogQueryJob/LogQueryJob.lambda.ts",
           "src/monitoringLambda/monitoring.lambda.ts",
-          "src/monitoringLambda/test/monitoring.lambda.ts",
           "src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
           "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
