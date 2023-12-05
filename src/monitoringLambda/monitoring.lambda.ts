@@ -1,5 +1,6 @@
 import { LogsEventHandler } from './LogsEventHandler';
 import { SnsEventHandler } from './SnsEventHandler';
+import { getConfiguration } from '../DeploymentEnvironments';
 
 /**
  * Tries to find a handler and use it to handle the event
@@ -12,7 +13,8 @@ import { SnsEventHandler } from './SnsEventHandler';
  */
 export async function handler(event: any) {
   console.log(JSON.stringify(event));
-  const sns = new SnsEventHandler();
+  const configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+  const sns = new SnsEventHandler(configuration);
   const logs = new LogsEventHandler();
 
   const handlers = [sns, logs];

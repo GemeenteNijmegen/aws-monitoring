@@ -1,5 +1,6 @@
 
 import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
+import { Configuration } from '../../DeploymentEnvironments';
 import { LogsEventHandler } from '../LogsEventHandler';
 import { SnsEventHandler } from '../SnsEventHandler';
 
@@ -9,11 +10,30 @@ beforeAll(() => {
   process.env.SLACK_WEBHOOK_URL_LOW_PRIO = 'http://nothing.test.low.prio';
 });
 
+
+const config: Configuration = {
+  branchName: 'sandbox-new-lz',
+  environmentName: 'development',
+  pipelineStackCdkName: 'aws-monitoring-sandbox',
+  deployToEnvironments: [
+    {
+      accountName: 'workload-test',
+      accountType: 'development',
+      env: { account: '12345678', region: 'eu-central-1' },
+    },
+    {
+      accountName: 'workload-prod',
+      accountType: 'production',
+      env: { account: '87654321', region: 'eu-central-1' },
+    },
+  ],
+};
+
 describe('Log subscription events', () => {
 
   // Possible handlers (snsHandler should always return false for canHandle)
   const logsHandler = new LogsEventHandler();
-  const snsHandler = new SnsEventHandler();
+  const snsHandler = new SnsEventHandler(config);
 
   // Test log lines (objects are stringified)
   const log1 = { id: 'log1', b: [1, 2, 3], c: { x: "'\"{}\n\t\f" } };

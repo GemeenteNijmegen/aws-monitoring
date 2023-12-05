@@ -1,6 +1,7 @@
 import { HandledEvent, IHandler } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
+import { Configuration } from '../DeploymentEnvironments';
 import { Priority, Statics } from '../statics';
 
 /**
@@ -108,6 +109,11 @@ const events: Record<string, Event> = {
 
 export class SnsEventHandler implements IHandler {
 
+  private configuration: Configuration;
+  constructor(configuration: Configuration) {
+    this.configuration = configuration;
+  }
+
   canHandle(event: any): boolean {
     const records = event?.Records;
     const message = records ? records[0]?.Sns?.Message : undefined;
@@ -115,16 +121,14 @@ export class SnsEventHandler implements IHandler {
   }
 
   handle(event: any): HandledEvent | false {
-
-    const topicPriority = parsePriorityFromEvent(event);
     const message = parseMessageFromEvent(event);
-    if (!eventShouldTriggerAlert(event)) {
+    if (!this.eventShouldTriggerAlert(event)) {
       return false;
     }
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
 
-    const priority = events[eventType].priority ?? topicPriority;
+    const priority = this.getPriority(event, eventType, account);
     const formatter = events[eventType].formatter(message, account, priority);
 
     return {
@@ -133,29 +137,61 @@ export class SnsEventHandler implements IHandler {
     };
   }
 
+  /** Get the priority of this message
+   *
+   * Priority is determined by (in ascending order of priority):
+   * - priority of the SNS topic originating this event
+   * - priority of the event type of this notification
+   * - maximum priority level for the originating account.
+   */
+  getPriority(event: any, eventType: string, account: string) {
+    const topicPriority = this.parsePriorityFromEvent(event);
+    let priority = events[eventType].priority ?? topicPriority;
+    priority = this.limitPriorityForNonProductionAccounts(priority, account);
+    return priority;
+  };
+
+  /** If priority is high or critical, reset to medium for non-production-accounts */
+  private limitPriorityForNonProductionAccounts(priority: Priority, account: string):Priority {
+    if (['high', 'critical'].includes(priority)) {
+      const accountConfiguration = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+      if (accountConfiguration?.accountType && accountConfiguration.accountType != 'production') {
+        priority = 'medium';
+      }
+    }
+    return priority;
+  }
+
   getAccount(message: any): string {
     const account = message?.account || message?.recipientAccountId || message?.AccountId;
     return account ?? '';
   }
+
+  parsePriorityFromEvent(event: any) : Priority {
+    try {
+      const topicArn = event?.Records[0]?.Sns?.TopicArn;
+      if (topicArn.endsWith('high')) {
+        return 'high';
+      } else if (topicArn.endsWith('low')) {
+        return 'low';
+      } else if (topicArn.endsWith('medium')) {
+        return 'medium';
+      } else {
+        return 'critical';
+      }
+    } catch (error) {
+      console.error('Could not find priority, defaulting to critical', error);
+    }
+    return 'critical';
+  }
+
+  eventShouldTriggerAlert(event: any): boolean {
+    const message = parseMessageFromEvent(event);
+    const eventType = getEventType(message, event);
+    return events[eventType].shouldTriggerAlert(message);
+  }
 }
 
-export function parsePriorityFromEvent(event: any) : Priority {
-  try {
-    const topicArn = event?.Records[0]?.Sns?.TopicArn;
-    if (topicArn.endsWith('high')) {
-      return 'high';
-    } else if (topicArn.endsWith('low')) {
-      return 'low';
-    } else if (topicArn.endsWith('medium')) {
-      return 'medium';
-    } else {
-      return 'critical';
-    }
-  } catch (error) {
-    console.error('Could not find priority, defaulting to critical', error);
-  }
-  return 'critical';
-}
 
 export function parseMessageFromEvent(event: any): any {
   try {
@@ -200,11 +236,6 @@ export function getEventType(message: any, event?: any): keyof typeof events {
   return 'unhandledEvent';
 }
 
-function eventShouldTriggerAlert(event: any): boolean {
-  const message = parseMessageFromEvent(event);
-  const eventType = getEventType(message, event);
-  return events[eventType].shouldTriggerAlert(message);
-}
 
 /**
  * Only alerts from or to state ALARM should notify. From insufficient data to
