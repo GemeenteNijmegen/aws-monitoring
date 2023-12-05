@@ -1,8 +1,8 @@
 import { HandledEvent, IHandler } from './IHandler';
 import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
-import { Priority, Statics } from '../statics';
 import { getConfiguration } from '../DeploymentEnvironments';
+import { Priority, Statics } from '../statics';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
