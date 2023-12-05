@@ -154,7 +154,6 @@ export class SnsEventHandler implements IHandler {
   private limitPriorityForNonProductionAccounts(priority: Priority, account: string):Priority {
     if (['high', 'critical'].includes(priority)) {
       const accountConfiguration = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
-      console.debug('account type & name', accountConfiguration?.accountType, accountConfiguration?.accountName);
       if (accountConfiguration?.accountType && accountConfiguration.accountType != 'production') {
         priority = 'medium';
       }
