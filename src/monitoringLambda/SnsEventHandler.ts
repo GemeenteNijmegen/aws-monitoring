@@ -116,9 +116,9 @@ export class SnsEventHandler implements IHandler {
 
   handle(event: any): HandledEvent | false {
 
-    const topicPriority = parsePriorityFromEvent(event);
+    const topicPriority = this.parsePriorityFromEvent(event);
     const message = parseMessageFromEvent(event);
-    if (!eventShouldTriggerAlert(event)) {
+    if (!this.eventShouldTriggerAlert(event)) {
       return false;
     }
     const eventType = getEventType(message, event);
@@ -137,25 +137,32 @@ export class SnsEventHandler implements IHandler {
     const account = message?.account || message?.recipientAccountId || message?.AccountId;
     return account ?? '';
   }
+
+  parsePriorityFromEvent(event: any) : Priority {
+    try {
+      const topicArn = event?.Records[0]?.Sns?.TopicArn;
+      if (topicArn.endsWith('high')) {
+        return 'high';
+      } else if (topicArn.endsWith('low')) {
+        return 'low';
+      } else if (topicArn.endsWith('medium')) {
+        return 'medium';
+      } else {
+        return 'critical';
+      }
+    } catch (error) {
+      console.error('Could not find priority, defaulting to critical', error);
+    }
+    return 'critical';
+  }
+
+  eventShouldTriggerAlert(event: any): boolean {
+    const message = parseMessageFromEvent(event);
+    const eventType = getEventType(message, event);
+    return events[eventType].shouldTriggerAlert(message);
+  }
 }
 
-export function parsePriorityFromEvent(event: any) : Priority {
-  try {
-    const topicArn = event?.Records[0]?.Sns?.TopicArn;
-    if (topicArn.endsWith('high')) {
-      return 'high';
-    } else if (topicArn.endsWith('low')) {
-      return 'low';
-    } else if (topicArn.endsWith('medium')) {
-      return 'medium';
-    } else {
-      return 'critical';
-    }
-  } catch (error) {
-    console.error('Could not find priority, defaulting to critical', error);
-  }
-  return 'critical';
-}
 
 export function parseMessageFromEvent(event: any): any {
   try {
@@ -200,11 +207,6 @@ export function getEventType(message: any, event?: any): keyof typeof events {
   return 'unhandledEvent';
 }
 
-function eventShouldTriggerAlert(event: any): boolean {
-  const message = parseMessageFromEvent(event);
-  const eventType = getEventType(message, event);
-  return events[eventType].shouldTriggerAlert(message);
-}
 
 /**
  * Only alerts from or to state ALARM should notify. From insufficient data to
