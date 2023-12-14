@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
-    "@types/aws-lambda": "^8.10.109"
+    "@types/aws-lambda": "^8.10.130"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.21.2"
+    "axios-mock-adapter": "^1.22.0"
   }
 }

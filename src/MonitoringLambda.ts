@@ -28,7 +28,7 @@ export class MonitoringLambda extends Construct {
     this.function = new NodejsFunction(this, 'log-lambda', {
       memorySize: 256,
       timeout: Duration.seconds(5),
-      runtime: Runtime.NODEJS_18_X,
+      runtime: Runtime.NODEJS_20_X,
       handler: 'handler',
       entry: path.join(__dirname, 'LogLambda', 'index.ts'),
       logRetention: RetentionDays.ONE_MONTH,
