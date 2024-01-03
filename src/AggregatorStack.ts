@@ -122,6 +122,7 @@ class Notifier extends Construct {
    */
   setupSecurityHubAutomationRule(prefix: string) {
 
+    // There's no L1 construct for this, so we'll create a CfnResource directly
     new CfnResource(this, `security-hub-automation-rule-${prefix}`, {
       type: 'AWS::SecurityHub::AutomationRule',
       properties: {
@@ -158,7 +159,7 @@ class Notifier extends Construct {
         RuleName: 'SupressNonCriticalSandboxFindings',
         RuleOrder: 1,
         RuleStatus: 'ENABLED',
-      }
+      },
     });
   }
 
