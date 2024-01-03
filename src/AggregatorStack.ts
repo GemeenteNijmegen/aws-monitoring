@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps, aws_events_targets as targets, CfnResource } from 'aws-cdk-lib';
+import { Duration, Stack, StackProps, aws_events_targets as targets } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
@@ -54,7 +54,6 @@ class Notifier extends Construct {
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix);
     this.setupLogQueryJob(props.prefix, props.branchName);
-    this.setupSecurityHubAutomationRule(props.prefix);
   }
 
   setupSecurityHubOverviewFunction(prefix: string) {
@@ -112,54 +111,6 @@ class Notifier extends Construct {
       prefix: prefix,
       branchName: branchName,
       deployToEnvironments: getConfiguration(branchName).deployToEnvironments,
-    });
-  }
-
-
-  /**
-   * Setup a automation rule for SecurityHub for supressing
-   * findings from sandbox accounts
-   */
-  setupSecurityHubAutomationRule(prefix: string) {
-
-    // There's no L1 construct for this, so we'll create a CfnResource directly
-    new CfnResource(this, `security-hub-automation-rule-${prefix}`, {
-      type: 'AWS::SecurityHub::AutomationRule',
-      properties: {
-        Actions: [
-          {
-            FindingFieldsUpdate: {
-              Workflow: {
-                Status: 'SUPPRESSED',
-              },
-            },
-          },
-        ],
-        Criteria: {
-          AwsAccountName: [
-            {
-              Comparison: 'CONTAINS',
-              Value: 'sandbox',
-            },
-          ],
-          SeverityLabel: [
-            {
-              Comparison: 'NOT_EQUALS',
-              Value: 'CRITICAL',
-            },
-          ],
-          WorkflowStatus: [
-            {
-              Comparison: 'EQUALS',
-              Value: 'NEW',
-            },
-          ],
-        },
-        Description: `Supress non-critical sandbox findings ${prefix}`,
-        RuleName: 'SupressNonCriticalSandboxFindings',
-        RuleOrder: 1,
-        RuleStatus: 'ENABLED',
-      },
     });
   }
 
