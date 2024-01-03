@@ -126,18 +126,6 @@ export class MonitoredAccountStack extends Stack {
         ruleDescription: 'Send Health Dashboard alerts to SNS',
       },
       {
-        id: 'inspector-finding-events',
-        criticality: 'critical',
-        pattern: {
-          source: ['aws.inspector2'],
-          detailType: ['Inspector2 Finding'],
-          detail: {
-            severity: ['CRITICAL', 'HIGH'],
-          },
-        },
-        ruleDescription: 'Send Inspector2 Finding notifications to SNS',
-      },
-      {
         id: 'ec2-start-events',
         criticality: 'low',
         pattern: {
