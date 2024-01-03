@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps, aws_events_targets as targets, custom_resources } from 'aws-cdk-lib';
+import { Duration, Stack, StackProps, aws_events_targets as targets, CfnResource } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
@@ -121,50 +121,44 @@ class Notifier extends Construct {
    * findings from sandbox accounts
    */
   setupSecurityHubAutomationRule(prefix: string) {
-    new custom_resources.AwsCustomResource(this, `security-hub-automation-custom-resource-${prefix}`, {
-      onCreate: {
-        service: 'SecurityHub',
-        action: 'CreateAutomationRule',
-        parameters: {
-          Actions: [
-            {
-              FindingFieldsUpdate: {
-                Workflow: {
-                  Status: 'SUPPRESSED',
-                },
+
+    new CfnResource(this, `security-hub-automation-rule-${prefix}`, {
+      type: 'AWS::SecurityHub::AutomationRule',
+      properties: {
+        Actions: [
+          {
+            FindingFieldsUpdate: {
+              Workflow: {
+                Status: 'SUPPRESSED',
               },
             },
-          ],
-          Criteria: {
-            AwsAccountName: [
-              {
-                Comparison: 'CONTAINS',
-                Value: 'sandbox',
-              },
-            ],
-            SeverityLabel: [
-              {
-                Comparison: 'NOT_EQUALS',
-                Value: 'CRITICAL',
-              },
-            ],
-            WorkflowStatus: [
-              {
-                Comparison: 'EQUALS',
-                Value: 'NEW',
-              },
-            ],
           },
-          Description: `Supress non-critical sandbox findings ${prefix}`,
-          RuleName: 'SupressNonCriticalSandboxFindings',
-          RuleOrder: 1,
-          RuleStatus: 'ENABLED',
+        ],
+        Criteria: {
+          AwsAccountName: [
+            {
+              Comparison: 'CONTAINS',
+              Value: 'sandbox',
+            },
+          ],
+          SeverityLabel: [
+            {
+              Comparison: 'NOT_EQUALS',
+              Value: 'CRITICAL',
+            },
+          ],
+          WorkflowStatus: [
+            {
+              Comparison: 'EQUALS',
+              Value: 'NEW',
+            },
+          ],
         },
-        physicalResourceId: custom_resources.PhysicalResourceId.of(`security-hub-automation-custom-resource-${prefix}`),
-      },
-      policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
-        resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
-      }),
+        Description: `Supress non-critical sandbox findings ${prefix}`,
+        RuleName: 'SupressNonCriticalSandboxFindings',
+        RuleOrder: 1,
+        RuleStatus: 'ENABLED',
+      }
     });
   }
 
