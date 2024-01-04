@@ -13,12 +13,14 @@ export class AWSAccounts {
   constructor() {}
 
   private async obtainAccountInformation() {
+    console.info('Retreiving account names from AWS Organizations...');
     this.accounts = {};
     const client = new OrganizationsClient();
 
+    let count = 1;
     let nextToken: any = '';
     while (nextToken != undefined) {
-
+      console.info('Getting page', count++, 'of account names');
       const command = new ListAccountsCommand({
         MaxResults: 20, // max api allows
         NextToken: nextToken === '' ? undefined : nextToken,
@@ -35,6 +37,7 @@ export class AWSAccounts {
       nextToken = result.NextToken;
 
     }
+    console.info('Done! Account names are cached now.', JSON.stringify(this.accounts, null, 4));
   }
 
   /**
