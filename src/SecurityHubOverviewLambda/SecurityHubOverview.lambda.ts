@@ -1,6 +1,7 @@
 import { SecurityHubClient, GetFindingsCommand } from '@aws-sdk/client-securityhub';
 import { ScheduledEvent } from 'aws-lambda';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
+import { getConfiguration } from '../DeploymentEnvironments';
 
 const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
 
@@ -26,7 +27,8 @@ async function sendOverviewToSlack() {
   if (criticalFindings && criticalFindings.length > 0) {
     message.addSection('❗️ Critical findings');
     criticalFindings.forEach(finding => {
-      message.addSection(`${finding.Title} (${finding.AwsAccountId}, ${finding.ProductName ?? 'unknown product'})`);
+      const accountName = lookupAccountName(finding.AwsAccountId ?? 'unknown account');
+      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
     });
   }
 
@@ -34,7 +36,8 @@ async function sendOverviewToSlack() {
   if (highFindings && highFindings.length > 0) {
     message.addSection('⚠️ High findings');
     highFindings.forEach(finding => {
-      message.addSection(`${finding.Title} (${finding.AwsAccountId}, ${finding.ProductName ?? 'unknown product'})`);
+      const accountName = lookupAccountName(finding.AwsAccountId ?? 'unknown account');
+      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
     });
   }
 
@@ -77,5 +80,21 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
   } catch (error) {
     console.error(error);
     throw Error('Could not get findings, check logs');
+  }
+}
+
+/**
+ * Use the deployment environments in this project
+ * to retreive the account name
+ * @param account
+ * @returns
+ */
+function lookupAccountName(account: string) {
+  try {
+    const configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+    const monitoringConfig = configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
+    return monitoringConfig?.accountName ?? account;
+  } catch {
+    return account;
   }
 }

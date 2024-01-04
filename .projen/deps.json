@@ -109,6 +109,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-organizations",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-s3",
       "type": "runtime"
     },
