@@ -71,12 +71,6 @@ class Notifier extends Construct {
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
 
-    lambda.addToRolePolicy(new PolicyStatement({
-      effect: Effect.ALLOW,
-      actions: ['organizations:ListAccounts'],
-      resources: ['*'],
-    }));
-
     // Trigger the overview lambda on a schedule
     new Rule(this, 'SecurityHubOverviewRule', {
       schedule: Schedule.cron({
