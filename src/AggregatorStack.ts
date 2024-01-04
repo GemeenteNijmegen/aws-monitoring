@@ -64,7 +64,7 @@ class Notifier extends Construct {
       timeout: Duration.minutes(5),
       environment: {
         BRANCH_NAME: branchName,
-      }
+      },
     });
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
@@ -75,7 +75,7 @@ class Notifier extends Construct {
       effect: Effect.ALLOW,
       actions: ['organizations:ListAccounts'],
       resources: ['*'],
-    }))
+    }));
 
     // Trigger the overview lambda on a schedule
     new Rule(this, 'SecurityHubOverviewRule', {
