@@ -1,9 +1,8 @@
 import { SecurityHubClient, GetFindingsCommand } from '@aws-sdk/client-securityhub';
 import { ScheduledEvent } from 'aws-lambda';
+import { deploymentEnvironments } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
-import { AWSAccounts } from '../Shared/AWSAccounts';
 
-const accounts = new AWSAccounts();
 const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
 
 export async function handler(_event: ScheduledEvent) {
@@ -28,7 +27,7 @@ async function sendOverviewToSlack() {
   if (criticalFindings && criticalFindings.length > 0) {
     message.addSection('❗️ Critical findings');
     criticalFindings.forEach(finding => {
-      const accountName = accounts.lookupAccountName(finding.AwsAccountId ?? 'unknown account');
+      const accountName = lookupAccountName(finding.AwsAccountId);
       message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
     });
   }
@@ -37,7 +36,7 @@ async function sendOverviewToSlack() {
   if (highFindings && highFindings.length > 0) {
     message.addSection('⚠️ High findings');
     highFindings.forEach(finding => {
-      const accountName = accounts.lookupAccountName(finding.AwsAccountId ?? 'unknown account');
+      const accountName = lookupAccountName(finding.AwsAccountId);
       message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
     });
   }
@@ -82,4 +81,12 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
     console.error(error);
     throw Error('Could not get findings, check logs');
   }
+}
+
+
+function lookupAccountName(account?: string) {
+  if (!account) { return 'undefined account';}
+  const configuration = deploymentEnvironments[process.env.BRANCH_NAME ?? 'main'];
+  const name = configuration?.deployToEnvironments.find(accountConfig => accountConfig.env.account == account);
+  return name ?? account;
 }
