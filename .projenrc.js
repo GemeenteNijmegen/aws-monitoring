@@ -1,4 +1,4 @@
-const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/modules-projen');
+const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/projen-project-type');
 const project = new GemeenteNijmegenCdkApp({
   cdkVersion: '2.1.0',
   defaultReleaseBranch: 'main',
@@ -20,13 +20,14 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-cdk/aws-apigatewayv2-integrations-alpha',
     '@aws-sdk/client-sqs',
     '@aws-sdk/client-securityhub',
+    '@aws-sdk/client-organizations',
     '@aws-sdk/client-cloudwatch-logs',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-sts',
     '@aws-sdk/client-sns',
   ],
   devDeps: [
-    '@gemeentenijmegen/modules-projen',
+    '@gemeentenijmegen/projen-project-type',
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],

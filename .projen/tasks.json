@@ -70,7 +70,7 @@
       "description": "Create a JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -79,7 +79,7 @@
       "description": "Continuously update the JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -88,7 +88,7 @@
       "description": "Create a JavaScript bundle from src/monitoringLambda/monitoring.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -97,7 +97,7 @@
       "description": "Continuously update the JavaScript bundle from src/monitoringLambda/monitoring.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -106,7 +106,7 @@
       "description": "Create a JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -115,7 +115,7 @@
       "description": "Continuously update the JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -124,7 +124,7 @@
       "description": "Create a JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -133,7 +133,7 @@
       "description": "Continuously update the JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -142,7 +142,7 @@
       "description": "Create a JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -151,7 +151,7 @@
       "description": "Continuously update the JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -160,7 +160,7 @@
       "description": "Create a JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --external:aws-sdk"
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -169,7 +169,7 @@
       "description": "Continuously update the JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node14\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --external:aws-sdk --watch"
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -223,7 +223,8 @@
       "description": "Deploys your CDK app to the AWS cloud",
       "steps": [
         {
-          "exec": "cdk deploy"
+          "exec": "cdk deploy",
+          "receiveArgs": true
         }
       ]
     },
@@ -232,7 +233,8 @@
       "description": "Destroys your cdk app in the AWS cloud",
       "steps": [
         {
-          "exec": "cdk destroy"
+          "exec": "cdk destroy",
+          "receiveArgs": true
         }
       ]
     },
@@ -262,7 +264,26 @@
       "description": "Runs eslint against the codebase",
       "steps": [
         {
-          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools .projenrc.js"
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern $@ src test build-tools .projenrc.js",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "yarn install --check-files"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "yarn install --check-files --frozen-lockfile"
         }
       ]
     },
@@ -343,19 +364,11 @@
       "description": "Run tests",
       "steps": [
         {
-          "exec": "jest --passWithNoTests --all --updateSnapshot"
+          "exec": "jest --passWithNoTests --updateSnapshot",
+          "receiveArgs": true
         },
         {
           "spawn": "eslint"
-        }
-      ]
-    },
-    "test:update": {
-      "name": "test:update",
-      "description": "Update jest snapshots",
-      "steps": [
-        {
-          "exec": "jest --updateSnapshot"
         }
       ]
     },
@@ -392,28 +405,13 @@
       },
       "steps": [
         {
-          "exec": "yarn upgrade npm-check-updates"
-        },
-        {
-          "exec": "npm-check-updates --dep dev --upgrade --target=minor"
-        },
-        {
-          "exec": "npm-check-updates --dep optional --upgrade --target=minor"
-        },
-        {
-          "exec": "npm-check-updates --dep peer --upgrade --target=minor"
-        },
-        {
-          "exec": "npm-check-updates --dep prod --upgrade --target=minor"
-        },
-        {
-          "exec": "npm-check-updates --dep bundle --upgrade --target=minor"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@gemeentenijmegen/projen-project-type,@types/jest,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,aws-cdk,aws-sdk-client-mock,axios-mock-adapter,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,eslint,jest,jest-junit,projen,standard-version,ts-jest,ts-node,typescript,@aws-cdk/aws-apigatewayv2-alpha,@aws-cdk/aws-apigatewayv2-integrations-alpha,@aws-sdk/client-cloudwatch-logs,@aws-sdk/client-organizations,@aws-sdk/client-s3,@aws-sdk/client-securityhub,@aws-sdk/client-sns,@aws-sdk/client-sqs,@aws-sdk/client-sts,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/utils,@types/aws-lambda,aws-cdk-lib,axios,cdk-nag,constructs"
         },
         {
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade"
+          "exec": "yarn upgrade @gemeentenijmegen/projen-project-type @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk aws-sdk-client-mock axios-mock-adapter esbuild eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit projen standard-version ts-jest ts-node typescript @aws-cdk/aws-apigatewayv2-alpha @aws-cdk/aws-apigatewayv2-integrations-alpha @aws-sdk/client-cloudwatch-logs @aws-sdk/client-organizations @aws-sdk/client-s3 @aws-sdk/client-securityhub @aws-sdk/client-sns @aws-sdk/client-sqs @aws-sdk/client-sts @gemeentenijmegen/aws-constructs @gemeentenijmegen/utils @types/aws-lambda aws-cdk-lib axios cdk-nag constructs"
         },
         {
           "exec": "npx projen"
@@ -437,7 +435,7 @@
     }
   },
   "env": {
-    "PATH": "$(npx -c \"node -e \\\"console.log(process.env.PATH)\\\"\")"
+    "PATH": "$(npx -c \"node --print process.env.PATH\")"
   },
   "//": "~~ Generated by projen. To modify, edit .projenrc.js and run \"npx projen\"."
 }

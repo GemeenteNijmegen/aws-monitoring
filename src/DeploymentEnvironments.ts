@@ -156,6 +156,13 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         description: 'EP role used!',
         priority: 'critical',
       },
+      {
+        roleMonitoring: {
+          roleName: 'landingzone-break-glass',
+        },
+        description: 'Break the glass role used!',
+        priority: 'critical',
+      },
     ],
     deployToEnvironments: [
       {

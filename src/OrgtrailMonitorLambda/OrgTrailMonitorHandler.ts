@@ -71,7 +71,7 @@ export class OrgTrailMonitorHandler {
       return false; // An event that is excluded in the rule so ignore it
     }
 
-    const resource = cloudTrailEvent.resources.find((r:any) => r.type === 'AWS::KMS::Key');
+    const resource = cloudTrailEvent?.resources?.find((r:any) => r.type === 'AWS::KMS::Key');
     if (!resource) {
       throw Error('No AWS::KMS::Key resource found in event');
     }
@@ -100,7 +100,7 @@ export class OrgTrailMonitorHandler {
       return false; // An event that is excluded in the rule so ignore it
     }
 
-    const resource = cloudTrailEvent.requestParameters.secretId;
+    const resource = cloudTrailEvent?.requestParameters?.secretId;
     if (!resource) {
       throw Error('No secret arn found in event');
     }
@@ -123,7 +123,7 @@ export class OrgTrailMonitorHandler {
       return false; // Not a AssumeRole event
     }
 
-    const resource = cloudTrailEvent.resources.find((r:any) => r.type === 'AWS::IAM::Role');
+    const resource = cloudTrailEvent?.resources?.find((r:any) => r.type === 'AWS::IAM::Role');
     if (!resource) {
       throw Error('No AWS::IAM::Role resource found in event');
     }

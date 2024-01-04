@@ -52,16 +52,19 @@ class Notifier extends Construct {
   constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
     this.setupMonitoringFunction(props.prefix, props.branchName);
-    this.setupSecurityHubOverviewFunction(props.prefix);
+    this.setupSecurityHubOverviewFunction(props.prefix, props.branchName);
     this.setupLogQueryJob(props.prefix, props.branchName);
   }
 
-  setupSecurityHubOverviewFunction(prefix: string) {
+  setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
 
     // Create the lambda and inject the webhook urls
     const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda', {
       description: `SecurityHub Overview Lambda for ${prefix}`,
       timeout: Duration.minutes(5),
+      environment: {
+        BRANCH_NAME: branchName,
+      },
     });
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
