@@ -24,7 +24,8 @@ async function sendOverviewToSlack() {
   message.addHeader('SecurityHub finding overview');
 
   const criticalFindings = await getFindingsWithSeverity('CRITICAL');
-  if (criticalFindings && criticalFindings.length > 0) {
+  const criticalFindingsFound = criticalFindings && criticalFindings.length > 0;
+  if (criticalFindingsFound) {
     message.addSection('❗️ Critical findings');
     criticalFindings.forEach(finding => {
       const accountName = lookupAccountName(finding.AwsAccountId);
@@ -33,7 +34,8 @@ async function sendOverviewToSlack() {
   }
 
   const highFindings = await getFindingsWithSeverity('HIGH');
-  if (highFindings && highFindings.length > 0) {
+  const highFindingsFound = highFindings && highFindings.length > 0;
+  if (highFindingsFound) {
     message.addSection('⚠️ High findings');
     highFindings.forEach(finding => {
       const accountName = lookupAccountName(finding.AwsAccountId);
@@ -41,7 +43,7 @@ async function sendOverviewToSlack() {
     });
   }
 
-  if (!criticalFindings && !highFindings) {
+  if (!criticalFindingsFound && !highFindingsFound) {
     message.addSection('✅ No high or critical findings');
   }
 
