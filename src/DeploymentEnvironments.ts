@@ -377,7 +377,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-verwerkingenlogging-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '887474129159',
           region: 'eu-central-1',
