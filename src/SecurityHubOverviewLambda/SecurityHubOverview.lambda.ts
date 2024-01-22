@@ -89,6 +89,6 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
 function lookupAccountName(account?: string) {
   if (!account) { return 'undefined account';}
   const configuration = deploymentEnvironments[process.env.BRANCH_NAME ?? 'main'];
-  const accountConfig = configuration?.deployToEnvironments.find(accountConfig => accountConfig.env.account == account);
+  const accountConfig = configuration?.deployToEnvironments.find(config => config.env.account == account);
   return accountConfig?.accountName ?? account;
 }
