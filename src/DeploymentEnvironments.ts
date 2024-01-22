@@ -442,6 +442,30 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-component-library-development',
+        accountType: 'development',
+        env: {
+          account: '598242258242',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-component-library-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '768900902886',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-component-library-prod',
+        accountType: 'production',
+        env: {
+          account: '706611162248',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
