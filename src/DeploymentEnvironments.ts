@@ -426,6 +426,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-webform-submission-storage-dev',
+        accountType: 'development',
+        env: {
+          account: '358927146986',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-webform-submission-storage-prod',
+        accountType: 'production',
+        env: {
+          account: '606343885688',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
