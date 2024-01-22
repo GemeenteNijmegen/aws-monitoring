@@ -401,6 +401,31 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-tribebrplinker-development',
+        accountType: 'development',
+        env: {
+          account: '471236387053',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-tribebrplinker-acceptance',
+        accountType: 'acceptance',
+        env: {
+          account: '987304085258',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-tribebrplinker-production',
+        accountType: 'production',
+        enableDevopsGuru: true,
+        env: {
+          account: '962664892091',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   'sandbox-new-lz': {
