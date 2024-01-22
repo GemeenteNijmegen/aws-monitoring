@@ -352,7 +352,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-webforms-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '147064197580',
           region: 'eu-central-1',
