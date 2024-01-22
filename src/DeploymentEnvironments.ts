@@ -395,7 +395,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-sociale-recherche-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '958875843009',
           region: 'eu-central-1',
