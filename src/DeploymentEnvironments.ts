@@ -352,7 +352,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-webforms-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '147064197580',
           region: 'eu-central-1',
@@ -377,7 +377,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-verwerkingenlogging-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '887474129159',
           region: 'eu-central-1',
@@ -395,9 +395,74 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-sociale-recherche-prod',
         accountType: 'production',
-        enableDevopsGuru: false, // No workload yet, enable later
+        enableDevopsGuru: true,
         env: {
           account: '958875843009',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-tribebrplinker-development',
+        accountType: 'development',
+        env: {
+          account: '471236387053',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-tribebrplinker-acceptance',
+        accountType: 'acceptance',
+        env: {
+          account: '987304085258',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-tribebrplinker-production',
+        accountType: 'production',
+        enableDevopsGuru: true,
+        env: {
+          account: '962664892091',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-webform-submission-storage-dev',
+        accountType: 'development',
+        env: {
+          account: '358927146986',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-webform-submission-storage-prod',
+        accountType: 'production',
+        env: {
+          account: '606343885688',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-component-library-development',
+        accountType: 'development',
+        env: {
+          account: '598242258242',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-component-library-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '768900902886',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-component-library-prod',
+        accountType: 'production',
+        env: {
+          account: '706611162248',
           region: 'eu-central-1',
         },
       },
