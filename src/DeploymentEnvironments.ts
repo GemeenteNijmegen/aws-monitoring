@@ -144,8 +144,8 @@ export interface MonitoringRule {
  * pipeline should be deployed in prod
  */
 export const deploymentEnvironments: { [key: string]: Configuration } = {
-  'main-new-lz': {
-    branchName: 'main-new-lz',
+  main: {
+    branchName: 'main',
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
     globalMonitoringRules: [
@@ -468,8 +468,8 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
     ],
   },
-  'sandbox-new-lz': {
-    branchName: 'sandbox-new-lz',
+  sandbox: {
+    branchName: 'sandbox',
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployToEnvironments: [
