@@ -6,6 +6,7 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { getConfiguration } from './DeploymentEnvironments';
+import { EventSubscription } from './EventSubscription';
 import { LogQueryJob } from './LogQueryJob';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
@@ -54,6 +55,25 @@ class Notifier extends Construct {
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix, props.branchName);
     this.setupLogQueryJob(props.prefix, props.branchName);
+    this.setupSecurityHubNotifications();
+  }
+
+  setupSecurityHubNotifications() {
+    new EventSubscription(this, 'scurityhub-notifications', {
+      criticality: 'high',
+      pattern: {
+        source: ['aws.securityhub'],
+        detailType: ['Security Hub Findings - Imported'],
+        detail: {
+          findings: {
+            Severity: {
+              Label: ['HIGH', 'CRITICAL'],
+            },
+          },
+        },
+      },
+      ruleDescription: 'Notifications from SecuriyHub',
+    });
   }
 
   setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
