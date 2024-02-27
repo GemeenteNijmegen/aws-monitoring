@@ -5,7 +5,7 @@ const project = new GemeenteNijmegenCdkApp({
   name: 'aws-monitoring',
   depsUpgradeOptions: {
     workflowOptions: {
-      branches: ['development'],
+      branches: ['sandbox'],
     },
   },
   deps: [
