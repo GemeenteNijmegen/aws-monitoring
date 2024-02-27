@@ -13,7 +13,7 @@ import { getConfiguration } from '../DeploymentEnvironments';
  */
 export async function handler(event: any) {
   console.log(JSON.stringify(event));
-  const configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+  const configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main');
   const sns = new SnsEventHandler(configuration);
   const logs = new LogsEventHandler();
 
