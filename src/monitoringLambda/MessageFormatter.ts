@@ -19,7 +19,7 @@ export abstract class MessageFormatter<T> {
     this.event = event;
     this.account = account;
     this.priority = priority;
-    this.configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main-new-lz');
+    this.configuration = getConfiguration(process.env.BRANCH_NAME ?? 'main');
   }
 
   formattedMessage(): SlackMessage {

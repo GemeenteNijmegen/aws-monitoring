@@ -10,7 +10,7 @@ beforeAll(() => {
 });
 
 const config: Configuration = {
-  branchName: 'sandbox-new-lz',
+  branchName: 'sandbox',
   environmentName: 'development',
   pipelineStackCdkName: 'aws-monitoring-sandbox',
   deployToEnvironments: [

@@ -10,7 +10,7 @@ const deployFromEnvironment = {
 
 const app = new App();
 
-const branchToBuild = process.env.BRANCH_NAME ?? 'sandbox-new-lz';
+const branchToBuild = process.env.BRANCH_NAME ?? 'sandbox';
 console.log(`Branch to build: ${branchToBuild}`);
 const configuration = getConfiguration(branchToBuild);
 
