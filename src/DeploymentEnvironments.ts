@@ -466,6 +466,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-yivi-nijmegen-accp',
+        accountType: 'production',
+        env: {
+          account: '992382808833',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-yivi-nijmegen-prod',
+        accountType: 'production',
+        env: {
+          account: '767398106682',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
