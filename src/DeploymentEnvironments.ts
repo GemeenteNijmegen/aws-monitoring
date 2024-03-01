@@ -468,7 +468,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       },
       {
         accountName: 'gn-yivi-nijmegen-accp',
-        accountType: 'production',
+        accountType: 'acceptance',
         env: {
           account: '992382808833',
           region: 'eu-central-1',
