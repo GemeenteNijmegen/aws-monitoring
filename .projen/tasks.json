@@ -70,7 +70,7 @@
       "description": "Create a JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -79,7 +79,7 @@
       "description": "Continuously update the JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -88,7 +88,7 @@
       "description": "Create a JavaScript bundle from src/monitoringLambda/monitoring.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -97,7 +97,7 @@
       "description": "Continuously update the JavaScript bundle from src/monitoringLambda/monitoring.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/monitoringLambda/monitoring.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/monitoringLambda/monitoring.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -106,7 +106,7 @@
       "description": "Create a JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -115,7 +115,7 @@
       "description": "Continuously update the JavaScript bundle from src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -124,7 +124,7 @@
       "description": "Create a JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -133,7 +133,7 @@
       "description": "Continuously update the JavaScript bundle from src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/SecurityHubOverviewLambda/SecurityHubOverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -142,7 +142,7 @@
       "description": "Create a JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -151,7 +151,7 @@
       "description": "Continuously update the JavaScript bundle from src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/SlackInteractivityLambda/SlackInteractivity.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/SlackInteractivityLambda/SlackInteractivity.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -160,7 +160,7 @@
       "description": "Create a JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
         }
       ]
     },
@@ -169,7 +169,7 @@
       "description": "Continuously update the JavaScript bundle from src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node18\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+          "exec": "esbuild --bundle src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/TopdeskIntegrationLambda/TopdeskIntegration.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
