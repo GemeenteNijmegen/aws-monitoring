@@ -435,6 +435,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-webform-submission-storag-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '654654253219',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-webform-submission-storage-prod',
         accountType: 'production',
         env: {
