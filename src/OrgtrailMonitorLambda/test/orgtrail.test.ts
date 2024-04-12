@@ -373,10 +373,7 @@ describe('orgtrail', () => {
     const events = convertToLogEvents(localDeployEvent) as any;
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(1);
-    // expect(sns.results[0].input.Message).toContain('KMS key GenerateDataKey event detected');
-    // expect(sns.results[0].input.Message).toContain('arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx');
-    // expect(sns.results[0].input.Message).toContain('logs.amazonaws.com');
-    // expect(sns.results[0].input.Message).toContain('GemeenteNijmegen/mpa-monitoring-event');
+    expect(sns.results[0].input.Message).toContain('Local Deployment event detected');
   });
   test('pipeline deploy event (global)', async () => {
     const config: Configuration = {
@@ -409,10 +406,6 @@ describe('orgtrail', () => {
     const events = convertToLogEvents(pipelineDeployEvent) as any;
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(0);
-    // expect(sns.results[0].input.Message).toContain('KMS key GenerateDataKey event detected');
-    // expect(sns.results[0].input.Message).toContain('arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx');
-    // expect(sns.results[0].input.Message).toContain('logs.amazonaws.com');
-    // expect(sns.results[0].input.Message).toContain('GemeenteNijmegen/mpa-monitoring-event');
   });
 
 });
