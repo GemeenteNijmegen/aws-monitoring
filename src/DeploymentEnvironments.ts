@@ -179,6 +179,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         description: 'Break the glass role used!',
         priority: 'critical',
       },
+      {
+        deployMonitoring: {
+          roleArnContains: 'deploy-role',
+          userIdentityArnContains: 'AWSReservedSSO',
+        },
+        description: 'Local CDK Deployment',
+        priority: 'high',
+      },
     ],
     deployToEnvironments: [
       {
