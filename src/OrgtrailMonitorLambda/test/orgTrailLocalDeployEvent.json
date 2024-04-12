@@ -1,0 +1,65 @@
+{
+    "eventVersion": "1.08",
+    "userIdentity": {
+      "type": "AssumedRole",
+      "principalId": "XXXXXXXXXX:p.ersoon@nijmegen.nl",
+      "arn": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_lz-platform-operator-ep_xxxyyyxx/p.ersoon@nijmegen.nl",
+      "accountId": "123456789012",
+      "accessKeyId": "XXXXXXXXXXXX",
+      "sessionContext": {
+        "sessionIssuer": {
+          "type": "Role",
+          "principalId": "XXXXXXXXXXXX",
+          "arn": "arn:aws:iam::123456789012:role/aws-reserved/sso.amazonaws.com/eu-central-1/AWSReservedSSO_lz-platform-operator-ep_xxxyyyxx",
+          "accountId": "123456789012",
+          "userName": "AWSReservedSSO_lz-platform-operator-ep_xxyyxxxyy"
+        },
+        "webIdFederationData": {},
+        "attributes": {
+          "creationDate": "2024-04-12T09:36:03Z",
+          "mfaAuthenticated": "false"
+        }
+      }
+    },
+    "eventTime": "2024-04-12T09:36:05Z",
+    "eventSource": "sts.amazonaws.com",
+    "eventName": "AssumeRole",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "00.169.000.000",
+    "userAgent": "aws-sdk-nodejs/2.1498.0 darwin/v18.19.0 aws-cdk/2.114.1 callback",
+    "requestParameters": {
+      "roleArn": "arn:aws:iam::123456789012:role/cdk-hnb000aaa-deploy-role-123456789012-us-east-1",
+      "roleSessionName": "aws-cdk-naampersoon"
+    },
+    "responseElements": {
+      "credentials": {
+        "accessKeyId": "XXXXXXXXXXX",
+        "sessionToken": "LANGENEPPESESSIONTOKEN",
+        "expiration": "Apr 12, 2024, 10:36:05 AM"
+      },
+      "assumedRoleUser": {
+        "assumedRoleId": "XXXXXXXXXXX:aws-cdk-naampersoon",
+        "arn": "arn:aws:sts::123456789012:assumed-role/cdk-hnb000aaa-deploy-role-123456789012-us-east-1/aws-cdk-naampersoon"
+      }
+    },
+    "requestID": "d6d3b8e7-8c3e-4d13-a35f-0db65bf80c4a",
+    "eventID": "3d659f9e-b0c0-4a95-9d3f-088c3c2cee6e",
+    "readOnly": true,
+    "resources": [
+      {
+        "accountId": "123456789012",
+        "type": "AWS::IAM::Role",
+        "ARN": "arn:aws:iam::123456789012:role/cdk-hnb000aaa-deploy-role-123456789012-us-east-1"
+      }
+    ],
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management",
+    "tlsDetails": {
+      "tlsVersion": "TLSv1.3",
+      "cipherSuite": "TLS_AES_128_GCM_SHA256",
+      "clientProvidedHostHeader": "sts.us-east-1.amazonaws.com"
+    }
+  }
+  

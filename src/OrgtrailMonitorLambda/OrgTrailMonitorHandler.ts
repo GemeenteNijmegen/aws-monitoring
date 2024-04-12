@@ -57,6 +57,9 @@ export class OrgTrailMonitorHandler {
     if (rule.secretMonitoring) {
       return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
     }
+    if (rule.deployMonitoring) {
+      return this.checkEventAgainstLocalDeployRule(cloudTrailEvent, rule);
+    }
     return undefined;
   }
 
@@ -137,6 +140,33 @@ export class OrgTrailMonitorHandler {
       return message;
     }
 
+    return false;
+  }
+
+  private checkEventAgainstLocalDeployRule(cloudTrailEvent: any, rule: MonitoringRule): any {
+    if (!cloudTrailEvent.eventName?.startsWith('AssumeRole')) {
+      return false; // Not a AssumeRole event
+    }
+    /**
+     * Check if event contains useridentity arn and assumedRoleUser arn
+     */
+    const userIdentityArn = cloudTrailEvent?.userIdentity?.arn;
+    const assumedRoleArn = cloudTrailEvent?.responseElements?.assumedRoleUser?.arn;
+    if (!userIdentityArn || !assumedRoleArn) {
+      return false;
+    }
+
+    /**
+     * Local deployment is detected by a combination of the deploy role and the user
+     */
+    if (userIdentityArn.includes(rule.deployMonitoring?.userIdentityArnContains) && assumedRoleArn.includes(rule.deployMonitoring?.roleArnContains)) {
+      const message = new MonitoringEvent();
+      message.addTitle('❗️ Local Deployment event detected');
+      message.addMessage(rule.description);
+      message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
+      message.setPriority(rule.priority);
+      return message;
+    }
     return false;
   }
 
