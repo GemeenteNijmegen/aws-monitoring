@@ -119,8 +119,8 @@ export interface MonitoringRule {
   };
 
   /**
-   * Configuratino for monitoring a secret
-   * Note roleM0nitoring and keyMonitoring behave mutually exclusive
+   * Configuration for monitoring a secret
+   * Note roleMonitoring and keyMonitoring behave mutually exclusive
    */
   secretMonitoring?: {
     /**
@@ -136,6 +136,22 @@ export interface MonitoringRule {
      * Alert on all events except events included here
      */
     excludeEvents?: string[];
+  };
+
+  /**
+   * Configuration for monitoring deployments from local users
+   */
+  localDeployMonitoring?: {
+    /**
+     * The string contained in the assumedRoleUserArn
+     * Example: 'deploy-role'
+     */
+    roleArnContains: string;
+    /**
+     * The string contained in the userIdentityArn
+     * Example: 'AWSReservedSSO'
+     */
+    userIdentityArnContains: string;
   };
 }
 
@@ -162,6 +178,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
         description: 'Break the glass role used!',
         priority: 'critical',
+      },
+      {
+        localDeployMonitoring: {
+          roleArnContains: 'deploy-role',
+          userIdentityArnContains: 'AWSReservedSSO',
+        },
+        description: 'Local CDK Deployment',
+        priority: 'high',
       },
     ],
     deployToEnvironments: [
@@ -508,6 +532,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
               roleName: 'lz-platform-operator-ep',
             },
             description: 'EP role used!',
+            priority: 'critical',
+          },
+          {
+            localDeployMonitoring: {
+              roleArnContains: 'deploy-role',
+              userIdentityArnContains: 'AWSReservedSSO',
+            },
+            description: 'Local CDK Deployment',
             priority: 'critical',
           },
         ],

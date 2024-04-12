@@ -1,0 +1,64 @@
+{
+  "eventVersion": "1.08",
+  "userIdentity": {
+    "type": "AssumedRole",
+    "principalId": "XXXXXXXXXXXXXXXXXX:17129000000",
+    "arn": "arn:aws:sts::1111100000888:assumed-role/webformulieren-pipeline-d-pipelinePipelineRole7016-YYYYYYYY/171290000000",
+    "accountId": "1111100000888",
+    "accessKeyId": "XXXXXXXXXXXXXXXXXX",
+    "sessionContext": {
+      "sessionIssuer": {
+        "type": "Role",
+        "principalId": "XXXXXXXXXXXXXXXXXX",
+        "arn": "arn:aws:iam::1111100000888:role/webformulieren-pipeline-d-pipelinePipelineRole7016-YYYYYYYY",
+        "accountId": "1111100000888",
+        "userName": "webformulieren-pipeline-d-pipelinePipelineRole7016-YYYYYYYY"
+      },
+      "webIdFederationData": {},
+      "attributes": {
+        "creationDate": "2024-04-12T10:47:38Z",
+        "mfaAuthenticated": "false"
+      }
+    },
+    "invokedBy": "codepipeline.amazonaws.com"
+  },
+  "eventTime": "2024-04-12T10:47:38Z",
+  "eventSource": "sts.amazonaws.com",
+  "eventName": "AssumeRole",
+  "awsRegion": "eu-central-1",
+  "sourceIPAddress": "codepipeline.amazonaws.com",
+  "userAgent": "codepipeline.amazonaws.com",
+  "requestParameters": {
+    "roleArn": "arn:aws:iam::033500000000:role/cdk-hnb000aaa-deploy-role-033500000000-eu-central-1",
+    "roleSessionName": "171290000000",
+    "policy": "{\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"cloudformation:*\",\"iam:PassRole\",\"kms:DescribeKey\",\"kms:GenerateDataKey*\",\"kms:Encrypt\",\"kms:ReEncrypt*\",\"kms:Decrypt\"],\"Resource\":[\"*\"]},{\"Effect\":\"Allow\",\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\",\"s3:PutObjectTagging\",\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:GetObjectTagging\",\"s3:GetObjectVersionTagging\"],\"Resource\":[\"arn:aws:s3:::webformulieren-pipeline-pipelinepipelineartifact-h477ndjsfj000-webformulieren-devel/*\"]}]}",
+    "durationSeconds": 900
+  },
+  "responseElements": {
+    "credentials": {
+      "accessKeyId": "XXXXXXXXXXXXXXXXXX",
+      "sessionToken": "NEPPESESSIONTOKEN",
+      "expiration": "Apr 12, 2024, 11:02:38 AM"
+    },
+    "assumedRoleUser": {
+      "assumedRoleId": "XXXXXXXXXXXXXXXX:17129000000",
+      "arn": "arn:aws:sts::033500000000:assumed-role/cdk-hnb000aaa-deploy-role-033500000000-eu-central-1/17129000000"
+    },
+    "packedPolicySize": 52
+  },
+  "requestID": "b22855e3-3c58-49e0-be61-b2cfba06a486",
+  "eventID": "2741b96a-306d-3c7c-9fc6-0615c999381f",
+  "readOnly": true,
+  "resources": [
+    {
+      "accountId": "033500000000",
+      "type": "AWS::IAM::Role",
+      "ARN": "arn:aws:iam::033500000000:role/cdk-hnb000aaa-deploy-role-033500000000-eu-central-1"
+    }
+  ],
+  "eventType": "AwsApiCall",
+  "managementEvent": true,
+  "recipientAccountId": "1111100000888",
+  "sharedEventID": "60419fea-be38-4495-81bb-f62629048ab8",
+  "eventCategory": "Management"
+}

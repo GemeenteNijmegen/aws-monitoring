@@ -24,7 +24,8 @@ describe('orgtrail', () => {
   const assumeRoleEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailAssumeRoleSAML.json', 'utf-8'));
   const generateDataKeyEvent = JSON.parse( fs.readFileSync(__dirname + '/orgTrailGenerateDataKey.json', 'utf-8'));
   const retreiveSecretValueEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailSecretEvent.json', 'utf-8'));
-
+  const localDeployEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailLocalDeployEvent.json', 'utf-8'));
+  const pipelineDeployEvent = JSON.parse(fs.readFileSync(__dirname + '/orgTrailPipelineDeployEvent.json', 'utf-8'));
   // Test related statics
   const keyArn = 'arn:aws:kms:eu-central-1:123456789012:key/xxxx-xxxx-xxxx-xxxx';
   const secretArn = 'arn:aws:secretsmanager:eu-central-1:123456789012:secret:/cdk/secret/project-secret';
@@ -337,6 +338,72 @@ describe('orgtrail', () => {
     const handler = new OrgTrailMonitorHandler(config, sns);
 
     const events = convertToLogEvents(generateDataKeyEvent, assumeRoleEvent, retreiveSecretValueEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(0);
+  });
+
+  test('local deploy event (global)', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      globalMonitoringRules: [
+        {
+          description: 'test',
+          priority: 'high',
+          localDeployMonitoring: {
+            roleArnContains: 'deploy-role',
+            userIdentityArnContains: 'AWSReservedSSO',
+          },
+        },
+      ],
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          accountType: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+
+    const events = convertToLogEvents(localDeployEvent) as any;
+    await handler.handleLogEvents(events);
+    expect(sns.results).toHaveLength(1);
+    expect(sns.results[0].input.Message).toContain('Local Deployment event detected');
+  });
+  test('pipeline deploy event (global)', async () => {
+    const config: Configuration = {
+      branchName: 'test',
+      environmentName: 'development',
+      pipelineStackCdkName: 'test',
+      globalMonitoringRules: [
+        {
+          description: 'test',
+          priority: 'high',
+          localDeployMonitoring: {
+            roleArnContains: 'deploy-role',
+            userIdentityArnContains: 'AWSReservedSSO',
+          },
+        },
+      ],
+      deployToEnvironments: [
+        {
+          accountName: 'test',
+          accountType: 'test',
+          env: {
+            account: '123456789012',
+            region: 'eu-central-1',
+          },
+        },
+      ],
+    };
+    const handler = new OrgTrailMonitorHandler(config, sns);
+
+    const events = convertToLogEvents(pipelineDeployEvent) as any;
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(0);
   });
