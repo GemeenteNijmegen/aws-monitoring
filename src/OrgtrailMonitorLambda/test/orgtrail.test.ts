@@ -307,6 +307,7 @@ describe('orgtrail', () => {
     const events = convertToLogEvents(generateDataKeyEvent, assumeRoleEvent, retreiveSecretValueEvent) as any;
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(1);
+    expect(sns.results[0].input.Message).toContain('role-name-for-lambda');
   });
 
   test('secret event exclude (global)', async () => {
@@ -374,6 +375,7 @@ describe('orgtrail', () => {
     await handler.handleLogEvents(events);
     expect(sns.results).toHaveLength(1);
     expect(sns.results[0].input.Message).toContain('Local Deployment event detected');
+    expect(sns.results[0].input.Message).toContain('p.ersoon@nijmegen.nl');
   });
   test('pipeline deploy event (global)', async () => {
     const config: Configuration = {
