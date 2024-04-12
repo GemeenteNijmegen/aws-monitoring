@@ -204,7 +204,9 @@ export class OrgTrailMonitorHandler {
    */
   private getUserIdentity(userIdentity: any) {
     if (userIdentity?.type === 'AssumedRole') {
-      return userIdentity.sessionContext?.sessionIssuer?.userName ?? userIdentity.arn;
+      const username = userIdentity.sessionContext?.sessionIssuer?.userName;
+      // Check if username exists and is specific enough, otherwise return arn
+      return username && !username.includes('AWSReservedSSO') ? username : userIdentity.arn;
     }
     if (userIdentity?.type === 'AWSService') {
       return userIdentity.invokedBy;
