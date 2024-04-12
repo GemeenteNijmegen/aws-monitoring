@@ -57,7 +57,7 @@ export class OrgTrailMonitorHandler {
     if (rule.secretMonitoring) {
       return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
     }
-    if (rule.deployMonitoring) {
+    if (rule.localDeployMonitoring) {
       return this.checkEventAgainstLocalDeployRule(cloudTrailEvent, rule);
     }
     return undefined;
@@ -159,7 +159,10 @@ export class OrgTrailMonitorHandler {
     /**
      * Local deployment is detected by a combination of the deploy role and the user
      */
-    if (userIdentityArn.includes(rule.deployMonitoring?.userIdentityArnContains) && assumedRoleArn.includes(rule.deployMonitoring?.roleArnContains)) {
+    if (
+      userIdentityArn.includes(rule.localDeployMonitoring?.userIdentityArnContains)
+      && assumedRoleArn.includes(rule.localDeployMonitoring?.roleArnContains)
+    ) {
       const message = new MonitoringEvent();
       message.addTitle('❗️ Local Deployment event detected');
       message.addMessage(rule.description);

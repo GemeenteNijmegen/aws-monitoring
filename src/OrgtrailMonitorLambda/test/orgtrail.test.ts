@@ -351,7 +351,7 @@ describe('orgtrail', () => {
         {
           description: 'test',
           priority: 'high',
-          deployMonitoring: {
+          localDeployMonitoring: {
             roleArnContains: 'deploy-role',
             userIdentityArnContains: 'AWSReservedSSO',
           },
@@ -384,7 +384,7 @@ describe('orgtrail', () => {
         {
           description: 'test',
           priority: 'high',
-          deployMonitoring: {
+          localDeployMonitoring: {
             roleArnContains: 'deploy-role',
             userIdentityArnContains: 'AWSReservedSSO',
           },

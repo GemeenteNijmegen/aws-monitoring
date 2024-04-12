@@ -139,9 +139,9 @@ export interface MonitoringRule {
   };
 
   /**
-   * Configuration for monitoring deployments
+   * Configuration for monitoring deployments from local users
    */
-  deployMonitoring?: {
+  localDeployMonitoring?: {
     /**
      * The string contained in the assumedRoleUserArn
      * Example: 'deploy-role'
@@ -180,7 +180,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         priority: 'critical',
       },
       {
-        deployMonitoring: {
+        localDeployMonitoring: {
           roleArnContains: 'deploy-role',
           userIdentityArnContains: 'AWSReservedSSO',
         },
@@ -535,7 +535,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             priority: 'critical',
           },
           {
-            deployMonitoring: {
+            localDeployMonitoring: {
               roleArnContains: 'deploy-role',
               userIdentityArnContains: 'AWSReservedSSO',
             },
