@@ -376,6 +376,7 @@ describe('orgtrail', () => {
     expect(sns.results).toHaveLength(1);
     expect(sns.results[0].input.Message).toContain('Local Deployment event detected');
     expect(sns.results[0].input.Message).toContain('p.ersoon@nijmegen.nl');
+    expect(sns.results[0].input.Message).toContain('3d659f9e-b0c0-4a95-9d3f-088c3c2cee6e');
   });
   test('pipeline deploy event (global)', async () => {
     const config: Configuration = {
