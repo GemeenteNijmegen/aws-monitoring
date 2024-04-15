@@ -44,7 +44,6 @@ const events: Record<string, Event> = {
   'CloudWatch Alarm State Change': {
     shouldTriggerAlert: (message: any) => cloudwatchAlarmEventShouldTriggerAlert(message),
     formatter: (message, account, priority) => new AlarmMessageFormatter(message, account, priority),
-    priority: 'high',
   },
   'ECS Task State Change': {
     shouldTriggerAlert: () => true,
