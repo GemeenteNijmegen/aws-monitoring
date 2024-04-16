@@ -145,7 +145,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ 'anything-but': '-lvl' }],
+            alarmName: [{ 'anything-but': { suffix: '-lvl' } }],
             state: {
               value: ['ALARM'],
             },
