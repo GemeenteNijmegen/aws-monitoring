@@ -64,20 +64,6 @@ export class MonitoredAccountStack extends Stack {
         ruleDescription: 'Send alarm state change notifications from alarm to OK to SNS',
       },
       {
-        id: 'alarm',
-        criticality: 'high',
-        pattern: {
-          source: ['aws.cloudwatch'],
-          detailType: ['CloudWatch Alarm State Change'],
-          detail: {
-            state: {
-              value: ['ALARM'],
-            },
-          },
-        },
-        ruleDescription: 'Send all alarm state change notifications to ALARM to SNS',
-      },
-      {
         id: 'ecs-state-change',
         criticality: 'low',
         pattern: {
@@ -151,6 +137,81 @@ export class MonitoredAccountStack extends Stack {
           },
         },
         ruleDescription: 'Send stack drift detected events to SNS',
+      },
+      {
+        id: 'alarms-default',
+        criticality: 'low',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            alarmName: [{ 'anything-but': ['-low', '-medium', '-high', '-critical'] }],
+            state: {
+              value: ['ALARM'],
+            },
+          },
+        },
+        ruleDescription: 'Send all alarms to SNS by default',
+      },
+      {
+        id: 'alarms-low',
+        criticality: 'low',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            alarmName: [{ suffix: '-low' }],
+            state: {
+              value: ['ALARM'],
+            },
+          },
+        },
+        ruleDescription: 'Send all low alarms to SNS',
+      },
+      {
+        id: 'alarms-medium',
+        criticality: 'medium',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            alarmName: [{ suffix: '-medium' }],
+            state: {
+              value: ['ALARM'],
+            },
+          },
+        },
+        ruleDescription: 'Send all medium alarms to SNS',
+      },
+      {
+        id: 'alarms-high',
+        criticality: 'high',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            alarmName: [{ suffix: '-high' }],
+            state: {
+              value: ['ALARM'],
+            },
+          },
+        },
+        ruleDescription: 'Send all high alarms to SNS',
+      },
+      {
+        id: 'alarms-critical',
+        criticality: 'critical',
+        pattern: {
+          source: ['aws.cloudwatch'],
+          detailType: ['CloudWatch Alarm State Change'],
+          detail: {
+            alarmName: [{ suffix: '-critical' }],
+            state: {
+              value: ['ALARM'],
+            },
+          },
+        },
+        ruleDescription: 'Send all critical alarms to SNS',
       },
     ];
 
