@@ -39,7 +39,7 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
     Aspects.of(this).add(new PermissionsBoundaryAspect());
 
-    const stack = new Stack();
+    const stack = new Stack(this, 'stacksetemptystack');
     const eventbridgeForwarderStack = new EventbridgeForwarderStack(stack, 'eventbridge-forwarder', { targetRegion: 'eu-central-1' });
     new StackSet(stack, 'StackSet', {
       target: StackSetTarget.fromAccounts({
