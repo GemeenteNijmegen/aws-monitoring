@@ -48,7 +48,7 @@ export class MonitoringTargetStage extends Stage {
         accounts: props.deployToEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
       }),
       deploymentType: DeploymentType.selfManaged({
-        adminRole: Role.fromRoleName(this, 'cdkrole', 'cdk-hnb659fds-cfn-exec-role-836443378780-eu-central-1'),
+        adminRole: Role.fromRoleName(stack, 'cdkrole', 'cdk-hnb659fds-cfn-exec-role-836443378780-eu-central-1'),
       }),
       template: StackSetTemplate.fromStackSetStack(eventbridgeForwarderStack),
     });
