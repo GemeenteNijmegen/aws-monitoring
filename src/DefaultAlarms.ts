@@ -1,5 +1,5 @@
 import { Duration } from 'aws-cdk-lib';
-import { Alarm, Metric } from 'aws-cdk-lib/aws-cloudwatch';
+import { Alarm, Metric, TreatMissingData } from 'aws-cdk-lib/aws-cloudwatch';
 import { Construct } from 'constructs';
 
 export class DefaultAlarms extends Construct {
@@ -29,6 +29,7 @@ export class DefaultAlarms extends Construct {
       metric: metric,
       evaluationPeriods: 1,
       threshold: 20,
+      treatMissingData: TreatMissingData.NOT_BREACHING,
     });
   }
 }
