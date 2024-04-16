@@ -25,6 +25,7 @@ export class DefaultAlarms extends Construct {
       period: Duration.minutes(5),
     });
     new Alarm(this, 'concurrent-executions', {
+      alarmName: 'concurrent-executions-high-lvl',
       metric: metric,
       evaluationPeriods: 1,
       threshold: 20,
