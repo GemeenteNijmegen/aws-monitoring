@@ -170,7 +170,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           roleName: 'lz-platform-operator-ep',
         },
         description: 'EP role used!',
-        priority: 'critical',
+        priority: 'high',
       },
       {
         roleMonitoring: {
