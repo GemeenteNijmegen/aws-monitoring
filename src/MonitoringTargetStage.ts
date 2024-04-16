@@ -2,7 +2,7 @@ import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Role } from 'aws-cdk-lib/aws-iam';
-import { DeploymentType, StackSet, StackSetTarget, StackSetTemplate } from 'cdk-stacksets';
+import { DeploymentType, StackSet, StackSetTarget, StackSetTemplate, Capability } from 'cdk-stacksets';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
@@ -51,6 +51,7 @@ export class MonitoringTargetStage extends Stage {
         adminRole: Role.fromRoleName(stack, 'cdkrole', 'cdk-hnb659fds-cfn-exec-role-836443378780-eu-central-1'),
       }),
       template: StackSetTemplate.fromStackSetStack(eventbridgeForwarderStack),
+      capabilities: [Capability.NAMED_IAM],
     });
 
     props.deployToEnvironments.forEach(environment => {
