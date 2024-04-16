@@ -41,7 +41,7 @@ export class MonitoringTargetStage extends Stage {
 
     const stack = new Stack();
     const eventbridgeForwarderStack = new EventbridgeForwarderStack(stack, 'eventbridge-forwarder', { targetRegion: 'eu-central-1' });
-    new StackSet(eventbridgeForwarderStack, 'StackSet', {
+    new StackSet(stack, 'StackSet', {
       target: StackSetTarget.fromAccounts({
         regions: ['us-east-1', 'eu-west-1'],
         accounts: props.deployToEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
