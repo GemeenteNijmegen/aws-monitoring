@@ -145,7 +145,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ 'anything-but': ['-low', '-medium', '-high', '-critical'] }],
+            alarmName: [{ 'anything-but': '-lvl' }],
             state: {
               value: ['ALARM'],
             },
@@ -160,7 +160,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ suffix: '-low' }],
+            alarmName: [{ suffix: '-low-lvl' }],
             state: {
               value: ['ALARM'],
             },
@@ -175,7 +175,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ suffix: '-medium' }],
+            alarmName: [{ suffix: '-medium-lvl' }],
             state: {
               value: ['ALARM'],
             },
@@ -190,7 +190,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ suffix: '-high' }],
+            alarmName: [{ suffix: '-high-lvl' }],
             state: {
               value: ['ALARM'],
             },
@@ -205,7 +205,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.cloudwatch'],
           detailType: ['CloudWatch Alarm State Change'],
           detail: {
-            alarmName: [{ suffix: '-critical' }],
+            alarmName: [{ suffix: '-critical-lvl' }],
             state: {
               value: ['ALARM'],
             },
