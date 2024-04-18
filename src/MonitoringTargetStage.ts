@@ -1,9 +1,12 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
-import { Aspects, Stage, StageProps, Tags } from 'aws-cdk-lib';
+import { Aspects, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
+import { Role } from 'aws-cdk-lib/aws-iam';
+import { DeploymentType, StackSet, StackSetTarget, StackSetTemplate, Capability } from 'cdk-stacksets';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { EventbridgeForwarderStack } from './EventbridgeForwarderStack';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
 import { ParameterStack } from './ParameterStack';
@@ -36,6 +39,20 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     Aspects.of(this).add(new PermissionsBoundaryAspect());
+
+    const stack = new Stack(this, 'eventbridgeforwarder');
+    const eventbridgeForwarderStack = new EventbridgeForwarderStack(stack, 'eventbridge-forwarder', { targetRegion: 'eu-central-1' });
+    new StackSet(stack, 'StackSet', {
+      target: StackSetTarget.fromAccounts({
+        regions: ['us-east-1', 'eu-west-1'],
+        accounts: props.deployToEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
+      }),
+      deploymentType: DeploymentType.selfManaged({
+        adminRole: Role.fromRoleName(stack, 'cdkrole', 'cdk-hnb659fds-cfn-exec-role-836443378780-eu-central-1'),
+      }),
+      template: StackSetTemplate.fromStackSetStack(eventbridgeForwarderStack),
+      capabilities: [Capability.NAMED_IAM],
+    });
 
     props.deployToEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);

@@ -76,6 +76,7 @@
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.6.8",
     "cdk-nag": "^2.28.79",
+    "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
   "license": "EUPL-1.2",
