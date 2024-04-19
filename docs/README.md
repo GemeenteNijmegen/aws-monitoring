@@ -109,3 +109,11 @@ flowchart TD
 
 ## Slack interaction
 [Slack interaction documentation can be found here](./SlackInteraction.md)
+
+
+## SecurityHub findings
+SecurityHub findings kunnen komen vanuit verschillende hoeken:
+- Inspector - Scannen van ECR images en lambdas
+- GuardDuty - Anomaly detection op APIs en IAM users
+- Security Hub - Findings met AWS Config
+- IAM Access Analyzer - Findings over toegang en rechten
