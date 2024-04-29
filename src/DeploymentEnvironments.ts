@@ -185,7 +185,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           userIdentityArnContains: 'AWSReservedSSO',
         },
         description: 'Local CDK Deployment',
-        priority: 'high',
+        priority: 'critical',
       },
     ],
     deployToEnvironments: [
