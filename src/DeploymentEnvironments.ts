@@ -230,35 +230,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '185512167111',
           region: 'eu-central-1',
         },
-        queryDefinitions: [
-          {
-            name: 'yivi-prod-waf-blocked-requests',
-            description: 'Yivi issue app prod blocked WAF requests',
-            region: 'us-east-1',
-            queryString: '\
-            fields @timestamp, @message\
-            | filter action = \'BLOCK\'\
-            | sort @timestamp asc',
-            logGroupNames: [
-              'aws-waf-logs-yivi-issue-app',
-            ],
-          },
-          {
-            name: 'yivi-prod-errors',
-            description: 'Yivi issue app prod errors',
-            region: 'eu-central-1',
-            queryString: '\
-            fields @timestamp, @message\
-            | filter @message like /ERROR/ or @message like /Error/\
-            | sort @timestamp asc',
-            logGroupNames: [
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissuelogoutfunctionla-FxyZ5ytUObuW',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueloginfunctionlam-0nhR0wS5nEgc',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueissuefunctionlam-SWufqEL4S6q2',
-              '/aws/lambda/yivi-issue-api-api-stack-yiviissueauthfunctionlamb-6eYjqeNtt78W',
-            ],
-          },
-        ],
       },
       {
         accountName: 'gn-yivi-brp-issue-accp',
@@ -270,13 +241,13 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         monitoringRules: [
           {
             description: 'Role to manage yivi secrets assumed! (acceptance)',
-            priority: 'medium',
+            priority: 'critical',
             roleMonitoring: {
               roleName: 'yivi-admin',
             },
           },
           {
-            description: 'Yivi KMS key used! (acceptance)',
+            description: 'Yivi GetSecretValue called on private key! (acceptance)',
             priority: 'medium',
             secretMonitoring: {
               secretArn: 'arn:aws:secretsmanager:eu-central-1:528030426040:secret:/yivi-brp-issue/container/private-key-',
@@ -301,7 +272,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             },
           },
           {
-            description: 'Yivi KMS key used! (production)',
+            description: 'Yivi GetSecretValue called on private key! (production)',
             priority: 'critical',
             secretMonitoring: {
               secretArn: 'arn:aws:secretsmanager:eu-central-1:079163754011:secret:/yivi-brp-issue/container/private-key-',
@@ -325,37 +296,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           account: '740606269759',
           region: 'eu-central-1',
         },
-        queryDefinitions: [
-          {
-            name: 'mijn-nijmegen-prod-waf-blocked-requests',
-            description: 'Mijn Nijmegen prod blocked WAF requests',
-            region: 'us-east-1',
-            queryString: '\
-            fields @timestamp, @message\
-            | filter action = \'BLOCK\'\
-            | sort @timestamp asc',
-            logGroupNames: [
-              'aws-waf-logs-mijn-nijmegen',
-            ],
-          },
-          {
-            name: 'mijn-nijmegen-prod-errors',
-            description: 'Mijn Nijmegen prod errors',
-            region: 'eu-central-1',
-            queryString: '\
-            fields @timestamp, @message\
-            | filter @message like /ERROR/ or @message like /Error/\
-            | sort @timestamp asc',
-            logGroupNames: [
-              '/aws/lambda/mijn-api-api-stack-authfunctionlambdaCE7349A6-ZOfMTx9LLk7w',
-              '/aws/lambda/mijn-api-api-stack-homefunctionlambdaC6763389-M1Mv58DtxZZC',
-              '/aws/lambda/mijn-api-api-stack-loginfunctionlambdaD9D22737-Gpk6wqGrrq78',
-              '/aws/lambda/mijn-api-api-stack-logoutfunctionlambda0D09F767-Y5VhsuioUmBk',
-              '/aws/lambda/mijn-gegevens-api-persoon-persoonsgegevensfunction-xjIqWmKd829e',
-              '/aws/lambda/mijn-uitkering-api-uitker-uitkeringenfunctionlambd-uvevaHFvtp0z',
-            ],
-          },
-        ],
       },
       {
         accountName: 'gn-webforms-dev',
@@ -541,32 +481,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
             },
             description: 'Local CDK Deployment',
             priority: 'critical',
-          },
-        ],
-        queryDefinitions: [
-          {
-            name: 'random-log-group-query',
-            description: 'Some random testing query',
-            region: 'eu-central-1',
-            queryString: '\
-            fields @timestamp, @message \
-            | sort @timestamp desc\
-            | limit 8',
-            logGroupNames: [
-              'test-log-group',
-            ],
-          },
-          {
-            name: 'random-log-group-query-us-east-1',
-            description: 'Some random testing query',
-            region: 'us-east-1',
-            queryString: '\
-            fields @timestamp, @message \
-            | sort @timestamp asc\
-            | limit 10',
-            logGroupNames: [
-              'test-log-group',
-            ],
           },
         ],
       },
