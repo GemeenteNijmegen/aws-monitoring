@@ -42,7 +42,7 @@ export class OrgTrailMonitorHandler {
 
   private async publisMessageOnPositiveChecks(event: any, rule: MonitoringRule, accountName: string, accountType?: AccountType) {
     try {
-      const message = this.checkEventAgainstRule(event, rule, accountType);
+      const message = this.messageForRule(event, rule, accountType);
       if (!message) {
         return;
       }
@@ -56,23 +56,28 @@ export class OrgTrailMonitorHandler {
     }
   }
 
-  private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
+  private messageForRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
+    let message;
     if (rule.keyMonitoring) {
-      return this.checkEventAgainstKeyRule(cloudTrailEvent, rule, accountType);
+      message = this.messageForKeyRule(cloudTrailEvent, rule);
     }
     if (rule.roleMonitoring) {
-      return this.checkEventAgainstRoleRule(cloudTrailEvent, rule, accountType);
+      message = this.messageForRoleRule(cloudTrailEvent, rule);
     }
     if (rule.secretMonitoring) {
-      return this.checkEventAgainstSecretRule(cloudTrailEvent, rule, accountType);
+      message = this.messageForSecretRule(cloudTrailEvent, rule);
     }
     if (rule.localDeployMonitoring) {
-      return this.checkEventAgainstLocalDeployRule(cloudTrailEvent, rule, accountType);
+      message = this.messageForLocalDeployRule(cloudTrailEvent, rule);
+    }
+    if (message) {
+      message.setPriority(rule.priority, accountType);
+      return message;
     }
     return undefined;
   }
 
-  private checkEventAgainstKeyRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
+  private messageForKeyRule(cloudTrailEvent: any, rule: MonitoringRule) {
     if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com') {
       return false; // Not a KMS event
     }
@@ -94,14 +99,13 @@ export class OrgTrailMonitorHandler {
       message.addMessage(rule.description);
       message.addContext('KeyArn', resource.ARN);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstSecretRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
+  private messageForSecretRule(cloudTrailEvent: any, rule: MonitoringRule) {
     if (cloudTrailEvent.eventSource !== 'secretsmanager.amazonaws.com') {
       return false; // Not a KMS event
     }
@@ -123,14 +127,13 @@ export class OrgTrailMonitorHandler {
       message.addMessage(rule.description);
       message.addContext('SecretArn', resource);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstRoleRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
+  private messageForRoleRule(cloudTrailEvent: any, rule: MonitoringRule) {
     if (!cloudTrailEvent.eventName?.startsWith('AssumeRole')) {
       return false; // Not a AssumeRole event
     }
@@ -145,14 +148,13 @@ export class OrgTrailMonitorHandler {
       message.addTitle(`❗️ AssumeRole event detected for role ${rule.roleMonitoring?.roleName}`);
       message.addMessage(rule.description);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstLocalDeployRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType): any {
+  private messageForLocalDeployRule(cloudTrailEvent: any, rule: MonitoringRule): any {
     if (!cloudTrailEvent.eventName?.startsWith('AssumeRole')) {
       return false; // Not a AssumeRole event
     }
@@ -176,7 +178,6 @@ export class OrgTrailMonitorHandler {
       message.addTitle('❗️ Local Deployment event detected');
       message.addMessage(rule.description);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority, accountType);
       return message;
     }
     return false;

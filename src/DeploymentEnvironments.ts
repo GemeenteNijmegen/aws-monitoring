@@ -1,6 +1,6 @@
 import { Environment } from 'aws-cdk-lib';
 import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
-import { Priority, SepcificPriority, Statics } from './statics';
+import { Priority, SpecificPriority, Statics } from './statics';
 
 export type AccountType = 'acceptance' | 'production' | 'development' | 'test' | 'sandbox';
 
@@ -79,7 +79,7 @@ export interface MonitoringRule {
   /**
    * Priority of the alert
    */
-  priority: Priority | SepcificPriority;
+  priority: Priority | SpecificPriority;
   /**
    * Add a description to the alert
    */

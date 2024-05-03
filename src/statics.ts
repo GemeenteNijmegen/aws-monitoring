@@ -1,6 +1,6 @@
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
-export interface SepcificPriority {
+export interface SpecificPriority {
   default: Priority;
   acceptance?: Priority;
   production?: Priority;
