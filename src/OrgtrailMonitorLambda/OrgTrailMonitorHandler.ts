@@ -33,22 +33,29 @@ export class OrgTrailMonitorHandler {
       ...globalRules,
       ...accountRules,
     ];
-    applicableRules.forEach(async (rule) => {
-      const message = this.checkEventAgainstRule(cloudTrailEvent, rule);
-      if (message) {
-        message.addContext('Account', accountConfiguration?.accountName ?? accountId);
-        message.addContext('eventID', cloudTrailEvent.eventID);
-        console.info('Event matched, sending message', JSON.stringify(message, null, 4));
-        console.info('Marched rule', JSON.stringify(rule, null, 4));
-        await message.publishToPlatformTopic(this.client);
+    const accountName = accountConfiguration?.accountName ?? accountId;
+    for (const rule of applicableRules) {
+      await this.publisMessageOnPositiveChecks(cloudTrailEvent, rule, accountName);
+    };
+  }
+
+  private async publisMessageOnPositiveChecks(event: any, rule: MonitoringRule, accountName: string) {
+    try {
+      const message = this.checkEventAgainstRule(event, rule);
+      if (!message) {
+        return;
       }
-    });
+      message.addContext('Account', accountName);
+      message.addContext('eventID', event.eventID);
+      console.info('Event matched, sending message', JSON.stringify(message, null, 4));
+      console.info('Marched rule', JSON.stringify(rule, null, 4));
+      await message.publishToPlatformTopic(this.client);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule) {
-    if (rule.keyMonitoring && rule.roleMonitoring) {
-      throw new Error('Rule roleMonitoring, keyMonitoring and secretMonitoring are mutually exclusive');
-    }
     if (rule.keyMonitoring) {
       return this.checkEventAgainstKeyRule(cloudTrailEvent, rule);
     }
