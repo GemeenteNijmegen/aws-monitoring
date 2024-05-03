@@ -47,7 +47,10 @@ describe('orgtrail', () => {
       globalMonitoringRules: [
         {
           description: 'test',
-          priority: 'high',
+          priority: {
+            default: 'low',
+            production: 'critical',
+          },
           roleMonitoring: {
             roleName: roleName,
           },
@@ -58,6 +61,14 @@ describe('orgtrail', () => {
           accountName: 'test',
           accountType: 'test',
           env: {
+            account: '00000000000',
+            region: 'eu-central-1',
+          },
+        },
+        {
+          accountName: 'test',
+          accountType: 'production',
+          env: {
             account: '123456789012',
             region: 'eu-central-1',
           },
@@ -65,10 +76,15 @@ describe('orgtrail', () => {
       ],
     };
     const handler = new OrgTrailMonitorHandler(config, sns);
-    const events = convertToLogEvents(assumeRoleEvent) as any;
+    const event2 = JSON.parse(JSON.stringify(assumeRoleEvent)); // Copy of event
+    event2.recipientAccountId = '00000000000';
+    const events = convertToLogEvents(assumeRoleEvent, event2) as any;
     await handler.handleLogEvents(events);
-    expect(sns.results).toHaveLength(1);
+    expect(sns.results).toHaveLength(2);
+    expect(sns.results[0].input.TopicArn).toContain('critical');
     expect(sns.results[0].input.Message).toContain('AssumeRole event detected for role role-name');
+    expect(sns.results[1].input.TopicArn).toContain('low');
+    expect(sns.results[1].input.Message).toContain('AssumeRole event detected for role role-name');
   });
 
   test('assume role (account specific)', async () => {

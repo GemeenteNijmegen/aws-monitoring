@@ -1,5 +1,13 @@
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
+export interface SepcificPriority {
+  default: Priority;
+  acceptance?: Priority;
+  production?: Priority;
+  development?: Priority;
+  test?: Priority;
+}
+
 export abstract class Statics {
   static readonly projectName: string = 'aws-monitoring';
 

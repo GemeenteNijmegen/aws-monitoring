@@ -1,7 +1,7 @@
 import { SNSClient } from '@aws-sdk/client-sns';
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { MonitoringEvent } from './MonitoringEvent';
-import { Configuration, MonitoringRule } from '../DeploymentEnvironments';
+import { AccountType, Configuration, MonitoringRule } from '../DeploymentEnvironments';
 
 export class OrgTrailMonitorHandler {
 
@@ -34,14 +34,15 @@ export class OrgTrailMonitorHandler {
       ...accountRules,
     ];
     const accountName = accountConfiguration?.accountName ?? accountId;
+    const accountType = accountConfiguration?.accountType;
     for (const rule of applicableRules) {
-      await this.publisMessageOnPositiveChecks(cloudTrailEvent, rule, accountName);
+      await this.publisMessageOnPositiveChecks(cloudTrailEvent, rule, accountName, accountType);
     };
   }
 
-  private async publisMessageOnPositiveChecks(event: any, rule: MonitoringRule, accountName: string) {
+  private async publisMessageOnPositiveChecks(event: any, rule: MonitoringRule, accountName: string, accountType?: AccountType) {
     try {
-      const message = this.checkEventAgainstRule(event, rule);
+      const message = this.checkEventAgainstRule(event, rule, accountType);
       if (!message) {
         return;
       }
@@ -55,23 +56,23 @@ export class OrgTrailMonitorHandler {
     }
   }
 
-  private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule) {
+  private checkEventAgainstRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
     if (rule.keyMonitoring) {
-      return this.checkEventAgainstKeyRule(cloudTrailEvent, rule);
+      return this.checkEventAgainstKeyRule(cloudTrailEvent, rule, accountType);
     }
     if (rule.roleMonitoring) {
-      return this.checkEventAgainstRoleRule(cloudTrailEvent, rule);
+      return this.checkEventAgainstRoleRule(cloudTrailEvent, rule, accountType);
     }
     if (rule.secretMonitoring) {
-      return this.checkEventAgainstSecretRule(cloudTrailEvent, rule);
+      return this.checkEventAgainstSecretRule(cloudTrailEvent, rule, accountType);
     }
     if (rule.localDeployMonitoring) {
-      return this.checkEventAgainstLocalDeployRule(cloudTrailEvent, rule);
+      return this.checkEventAgainstLocalDeployRule(cloudTrailEvent, rule, accountType);
     }
     return undefined;
   }
 
-  private checkEventAgainstKeyRule(cloudTrailEvent: any, rule: MonitoringRule) {
+  private checkEventAgainstKeyRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
     if (cloudTrailEvent.eventSource !== 'kms.amazonaws.com') {
       return false; // Not a KMS event
     }
@@ -93,14 +94,14 @@ export class OrgTrailMonitorHandler {
       message.addMessage(rule.description);
       message.addContext('KeyArn', resource.ARN);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority);
+      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstSecretRule(cloudTrailEvent: any, rule: MonitoringRule) {
+  private checkEventAgainstSecretRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
     if (cloudTrailEvent.eventSource !== 'secretsmanager.amazonaws.com') {
       return false; // Not a KMS event
     }
@@ -122,14 +123,14 @@ export class OrgTrailMonitorHandler {
       message.addMessage(rule.description);
       message.addContext('SecretArn', resource);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority);
+      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstRoleRule(cloudTrailEvent: any, rule: MonitoringRule) {
+  private checkEventAgainstRoleRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType) {
     if (!cloudTrailEvent.eventName?.startsWith('AssumeRole')) {
       return false; // Not a AssumeRole event
     }
@@ -144,14 +145,14 @@ export class OrgTrailMonitorHandler {
       message.addTitle(`❗️ AssumeRole event detected for role ${rule.roleMonitoring?.roleName}`);
       message.addMessage(rule.description);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority);
+      message.setPriority(rule.priority, accountType);
       return message;
     }
 
     return false;
   }
 
-  private checkEventAgainstLocalDeployRule(cloudTrailEvent: any, rule: MonitoringRule): any {
+  private checkEventAgainstLocalDeployRule(cloudTrailEvent: any, rule: MonitoringRule, accountType?: AccountType): any {
     if (!cloudTrailEvent.eventName?.startsWith('AssumeRole')) {
       return false; // Not a AssumeRole event
     }
@@ -175,7 +176,7 @@ export class OrgTrailMonitorHandler {
       message.addTitle('❗️ Local Deployment event detected');
       message.addMessage(rule.description);
       message.addContext('Principal', this.getUserIdentity(cloudTrailEvent.userIdentity));
-      message.setPriority(rule.priority);
+      message.setPriority(rule.priority, accountType);
       return message;
     }
     return false;

@@ -1,5 +1,6 @@
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
-import { Priority, Statics } from '../statics';
+import { AccountType } from '../DeploymentEnvironments';
+import { Priority, SepcificPriority, Statics } from '../statics';
 
 export class MonitoringEvent {
 
@@ -47,8 +48,13 @@ export class MonitoringEvent {
    * Set priorty for the monitoring event
    * @param priority
    */
-  setPriority(priority: Priority) {
-    this.priority = priority;
+  setPriority(priority: Priority | SepcificPriority, accountType?: AccountType) : MonitoringEvent {
+    const prio = priority as any;
+    if (prio.default) {
+      this.priority = prio[accountType ?? 'production'] ?? prio.default;
+    } else {
+      this.priority = prio;
+    }
     return this;
   }
 

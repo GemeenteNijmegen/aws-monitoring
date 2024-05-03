@@ -1,11 +1,13 @@
 import { Environment } from 'aws-cdk-lib';
 import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
-import { Priority, Statics } from './statics';
+import { Priority, SepcificPriority, Statics } from './statics';
+
+export type AccountType = 'acceptance' | 'production' | 'development' | 'test' | 'sandbox';
 
 export interface DeploymentEnvironment {
   accountName: string;
   env: Environment;
-  accountType: 'sandbox' | 'development' | 'test' | 'acceptance' | 'production';
+  accountType: AccountType;
 
   /**
    * If set, only event subscriptions matching ids in this array
@@ -77,7 +79,7 @@ export interface MonitoringRule {
   /**
    * Priority of the alert
    */
-  priority: Priority;
+  priority: Priority | SepcificPriority;
   /**
    * Add a description to the alert
    */
@@ -170,7 +172,10 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           roleName: 'lz-platform-operator-ep',
         },
         description: 'EP role used!',
-        priority: 'high',
+        priority: {
+          default: 'medium',
+          production: 'high',
+        },
       },
       {
         roleMonitoring: {
