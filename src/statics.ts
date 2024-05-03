@@ -6,6 +6,7 @@ export interface SepcificPriority {
   production?: Priority;
   development?: Priority;
   test?: Priority;
+  sandbox?: Priority;
 }
 
 export abstract class Statics {
