@@ -173,8 +173,12 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
         description: 'EP role used!',
         priority: {
-          default: 'medium',
+          default: 'high',
           production: 'high',
+          acceptance: 'medium',
+          development: 'low',
+          sandbox: 'low',
+          test: 'low',
         },
       },
       {
