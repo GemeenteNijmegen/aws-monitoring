@@ -241,7 +241,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         monitoringRules: [
           {
             description: 'Role to manage yivi secrets assumed! (acceptance)',
-            priority: 'critical',
+            priority: 'medium',
             roleMonitoring: {
               roleName: 'yivi-admin',
             },
