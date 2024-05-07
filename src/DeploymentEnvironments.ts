@@ -196,6 +196,13 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         description: 'Local CDK Deployment',
         priority: 'critical',
       },
+      {
+        roleMonitoring: {
+          roleName: 'oblcc-admin',
+        },
+        description: 'Xebia admin role used!',
+        priority: 'critical',
+      },
     ],
     deployToEnvironments: [
       {
