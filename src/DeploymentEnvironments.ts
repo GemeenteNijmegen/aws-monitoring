@@ -194,7 +194,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           userIdentityArnContains: 'AWSReservedSSO',
         },
         description: 'Local CDK Deployment',
-        priority: 'critical',
+        priority: {
+          default: 'critical',
+          production: 'critical',
+          acceptance: 'high',
+          development: 'low',
+          sandbox: 'low',
+          test: 'low',
+        },
       },
       {
         roleMonitoring: {
