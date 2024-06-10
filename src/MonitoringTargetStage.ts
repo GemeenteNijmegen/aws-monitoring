@@ -40,12 +40,15 @@ export class MonitoringTargetStage extends Stage {
     Tags.of(this).add('Project', Statics.projectName);
     Aspects.of(this).add(new PermissionsBoundaryAspect());
 
+    // Filter on environment.monitor is false (defaults to true)
+    const deploymentEnvironments = props.deployToEnvironments.filter(environment => environment.monitor !== false);
+
     const stack = new Stack(this, 'eventbridgeforwarder');
     const eventbridgeForwarderStack = new EventbridgeForwarderStack(stack, 'eventbridge-forwarder', { targetRegion: 'eu-central-1' });
     new StackSet(stack, 'StackSet', {
       target: StackSetTarget.fromAccounts({
         regions: ['us-east-1', 'eu-west-1'],
-        accounts: props.deployToEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
+        accounts: deploymentEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
       }),
       deploymentType: DeploymentType.selfManaged({
         adminRole: Role.fromRoleName(stack, 'cdkrole', 'cdk-hnb659fds-cfn-exec-role-836443378780-eu-central-1'),
@@ -54,7 +57,7 @@ export class MonitoringTargetStage extends Stage {
       capabilities: [Capability.NAMED_IAM],
     });
 
-    props.deployToEnvironments.forEach(environment => {
+    deploymentEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
 

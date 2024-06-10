@@ -10,6 +10,12 @@ export interface DeploymentEnvironment {
   accountType: AccountType;
 
   /**
+   * Indicates if monitoring is deployed to this account
+   * @default true
+   */
+  monitor?: boolean;
+
+  /**
    * If set, only event subscriptions matching ids in this array
    * will be included in the account. No other rules will be added.
    */
@@ -474,6 +480,78 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         accountType: 'production',
         env: {
           account: '767398106682',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-01',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '833119272131',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-marnix',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '049753832279',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-martijn',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '471112523908',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-michel',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '011672839752',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-wieteke',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '584893782702',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mpa',
+        accountType: 'production',
+        monitor: false,
+        env: {
+          account: '427617903428',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-audit',
+        accountType: 'production',
+        monitor: false,
+        env: {
+          account: '302838002127',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-network',
+        accountType: 'production',
+        monitor: false,
+        env: {
+          account: '043872078922',
           region: 'eu-central-1',
         },
       },
