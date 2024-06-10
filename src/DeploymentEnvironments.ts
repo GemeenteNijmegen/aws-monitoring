@@ -10,6 +10,12 @@ export interface DeploymentEnvironment {
   accountType: AccountType;
 
   /**
+   * Indicates if monitoring is deployed to this account
+   * @default true
+   */
+  monitor?: boolean;
+
+  /**
    * If set, only event subscriptions matching ids in this array
    * will be included in the account. No other rules will be added.
    */
