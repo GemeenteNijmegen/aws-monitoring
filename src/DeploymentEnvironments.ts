@@ -310,6 +310,14 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         ],
       },
       {
+        accountName: 'gn-mijn-nijmegen-dev',
+        accountType: 'development',
+        env: {
+          account: '590184009539',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-mijn-nijmegen-accp',
         accountType: 'acceptance',
         env: {
@@ -373,6 +381,22 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         enableDevopsGuru: true,
         env: {
           account: '887474129159',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-vierdaagsefeesten-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '767397838630',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-vierdaagsefeesten-prod',
+        accountType: 'production',
+        env: {
+          account: '637423283365',
           region: 'eu-central-1',
         },
       },
