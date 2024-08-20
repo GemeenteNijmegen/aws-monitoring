@@ -387,7 +387,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-vierdaagsefeesten-accp',
         accountType: 'acceptance',
-        enableDevopsGuru: true,
         env: {
           account: '767397838630',
           region: 'eu-central-1',
@@ -396,7 +395,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-vierdaagsefeesten-prod',
         accountType: 'production',
-        enableDevopsGuru: true,
         env: {
           account: '637423283365',
           region: 'eu-central-1',
