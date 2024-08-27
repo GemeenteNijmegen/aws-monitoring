@@ -77,6 +77,7 @@ jobs:
             *Automatically created by projen via the "upgrade-sandbox" workflow*
           branch: github-actions/upgrade-sandbox
           title: "chore(deps): upgrade dependencies"
+          labels: auto-merge
           body: |-
             Upgrades project dependencies. See details in [workflow run].
 
