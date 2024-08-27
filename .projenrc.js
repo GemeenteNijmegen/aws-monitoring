@@ -6,6 +6,7 @@ const project = new GemeenteNijmegenCdkApp({
   depsUpgradeOptions: {
     workflowOptions: {
       branches: ['sandbox'],
+      labels: ['auto-merge'],
     },
   },
   deps: [
