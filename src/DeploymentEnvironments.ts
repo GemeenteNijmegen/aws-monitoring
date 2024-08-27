@@ -579,6 +579,24 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-mijn-services-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '145023129433',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mijn-services-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '692859927138',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
