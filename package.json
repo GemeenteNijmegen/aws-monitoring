@@ -75,7 +75,7 @@
     "@types/aws-lambda": "^8.10.145",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.7.5",
-    "cdk-nag": "^2.28.191",
+    "cdk-nag": "^2.28.192",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
