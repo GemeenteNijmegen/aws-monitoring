@@ -36,9 +36,9 @@
   integrity sha512-iB7vHoTguDKLeatJS4p/8OBqH4oLCG2xBn1toUFwMD9iWoRGahGiK0pYuq24baab3SuNS1LFThJw5Zu0R+cZGA==
 
 "@aws-cdk/cloud-assembly-schema@^36.0.5":
-  version "36.0.21"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-36.0.21.tgz#12cd81a30f14443bbf7e463cc8c6026edddf6f1c"
-  integrity sha512-MuuzRxWfrrIw2D2s5p5axwDiH7BrKsDBCKS8OCmVGe8yKAtF2Y9cNo1Z0q4wySMfbaa6hgqTXnigO6YTzLru1w==
+  version "36.0.22"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-36.0.22.tgz#1aacad18861df5b001f5485a78b17d39cedc88aa"
+  integrity sha512-55RHuQ85+CXop8Qvpyb4gw8Uepkb+/0MdOOM4BHTbLERdDyse6fAYWgvIS8t0yopBdSQN00EBEkNTEYiX5GlWA==
   dependencies:
     jsonschema "^1.4.1"
     semver "^7.6.3"
@@ -2841,10 +2841,10 @@ axios-mock-adapter@^1.22.0:
     fast-deep-equal "^3.1.3"
     is-buffer "^2.0.5"
 
-axios@^1.7.6:
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.6.tgz#34f338182f6802fd3824a6511d6ddf99dd5ae0b5"
-  integrity sha512-Ekur6XDwhnJ5RgOCaxFnXyqlPALI3rVeukZMwOdfghW7/wGz784BYKiQq+QD8NPcr91KRo30KfHOchyijwWw7g==
+axios@^1.7.7:
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
+  integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
@@ -3019,10 +3019,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.28.193:
-  version "2.28.193"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.28.193.tgz#34baa0384313515101a1c4df6464931e8799525c"
-  integrity sha512-lVejAwOGq9XZTEoQEeD/8XKtRwRRr+P4e2gZ66FAPuG0b0D+f/6wjN+DtZGSmoFr+PwS5DkMH7Y07xDr0Pm82A==
+cdk-nag@^2.28.194:
+  version "2.28.194"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.28.194.tgz#c743be4e1db0ab21027d997495bd82941c8936e7"
+  integrity sha512-MC4FNdn6GA2FKVueV4xUOEDgErTogZ1H3bV1v7k/MJjl0oMMIts9dsa2hCVbPFe8GZMLOFDVFHcvEE93gZmR0A==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
