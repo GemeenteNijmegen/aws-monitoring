@@ -298,7 +298,15 @@
     },
     "package": {
       "name": "package",
-      "description": "Creates the distribution package"
+      "description": "Creates the distribution package",
+      "steps": [
+        {
+          "exec": "mkdir -p dist/js"
+        },
+        {
+          "exec": "npm pack --pack-destination dist/js"
+        }
+      ]
     },
     "post-compile": {
       "name": "post-compile",
