@@ -65,7 +65,7 @@
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.114.1-alpha.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.654.0",
     "@aws-sdk/client-organizations": "^3.654.0",
-    "@aws-sdk/client-s3": "^3.654.0",
+    "@aws-sdk/client-s3": "^3.657.0",
     "@aws-sdk/client-securityhub": "^3.654.0",
     "@aws-sdk/client-sns": "^3.654.0",
     "@aws-sdk/client-sqs": "^3.654.0",
