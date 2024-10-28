@@ -621,6 +621,24 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-open-forms-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '043309345347',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-open-forms-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '761018864362',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
