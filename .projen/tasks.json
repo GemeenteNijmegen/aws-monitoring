@@ -298,7 +298,15 @@
     },
     "package": {
       "name": "package",
-      "description": "Creates the distribution package"
+      "description": "Creates the distribution package",
+      "steps": [
+        {
+          "exec": "mkdir -p dist/js"
+        },
+        {
+          "exec": "npm pack --pack-destination dist/js"
+        }
+      ]
     },
     "post-compile": {
       "name": "post-compile",
@@ -407,7 +415,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@gemeentenijmegen/projen-project-type,@types/jest,aws-sdk-client-mock,axios-mock-adapter,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,projen,ts-jest,ts-node,typescript,@aws-cdk/aws-apigatewayv2-alpha,@aws-cdk/aws-apigatewayv2-integrations-alpha,@aws-sdk/client-cloudwatch-logs,@aws-sdk/client-organizations,@aws-sdk/client-s3,@aws-sdk/client-securityhub,@aws-sdk/client-sns,@aws-sdk/client-sqs,@aws-sdk/client-sts,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/utils,@types/aws-lambda,axios,cdk-nag,cdk-stacksets"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@gemeentenijmegen/projen-project-type,@types/jest,@types/node,aws-sdk-client-mock,axios-mock-adapter,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,projen,ts-jest,ts-node,typescript,@aws-cdk/aws-apigatewayv2-alpha,@aws-cdk/aws-apigatewayv2-integrations-alpha,@aws-sdk/client-cloudwatch-logs,@aws-sdk/client-organizations,@aws-sdk/client-s3,@aws-sdk/client-securityhub,@aws-sdk/client-sns,@aws-sdk/client-sqs,@aws-sdk/client-sts,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/utils,@types/aws-lambda,axios,cdk-nag,cdk-stacksets"
         },
         {
           "exec": "yarn install --check-files"
