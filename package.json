@@ -40,7 +40,7 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.8.1",
+    "@gemeentenijmegen/projen-project-type": "^1.8.2",
     "@types/jest": "^28.1.8",
     "@types/node": "^18",
     "@typescript-eslint/eslint-plugin": "^7",
@@ -63,19 +63,19 @@
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.114.1-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.114.1-alpha.0",
-    "@aws-sdk/client-cloudwatch-logs": "^3.687.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.691.0",
     "@aws-sdk/client-organizations": "^3.687.0",
     "@aws-sdk/client-s3": "^3.689.0",
     "@aws-sdk/client-securityhub": "^3.687.0",
     "@aws-sdk/client-sns": "^3.687.0",
     "@aws-sdk/client-sqs": "^3.689.0",
-    "@aws-sdk/client-sts": "^3.687.0",
+    "@aws-sdk/client-sts": "^3.691.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.23",
     "@gemeentenijmegen/utils": "^0.0.19",
     "@types/aws-lambda": "^8.10.145",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.7.7",
-    "cdk-nag": "^2.33.0",
+    "cdk-nag": "^2.33.1",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
