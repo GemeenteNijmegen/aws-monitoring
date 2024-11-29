@@ -508,30 +508,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-haal-centraal-brp-dev',
-        accountType: 'development',
-        env: {
-          account: '084828568398',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-haal-centraal-brp-accp',
-        accountType: 'acceptance',
-        env: {
-          account: '448049813413',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-haal-centraal-brp-prod',
-        accountType: 'production',
-        env: {
-          account: '980921728594',
-          region: 'eu-central-1',
-        },
-      },
-      {
         accountName: 'gn-sandbox-01',
         accountType: 'sandbox',
         monitor: false,
