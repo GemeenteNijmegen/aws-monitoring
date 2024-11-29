@@ -2,6 +2,7 @@ import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
+import { arrayHasDuplicatesByKeys } from './helpers';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
 import { MpaMonitoringStage } from './MpaMonitoringStack';
 import { Statics } from './statics';
@@ -20,6 +21,7 @@ export class PipelineStack extends Stack {
     super(scope, id, props);
     Aspects.of(this).add(new PermissionsBoundaryAspect());
 
+    console.debug('building pipeline');
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
     this.branchName = props.branchName;
@@ -29,6 +31,11 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
+    
+    // Check config for duplicate accounts
+    if (arrayHasDuplicatesByKeys(props.deployToEnvironments.map(env => env.env), ['account', 'region'])) {
+      throw Error('Duplicate deployToEnvironments found, this will lead to build errors.');
+    }
 
     const monitoring = new MonitoringTargetStage(this, `monitoring-${this.environmentName}`, {
       deployToEnvironments: props.deployToEnvironments,
