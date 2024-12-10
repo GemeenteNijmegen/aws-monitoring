@@ -31,7 +31,7 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source);
-    
+
     // Check config for duplicate accounts
     if (arrayHasDuplicatesByKeys(props.deployToEnvironments.map(env => env.env), ['account', 'region'])) {
       throw Error('Duplicate deployToEnvironments found, this will lead to build errors.');
