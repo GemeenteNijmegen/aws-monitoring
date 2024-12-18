@@ -642,6 +642,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-sandbox-bram',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '941377141741',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
