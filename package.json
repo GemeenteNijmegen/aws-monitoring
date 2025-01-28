@@ -40,7 +40,7 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.8.5",
+    "@gemeentenijmegen/projen-project-type": "^1.8.6",
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^28.1.8",
     "@types/node": "^18",
@@ -72,11 +72,11 @@
     "@aws-sdk/client-sqs": "^3.734.0",
     "@aws-sdk/client-sts": "^3.734.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.29",
-    "@gemeentenijmegen/utils": "^0.0.23",
+    "@gemeentenijmegen/utils": "^0.0.24",
     "@types/aws-lambda": "^8.10.147",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.7.9",
-    "cdk-nag": "^2.35.0",
+    "cdk-nag": "^2.35.1",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
