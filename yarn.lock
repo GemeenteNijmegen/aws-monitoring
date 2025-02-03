@@ -47,9 +47,9 @@
   integrity sha512-iB7vHoTguDKLeatJS4p/8OBqH4oLCG2xBn1toUFwMD9iWoRGahGiK0pYuq24baab3SuNS1LFThJw5Zu0R+cZGA==
 
 "@aws-cdk/cloud-assembly-schema@^39.2.0":
-  version "39.2.11"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-39.2.11.tgz#97b692f3e00e7e68dfb2890457a89c9e0edd2946"
-  integrity sha512-/iDXQtxtqKOuUpds51GK/neVzq/UdxLWuGgLs01HdA30xOunVbAe+CAExvHPw0/h2qlfaEkJRpAxZ0Ch6gJnJQ==
+  version "39.2.12"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-39.2.12.tgz#7322a426672a410646b0b3be248820cd2e972741"
+  integrity sha512-LjHz0Yrl3sFPihZVpIGoBrMnKjj18G755IlVH79Tzufx7eWVL/G/4RCiLUn0+NFE5e3ssTtfXr3KY9pxGMe/bA==
   dependencies:
     jsonschema "~1.4.1"
     semver "^7.7.0"
@@ -3124,10 +3124,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.35.6:
-  version "2.35.6"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.6.tgz#d49382e9542c2edab3ec620e89d0fdec043a4150"
-  integrity sha512-OemnCGLcsyhSSS4sCc79wg3FX5KCnD/iCcoWzynPPvHsP/ZSfYVlQpiHE6FnV9vIh5cSMqJZFJCcIWp12q2auA==
+cdk-nag@^2.35.7:
+  version "2.35.7"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.7.tgz#b4624c858e74d1fb03aebe9b06fc799d317fc79d"
+  integrity sha512-jUj12cT/LN1Vd6k1DrpCxGGIKZFVhibYa4TtdllB7Jygakd5NlC3ShLFoeb0HIswg3ho/NVLL95wzZgtMoT1Ug==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
@@ -4489,9 +4489,9 @@ ignore@^5.2.0, ignore@^5.3.1, ignore@^5.3.2:
   integrity sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==
 
 import-fresh@^3.2.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-3.3.0.tgz#37162c25fcb9ebaa2e6e53d5b4d88ce17d9e0c2b"
-  integrity sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-3.3.1.tgz#9cecb56503c0ada1f2741dbbd6546e4b13b57ccf"
+  integrity sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==
   dependencies:
     parent-module "^1.0.0"
     resolve-from "^4.0.0"
