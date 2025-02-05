@@ -56,7 +56,7 @@
     "eslint-plugin-import": "^2.31.0",
     "jest": "^28.1.3",
     "jest-junit": "^16",
-    "projen": "^0.91.7",
+    "projen": "^0.91.8",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
@@ -76,7 +76,7 @@
     "@types/aws-lambda": "^8.10.147",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.7.9",
-    "cdk-nag": "^2.35.8",
+    "cdk-nag": "^2.35.9",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
