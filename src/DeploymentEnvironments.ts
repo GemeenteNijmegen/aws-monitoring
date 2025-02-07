@@ -651,6 +651,24 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-verzoekservicewerkinkomen-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '528757829324',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-verzoekservicewerkinkomen-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '222634384969',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
