@@ -73,6 +73,15 @@ export class MonitoredAccountStack extends Stack {
         ruleDescription: 'Send all ECS state change notifications to SNS',
       },
       {
+        id: 'ec2-spot-instance-interruption',
+        criticality: 'low',
+        pattern: {
+          source: ['aws.ec2'],
+          detailType: ['EC2 Spot Instance Interruption Warning'],
+        },
+        ruleDescription: 'Send all EC2 Spot Instance interruptions to SNS',
+      },
+      {
         id: 'certificates',
         criticality: 'medium',
         pattern: {
