@@ -50,7 +50,7 @@
     "aws-sdk-client-mock": "^3.1.0",
     "axios-mock-adapter": "^1.22.0",
     "commit-and-tag-version": "^12",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.25.0",
     "eslint": "^9",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
@@ -76,7 +76,7 @@
     "@types/aws-lambda": "^8.10.147",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.7.9",
-    "cdk-nag": "^2.35.12",
+    "cdk-nag": "^2.35.13",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
