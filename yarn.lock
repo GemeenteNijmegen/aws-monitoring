@@ -47,9 +47,9 @@
   integrity sha512-iB7vHoTguDKLeatJS4p/8OBqH4oLCG2xBn1toUFwMD9iWoRGahGiK0pYuq24baab3SuNS1LFThJw5Zu0R+cZGA==
 
 "@aws-cdk/cloud-assembly-schema@^39.2.0":
-  version "39.2.18"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-39.2.18.tgz#e78e3d0cb3520601667530f98d4200cdd2ff5b51"
-  integrity sha512-ljdHC1krmhgyxR8LACAO9LB0JpdYrZKry7l8mywj8V8DGXfdLrV+yFsNSPhyZf9kwA/de3g1fH8dspZG8U1ikA==
+  version "39.2.19"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-39.2.19.tgz#c32a48501a8d9da519c44e3d61ce8829be2166a3"
+  integrity sha512-UBogkdUyMxpoEFz2Q0eEvtfS94S67D9ADuV+vDV1TA0hXPZeE0T+Qn+INr2MmWV7pfcFpkIKqzSQ7L5ftZD1CQ==
   dependencies:
     jsonschema "~1.4.1"
     semver "^7.7.1"
@@ -3137,10 +3137,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.35.13:
-  version "2.35.13"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.13.tgz#17db63c3d4134f410a4f7871b727790ffedd92c9"
-  integrity sha512-NCPqaytUGmjItIIdkSKgqPU131Av5nKDbVB0nBYwLKuSy8lyuRWDvaZA6J9HDGE6hZIZ9ZrR0EGfiUKFQRIVRA==
+cdk-nag@^2.35.14:
+  version "2.35.14"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.14.tgz#536e0d2e41d08b0deec9ed335c72a33d34f7ad65"
+  integrity sha512-UNagzKa0bri/N6p1hycqIoue67KfzuIKQrGrGcsEWhTbJ3dxR0vYgKMQwCltm2dSa9irX3JXcNYyDnJNxfm+SA==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
