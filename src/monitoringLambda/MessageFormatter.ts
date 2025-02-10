@@ -123,7 +123,7 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
       account: this.lookupAccountName(this.account),
     });
     message.addSection(`Containers involved: \\n - ${containerString}`);
-    if(this.event?.detail.stoppedReason) {
+    if (this.event?.detail.stoppedReason) {
       message.addSection(`Stopped for reason: \\n - ${this.event?.detail.stoppedReason}`);
     }
     message.addLink('Bekijk cluster', target);
