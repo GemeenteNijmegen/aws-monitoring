@@ -109,7 +109,7 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {
     const status = this.event?.detail?.lastStatus;
     const desiredStatus = this.event?.detail?.desiredStatus;
-    const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\\n - ');
+    const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\n - ');
     const clusterName = this.event?.detail?.clusterArn.split('/').pop();
     const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
 
@@ -122,9 +122,9 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
       type: `${getEventType(this.event)}, cluster ${clusterName}`,
       account: this.lookupAccountName(this.account),
     });
-    message.addSection(`Containers involved: \\n - ${containerString}`);
+    message.addSection(`Containers involved: \n - ${containerString}`);
     if (this.event?.detail.stoppedReason) {
-      message.addSection(`Stopped for reason: \\n - ${this.event?.detail.stoppedReason}`);
+      message.addSection(`Stopped for reason: \n - ${this.event?.detail.stoppedReason}`);
     }
     message.addLink('Bekijk cluster', target);
     return message;
