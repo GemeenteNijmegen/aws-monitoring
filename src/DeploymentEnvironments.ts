@@ -385,22 +385,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-vierdaagsefeesten-accp',
-        accountType: 'acceptance',
-        env: {
-          account: '767397838630',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-vierdaagsefeesten-prod',
-        accountType: 'production',
-        env: {
-          account: '637423283365',
-          region: 'eu-central-1',
-        },
-      },
-      {
         accountName: 'gn-sociale-recherche-accp',
         accountType: 'acceptance',
         enableDevopsGuru: false,
