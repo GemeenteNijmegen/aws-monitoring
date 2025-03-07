@@ -40,7 +40,7 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.8.8",
+    "@gemeentenijmegen/projen-project-type": "^1.9.0",
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^28.1.8",
     "@types/node": "^18",
@@ -76,7 +76,7 @@
     "@types/aws-lambda": "^8.10.147",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.8.1",
-    "cdk-nag": "^2.35.36",
+    "cdk-nag": "^2.35.37",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
