@@ -40,7 +40,7 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.9.0",
+    "@gemeentenijmegen/projen-project-type": "^1.10.0",
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^28.1.8",
     "@types/node": "^18",
@@ -52,7 +52,7 @@
     "commit-and-tag-version": "^12",
     "esbuild": "^0.25.1",
     "eslint": "^9",
-    "eslint-import-resolver-typescript": "^3.8.5",
+    "eslint-import-resolver-typescript": "^3.8.6",
     "eslint-plugin-import": "^2.31.0",
     "jest": "^28.1.3",
     "jest-junit": "^16",
@@ -75,8 +75,8 @@
     "@gemeentenijmegen/utils": "^0.0.26",
     "@types/aws-lambda": "^8.10.147",
     "aws-cdk-lib": "^2.1.0",
-    "axios": "^1.8.2",
-    "cdk-nag": "^2.35.42",
+    "axios": "^1.8.3",
+    "cdk-nag": "^2.35.43",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
