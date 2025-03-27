@@ -368,23 +368,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-verwerkingenlogging-accp',
-        accountType: 'acceptance',
-        env: {
-          account: '649781704230',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-verwerkingenlogging-prod',
-        accountType: 'production',
-        enableDevopsGuru: true,
-        env: {
-          account: '887474129159',
-          region: 'eu-central-1',
-        },
-      },
-      {
         accountName: 'gn-sociale-recherche-accp',
         accountType: 'acceptance',
         enableDevopsGuru: false,
