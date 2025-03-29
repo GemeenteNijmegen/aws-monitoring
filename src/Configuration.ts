@@ -76,7 +76,7 @@ export function getConfiguration(branchName: string): Configuration {
   if (!config) {
     throw Error(`No configuration found for branch name ${branchName}`);
   }
-  return config
+  return config;
 }
 
 /**
