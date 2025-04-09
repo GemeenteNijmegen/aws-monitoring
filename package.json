@@ -67,7 +67,7 @@
     "@aws-sdk/client-cloudwatch-logs": "^3.782.0",
     "@aws-sdk/client-organizations": "^3.782.0",
     "@aws-sdk/client-s3": "^3.782.0",
-    "@aws-sdk/client-securityhub": "^3.782.0",
+    "@aws-sdk/client-securityhub": "^3.785.0",
     "@aws-sdk/client-sns": "^3.782.0",
     "@aws-sdk/client-sqs": "^3.782.0",
     "@aws-sdk/client-sts": "^3.782.0",
@@ -76,7 +76,7 @@
     "@types/aws-lambda": "^8.10.148",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.8.4",
-    "cdk-nag": "^2.35.65",
+    "cdk-nag": "^2.35.66",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
