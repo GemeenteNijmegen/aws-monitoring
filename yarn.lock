@@ -3293,10 +3293,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.35.87:
-  version "2.35.87"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.87.tgz#1b3dd9d535c3cdedaf2f5d4e0b6fc9f5ea0e776f"
-  integrity sha512-Af1KPa+ATzuoSAtQhIpymBUZ3rh7F2vtq57HYsACvQgFFzfN42uG1uutCM2KshJC5MDSTR1OVxkWUvYMsJKkpg==
+cdk-nag@^2.35.88:
+  version "2.35.88"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.88.tgz#e06913a952ff9052e9ff7c1fe1da5631a63e0ba6"
+  integrity sha512-5I5RPgDg8i8NAqTIyC5786r9USXFJRhh0ZTEQgNj7QiOc+UF0iXY+8Vl7CYaQ7eJ7e14IljhINkx/n1CkeU6jA==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
@@ -7776,6 +7776,6 @@ zod-to-json-schema@^3.24.1:
   integrity sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==
 
 zod@^3.23.8, zod@^3.24.2:
-  version "3.24.3"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.3.tgz#1f40f750a05e477396da64438e0e1c0995dafd87"
-  integrity sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==
+  version "3.24.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.4.tgz#e2e2cca5faaa012d76e527d0d36622e0a90c315f"
+  integrity sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==
