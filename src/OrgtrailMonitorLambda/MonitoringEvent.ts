@@ -7,7 +7,7 @@ export class MonitoringEvent {
   private priority: Priority;
   private title: string;
   private message: string;
-  private context: {[key:string]: string};
+  private context: { [key:string]: string };
 
   constructor() {
     this.priority = 'high';
