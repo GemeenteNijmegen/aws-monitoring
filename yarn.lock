@@ -3250,10 +3250,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.35.99:
-  version "2.35.99"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.99.tgz#fff2f938f26a43837b6b0c8bc6864e5713998e2a"
-  integrity sha512-ug5S4+q/0Msk46emhCjP2BBhovtZQV2baekgIDslljDFKUjxt3sS8sdcJG4SJD/LkBhXm5GQfy9RtiUoh9huzw==
+cdk-nag@^2.35.100:
+  version "2.35.100"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.35.100.tgz#6d7fb9d697400c6eb8911c2b964601deff41da8a"
+  integrity sha512-gG08/6yBKaoYz4WSIe0rK/iGXA6pcHo3E/fy+F12sqhXqPDSI5OftJEQTS282cmvV0ePZSI3XXDHzyZs/dtYYw==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
