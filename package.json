@@ -75,8 +75,8 @@
     "@gemeentenijmegen/utils": "^0.0.32",
     "@types/aws-lambda": "^8.10.149",
     "aws-cdk-lib": "^2.1.0",
-    "axios": "^1.9.0",
-    "cdk-nag": "^2.36.17",
+    "axios": "^1.10.0",
+    "cdk-nag": "^2.36.18",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
