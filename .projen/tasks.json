@@ -50,9 +50,6 @@
           "spawn": "bundle:LogQueryJob/LogQueryJob.lambda"
         },
         {
-          "spawn": "bundle:monitoringLambda/monitoring.lambda"
-        },
-        {
           "spawn": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda"
         },
         {
@@ -63,6 +60,9 @@
         },
         {
           "spawn": "bundle:TopdeskIntegrationLambda/TopdeskIntegration.lambda"
+        },
+        {
+          "spawn": "bundle:monitoringLambda/monitoring.lambda"
         }
       ]
     },

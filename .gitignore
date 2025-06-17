@@ -59,11 +59,11 @@ junit.xml
 .cdk.staging/
 .parcel-cache/
 !/src/LogQueryJob/LogQueryJob-function.ts
-!/src/monitoringLambda/monitoring-function.ts
 !/src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts
 !/src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts
 !/src/SlackInteractivityLambda/SlackInteractivity-function.ts
 !/src/TopdeskIntegrationLambda/TopdeskIntegration-function.ts
+!/src/monitoringLambda/monitoring-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
 !/.projenrc.js
