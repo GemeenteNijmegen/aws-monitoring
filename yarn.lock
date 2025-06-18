@@ -167,10 +167,10 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-organizations@^3.830.0":
-  version "3.830.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-organizations/-/client-organizations-3.830.0.tgz#3d117b1127b28f943dc25c15812e0ba5305b1c77"
-  integrity sha512-26uRuZetN/dprDcftTuv5mKOgyTvZPsnpvKD1EuaY7hYJgRJUX5iX+lPxZclhKWVL8znw7dDcefUqvoKskLAmg==
+"@aws-sdk/client-organizations@^3.831.0":
+  version "3.831.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-organizations/-/client-organizations-3.831.0.tgz#c041ce66f441b36db3fffc13973d0a538c357c97"
+  integrity sha512-VQ8gRimemQDbIjLD559P3uamOqCfrbvhS7jvvdViWO7iuGStNUNugxH950Deon2AuuVhm09n5uLRRgLbNT6tMQ==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -321,10 +321,10 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-securityhub@^3.830.0":
-  version "3.830.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-securityhub/-/client-securityhub-3.830.0.tgz#2264f7f5b683babe16aed093883648c78c8c99ba"
-  integrity sha512-/ccejqZTzrv+G3XUAFxOfbfuwqkb8fi3ZKD1Rb9rXgnujuYwSaNuNdvK/EQRlFWUHGO8W968TKlDFl/uGQ/f4g==
+"@aws-sdk/client-securityhub@^3.831.0":
+  version "3.831.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-securityhub/-/client-securityhub-3.831.0.tgz#4bb2ee8653b667b7508a4cea39b0cb600da8ecac"
+  integrity sha512-96U7yE/kOZzPMXJl9NLQSSd/uWiv1MeeHUYJ3Ji5x2Lq1rKcqJOyK2VUHPx43N06F/My6clP3xSjN0i8EHYLGA==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -364,7 +364,9 @@
     "@smithy/util-middleware" "^4.0.4"
     "@smithy/util-retry" "^4.0.5"
     "@smithy/util-utf8" "^4.0.0"
+    "@types/uuid" "^9.0.1"
     tslib "^2.6.2"
+    uuid "^9.0.1"
 
 "@aws-sdk/client-sns@^3.830.0":
   version "3.830.0"
@@ -411,10 +413,10 @@
     "@smithy/util-utf8" "^4.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-sqs@^3.830.0":
-  version "3.830.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.830.0.tgz#13fa09d08e2d78e739a5f75d2d13bf6c9e68153a"
-  integrity sha512-akkCO/phYSQNLHNNCWZ2uN7e6fzmNUAUStzFMP0ipd6Pmr/fqbISDlkZyPW+J60qq2BDzueQrpxzrPTJZdO4hg==
+"@aws-sdk/client-sqs@^3.831.0":
+  version "3.831.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.831.0.tgz#d518d6e1160247205bdb1165463954cb46bd8493"
+  integrity sha512-7UioW8vkCar7PzR1MknLqMrLJ/15mdd4tPQvVlaHdDZxstwbTmm1yY6PGZUwIjr7Ju4ZP8XpnTmThKp0N+PJ6g==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -3291,10 +3293,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.36.18:
-  version "2.36.18"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.18.tgz#404948dda58272e1c839141525c2f50b181133d3"
-  integrity sha512-Z0SYxaIekh2ymujJ471rRmzrCWmrvTqfS7bRjFXQ1xvAkku+3qeYVv5Xhef8IshPPe3b9R6knW7mIl0CfhFguA==
+cdk-nag@^2.36.19:
+  version "2.36.19"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.19.tgz#02f9ca8360aa8b447c78f8dbac3101a61ab58fc1"
+  integrity sha512-L0r3FIIbhesrxWow5Y0wbrH6PYRUxRGY4wlsCDtgxkrpq1V9FDmp8GcCAV7ELUUmotmbVeC1AbyzG2Cj4I0tXg==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
@@ -3812,9 +3814,9 @@ dunder-proto@^1.0.0, dunder-proto@^1.0.1:
     gopd "^1.2.0"
 
 electron-to-chromium@^1.5.160:
-  version "1.5.168"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.168.tgz#ad2bad79e34ba3ba8d79ba809c1e0756685c3f4f"
-  integrity sha512-RUNQmFLNIWVW6+z32EJQ5+qx8ci6RGvdtDC0Ls+F89wz6I2AthpXF0w0DIrn2jpLX0/PU9ZCo+Qp7bg/EckJmA==
+  version "1.5.169"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.169.tgz#6afdfd8e701b7ab744e2bb0cfdec3cefc1072cbe"
+  integrity sha512-q7SQx6mkLy0GTJK9K9OiWeaBMV4XQtBSdf6MJUzDB/H/5tFXfIiX38Lci1Kl6SsgiEhz1SQI1ejEOU5asWEhwQ==
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -6195,9 +6197,9 @@ process-nextick-args@~2.0.0:
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
 projen@^0.92.11:
-  version "0.92.11"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.92.11.tgz#ff2e2eadae90eb9b6f3a79798c0570d8c72206e8"
-  integrity sha512-/dOAVN265luYqyJgTYyYUMsnoO+D0CxMqzTki5W7NoNlGaXz2fmKhUzzm5lijhSIBXUdOYP8OAqVU9vnNV3+rw==
+  version "0.92.12"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.92.12.tgz#0f7e9a073425779627c4b8c2e5610cb04915e830"
+  integrity sha512-3Hq5pQhGqJqRge79duWWiD94BBb7d4LyisztsyHmzqoNX0FPaVb8R6oRzfqkQQ6wf7PPQprzyQzAhkHEGf68Kw==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
