@@ -153,11 +153,11 @@
           "**/test/**",
           "**/build-tools/**",
           "src/LogQueryJob/LogQueryJob.lambda.ts",
-          "src/monitoringLambda/monitoring.lambda.ts",
           "src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
           "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
-          "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts"
+          "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
+          "src/monitoringLambda/monitoring.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

@@ -72,6 +72,21 @@ export class MonitoredAccountStack extends Stack {
         },
         ruleDescription: 'Send all ECS state change notifications to SNS',
       },
+      // Temporarily check this to figure out failing health checks in ECS
+      // https://github.com/aws-samples/amazon-ecs-agent-connection-monitoring
+      // https://github.com/aws-samples/amazon-ecs-agent-connection-monitoring/blob/main/ecs-agent-monitoring.yaml
+      {
+        id: 'ecs-container-agent-disconnect',
+        criticality: 'low',
+        pattern: {
+          source: ['aws.ecs'],
+          detail: {
+            agentConnected: false,
+            status: 'ACTIVE',
+          },
+        },
+        ruleDescription: 'Send ECS container disconnect notices to SNS',
+      },
       {
         id: 'ec2-spot-instance-interruption',
         criticality: 'low',
