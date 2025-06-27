@@ -82,7 +82,7 @@ export class MonitoredAccountStack extends Stack {
           source: ['aws.ecs'],
           detail: {
             agentConnected: [false],
-            status: 'ACTIVE',
+            status: ['ACTIVE'],
           },
         },
         ruleDescription: 'Send ECS container disconnect notices to SNS',
