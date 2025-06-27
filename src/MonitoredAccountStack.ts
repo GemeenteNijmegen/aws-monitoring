@@ -81,7 +81,7 @@ export class MonitoredAccountStack extends Stack {
         pattern: {
           source: ['aws.ecs'],
           detail: {
-            agentConnected: false,
+            agentConnected: [false],
             status: 'ACTIVE',
           },
         },
