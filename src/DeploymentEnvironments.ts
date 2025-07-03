@@ -547,6 +547,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-mijn-services-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '958979025885',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-mijn-services-accp',
         accountType: 'acceptance',
         monitor: true,
