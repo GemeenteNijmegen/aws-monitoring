@@ -1548,10 +1548,10 @@
   resolved "https://registry.yarnpkg.com/@gemeentenijmegen/aws-constructs/-/aws-constructs-0.0.38.tgz#8a0fab63a3616fa56dce1b630b732bce35a64df4"
   integrity sha512-9oGJVdZKjgARMpq6BpcMl7/5FHIjAQei6ePFzIfc+bUbrhU+7Q3Thk5knOTmBstAUY9ntjbwT99wT3CjkrQNXA==
 
-"@gemeentenijmegen/projen-project-type@^1.10.7":
-  version "1.10.7"
-  resolved "https://registry.yarnpkg.com/@gemeentenijmegen/projen-project-type/-/projen-project-type-1.10.7.tgz#42f1c479d49525f15029e7a19c6cce734c147742"
-  integrity sha512-IZpdszKkzQx/PEQkdHbcwaZqGLkH9wzXDrZ9sMOKX1UGMy4T2EYriLKPSUUEJ92zoP6VrzcwF50S6a2168Djyw==
+"@gemeentenijmegen/projen-project-type@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@gemeentenijmegen/projen-project-type/-/projen-project-type-1.11.0.tgz#838074568a1be5adc3982bae1ef92200a164bd16"
+  integrity sha512-MU135ZQrmCzUTkX9Gz9KogxqIbOdRU9g+BrNej0TSw8XP4sqD1YKsHob5DXzXH+dyYTHMxnQ3g3l3CT1tUICrQ==
 
 "@gemeentenijmegen/utils@^0.0.33":
   version "0.0.33"
@@ -3078,9 +3078,9 @@ aws-cdk-lib@^2.1.0:
     yaml "1.10.2"
 
 aws-cdk@^2:
-  version "2.1020.1"
-  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.1020.1.tgz#97716539f80d3b74dc70cdf2bf38eb4232d94fa2"
-  integrity sha512-4UG9qzf6ZSDjINubcukPZChVj6PvDJAHiURAw0jYSkUhObPkX7Zo9uNUIlXzrM+hpB2N2jwRKY9b3sN+KDbtAQ==
+  version "2.1020.2"
+  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.1020.2.tgz#7e0a4113666a6d162cf40b6b1ebf9e310c22dd44"
+  integrity sha512-yWdt3dJh4aPm1VNyEgfG3lozGrvddw0i7avt+Cl9KOYixmisQtAg39/aZqzVVqjzVZVEanXmz+tlhzzh75Z69A==
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -3294,10 +3294,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.36.32:
-  version "2.36.32"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.32.tgz#854a2231c8343f71502c93d445ff9b8c90c440bf"
-  integrity sha512-GDBJUcbwCtAUpapGHD0eiF/10FddEqPmx/neLDWqeLLzqqDmJFtWt8xcp859KN3r9Fq6WIFvguTv8UVG+5QH7A==
+cdk-nag@^2.36.33:
+  version "2.36.33"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.33.tgz#5d3e8b5507ccd9a50338805f58d021d26ba3f6eb"
+  integrity sha512-S0hOGfnyxe4vct2yFs+QFZvBoYHuDN32xxE25TGKBeEhlTIOS2FHh/EJ1Lv85cOO10rGLRAU/5qXy+GlFSgcWA==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
