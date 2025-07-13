@@ -1272,9 +1272,9 @@
     debug "^4.3.1"
 
 "@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.27.1", "@babel/types@^7.27.6", "@babel/types@^7.28.0", "@babel/types@^7.3.3":
-  version "7.28.0"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.28.0.tgz#2fd0159a6dc7353933920c43136335a9b264d950"
-  integrity sha512-jYnje+JyZG5YThjHiF28oT4SIZLnYOcSBb6+SDaFIyzDVSkXQmQQYclJ2R+YxcdmK0AX6x1E5OQNtuh3jHDrUg==
+  version "7.28.1"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.28.1.tgz#2aaf3c10b31ba03a77ac84f52b3912a0edef4cf9"
+  integrity sha512-x0LvFTekgSX+83TI28Y9wYPUfzrnl2aT5+5QLnO6v7mSJYtEEevuDRN0F0uSHRk1G1IWZC43o00Y0xDDrpBGPQ==
   dependencies:
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
@@ -3293,10 +3293,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.36.36:
-  version "2.36.36"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.36.tgz#556f062cd6ef06d67cefc09910888743e4b1d01d"
-  integrity sha512-886syL1B/NPatemwrly3sP+Gd8tW5Bxje1oVXnw7dQJwgEAVhYU/8ow+refYHaf+0w4K1DfhBhQ94zMddj1yag==
+cdk-nag@^2.36.37:
+  version "2.36.37"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.36.37.tgz#5437ba876ba2f6476f7b39487429ce7532aa1271"
+  integrity sha512-T6l7wcKwpz90wr6mOHL7uxX6RqABCsLdVMSm0JVUkfVjHgERIcs08tHeY+PijmeZ7igYhLVCAMj9YgktZjtghQ==
 
 cdk-stacksets@^0.0.150:
   version "0.0.150"
