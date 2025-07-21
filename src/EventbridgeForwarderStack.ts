@@ -20,5 +20,14 @@ export class EventbridgeForwarderStack extends StackSetStack {
         detailType: ['CloudWatch Alarm State Change'],
       },
     });
+
+    new EventBusForwardingRule(this, 'forward-acm', {
+      targetRegion: props.targetRegion,
+      eventPattern: {
+        source: ['aws.acm'],
+      },
+    });
+
+
   }
 }
