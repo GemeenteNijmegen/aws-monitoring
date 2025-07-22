@@ -21,10 +21,10 @@ export class EventbridgeForwarderStack extends StackSetStack {
       },
     });
 
-    new EventBusForwardingRule(this, 'forward-acm', {
+    new EventBusForwardingRule(this, 'forward-health', {
       targetRegion: props.targetRegion,
       eventPattern: {
-        source: ['aws.acm'],
+        source: ['aws.health'],
       },
     });
 
