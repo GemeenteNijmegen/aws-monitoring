@@ -16,6 +16,7 @@
     ".projen/tasks.json",
     "cdk.json",
     "LICENSE",
+    "src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection-function.ts",
     "src/LogQueryJob/LogQueryJob-function.ts",
     "src/monitoringLambda/monitoring-function.ts",
     "src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts",

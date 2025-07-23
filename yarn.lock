@@ -462,7 +462,7 @@
     "@smithy/util-utf8" "^4.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-ssm@^3.844.0":
+"@aws-sdk/client-ssm@^3.844.0", "@aws-sdk/client-ssm@^3.849.0":
   version "3.849.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-ssm/-/client-ssm-3.849.0.tgz#71110b50ed1e6536e7f2ff6c29443f444871eb85"
   integrity sha512-446RPHQZkMPXJgllXoHs5GfbmqNrgYJvuPMTwoVbFpyL82B9RD/fqHPz7gBjGfcyR2pu8qVIn5fIxefbNEA4Kg==

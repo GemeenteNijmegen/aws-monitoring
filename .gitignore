@@ -64,6 +64,7 @@ junit.xml
 !/src/SlackInteractivityLambda/SlackInteractivity-function.ts
 !/src/TopdeskIntegrationLambda/TopdeskIntegration-function.ts
 !/src/monitoringLambda/monitoring-function.ts
+!/src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
 !/.projenrc.js

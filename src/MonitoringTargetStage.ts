@@ -2,7 +2,7 @@ import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Role } from 'aws-cdk-lib/aws-iam';
-import { DeploymentType, StackSet, StackSetTarget, StackSetTemplate, Capability } from 'cdk-stacksets';
+import { Capability, DeploymentType, StackSet, StackSetTarget, StackSetTemplate } from 'cdk-stacksets';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
 import { DeploymentEnvironment } from './DeploymentEnvironments';

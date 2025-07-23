@@ -157,7 +157,8 @@
           "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
           "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
-          "src/monitoringLambda/monitoring.lambda.ts"
+          "src/monitoringLambda/monitoring.lambda.ts",
+          "src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

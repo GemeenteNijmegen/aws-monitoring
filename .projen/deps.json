@@ -120,6 +120,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-ssm",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-sts",
       "type": "runtime"
     },
