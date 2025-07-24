@@ -49,7 +49,7 @@ export class AccountSetupStage extends Stage {
       },
     });
 
-    stack.node.addDependency(assetBucket);
+    stackset.node.addDependency(assetBucket);
     securityBaselineStack.node.addDependency(assetBucket);
 
   }
