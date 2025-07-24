@@ -31,7 +31,7 @@ export class AccountSetupStage extends Stage {
     });
     const securityBaselineStack = new SecurityBaselineStack(stack, 'security-baseline-stack', {
       assetBuckets: [assetBucket],
-      assetBucketPrefix: 'security-baseline-stack',
+      assetBucketPrefix: assetBucket.bucketName,
     });
     const stackset = new StackSet(stack, 'StackSet', {
       target: StackSetTarget.fromAccounts({
