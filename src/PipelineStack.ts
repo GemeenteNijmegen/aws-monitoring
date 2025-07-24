@@ -1,7 +1,6 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, CfnParameter, Stack, StackProps, Tags, pipelines } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { AccountSetupStage } from './AccountSetupStage';
 import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { arrayHasDuplicatesByKeys } from './helpers';
 import { MonitoringTargetStage } from './MonitoringTargetStage';
@@ -44,15 +43,6 @@ export class PipelineStack extends Stack {
       branchName: props.branchName,
     });
     pipeline.addStage(monitoring);
-
-    /**
-     * This stage sets account settings that we want to apply to all accounts.
-     * E.g. Disable ssm document sharing (SecurityHub AFBS SSM.7 rule).
-     */
-    const accountSetup = new AccountSetupStage(this, `account-setup-${this.environmentName}`, {
-      deployToEnvironments: props.deployToEnvironments,
-    });
-    pipeline.addStage(accountSetup);
 
     /**
      * We kunnen maar 2 log subscriptions hebben op de orgtrail log groep.
