@@ -1,6 +1,6 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
-import { Role } from 'aws-cdk-lib/aws-iam';
+import { AccountPrincipal, Effect, PolicyStatement, Role } from 'aws-cdk-lib/aws-iam';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { Capability, DeploymentType, StackSet, StackSetTarget, StackSetTemplate } from 'cdk-stacksets';
 import { Construct } from 'constructs';
@@ -29,6 +29,19 @@ export class AccountSetupStage extends Stage {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,
     });
+
+    assetBucket.addToResourcePolicy(new PolicyStatement({
+      actions: [
+        's3:GetObject*',
+        's3:GetBucket*',
+        's3:List*',
+      ],
+      effect: Effect.ALLOW,
+      principals: deploymentEnvironments
+        .filter(environment => environment.env.account)
+        .map(environment => new AccountPrincipal(environment.env.account)),
+    }));
+
     const securityBaselineStack = new SecurityBaselineStack(stack, 'security-baseline-stack', {
       assetBuckets: [assetBucket],
       assetBucketPrefix: assetBucket.bucketName,
