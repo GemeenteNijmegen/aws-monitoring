@@ -33,7 +33,7 @@ export class AccountSetupStage extends Stage {
       assetBuckets: [assetBucket],
       assetBucketPrefix: 'security-baseline-stack',
     });
-    new StackSet(stack, 'StackSet', {
+    const stackset = new StackSet(stack, 'StackSet', {
       target: StackSetTarget.fromAccounts({
         regions: ['eu-central-1'],
         accounts: deploymentEnvironments.map(environment => environment.env.account).filter(account => account) as string[],
@@ -48,6 +48,9 @@ export class AccountSetupStage extends Stage {
         maxConcurrentCount: 99,
       },
     });
+
+    stack.node.addDependency(assetBucket);
+    securityBaselineStack.node.addDependency(assetBucket);
 
   }
 }
