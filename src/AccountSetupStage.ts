@@ -40,6 +40,10 @@ export class AccountSetupStage extends Stage {
       principals: deploymentEnvironments
         .filter(environment => environment.env.account)
         .map(environment => new AccountPrincipal(environment.env.account)),
+      resources: [
+        assetBucket.bucketArn,
+        assetBucket.bucketArn + '/*'
+      ]
     }));
 
     const securityBaselineStack = new SecurityBaselineStack(stack, 'security-baseline-stack', {
