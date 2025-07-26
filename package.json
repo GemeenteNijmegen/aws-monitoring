@@ -71,7 +71,7 @@
     "@aws-sdk/client-s3": "^3.850.0",
     "@aws-sdk/client-securityhub": "^3.848.0",
     "@aws-sdk/client-sns": "^3.848.0",
-    "@aws-sdk/client-sqs": "^3.848.0",
+    "@aws-sdk/client-sqs": "^3.854.0",
     "@aws-sdk/client-ssm": "^3.849.0",
     "@aws-sdk/client-sts": "^3.848.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.41",
@@ -79,7 +79,7 @@
     "@types/aws-lambda": "^8.10.152",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.11.0",
-    "cdk-nag": "^2.36.44",
+    "cdk-nag": "^2.36.45",
     "cdk-stacksets": "^0.0.150",
     "constructs": "^10.0.5"
   },
