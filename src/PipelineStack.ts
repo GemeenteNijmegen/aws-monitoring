@@ -1,5 +1,5 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
-import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
+import { Aspects, CfnParameter, Stack, StackProps, Tags, pipelines } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { arrayHasDuplicatesByKeys } from './helpers';
