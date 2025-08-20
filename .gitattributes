@@ -20,7 +20,6 @@
 /cdk.json linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
-/src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection-function.ts linguist-generated
 /src/LogQueryJob/LogQueryJob-function.ts linguist-generated
 /src/monitoringLambda/monitoring-function.ts linguist-generated
 /src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts linguist-generated

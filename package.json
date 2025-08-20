@@ -4,8 +4,6 @@
     "build": "npx projen build",
     "bump": "npx projen bump",
     "bundle": "npx projen bundle",
-    "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda": "npx projen bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda",
-    "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda:watch": "npx projen bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda:watch",
     "bundle:LogQueryJob/LogQueryJob.lambda": "npx projen bundle:LogQueryJob/LogQueryJob.lambda",
     "bundle:LogQueryJob/LogQueryJob.lambda:watch": "npx projen bundle:LogQueryJob/LogQueryJob.lambda:watch",
     "bundle:monitoringLambda/monitoring.lambda": "npx projen bundle:monitoringLambda/monitoring.lambda",

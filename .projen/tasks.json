@@ -63,27 +63,6 @@
         },
         {
           "spawn": "bundle:monitoringLambda/monitoring.lambda"
-        },
-        {
-          "spawn": "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda"
-        }
-      ]
-    },
-    "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda": {
-      "name": "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda",
-      "description": "Create a JavaScript bundle from src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
-        }
-      ]
-    },
-    "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda:watch": {
-      "name": "bundle:CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/CustomResources/SsmDocumentSharing/enableSsmDocShareProtection.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
