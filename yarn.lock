@@ -3181,9 +3181,9 @@ balanced-match@^1.0.0:
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
 bowser@^2.11.0:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.12.0.tgz#c56edc7bc9d18b7e1f062bfea0a53f564af613ed"
-  integrity sha512-HcOcTudTeEWgbHh0Y1Tyb6fdeR71m4b/QACf0D4KswGTsNeIJQmg38mRENZPAYPZvGFN3fk3604XbQEPdxXdKg==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.12.1.tgz#f9ad78d7aebc472feb63dd9635e3ce2337e0e2c1"
+  integrity sha512-z4rE2Gxh7tvshQ4hluIT7XcFrgLIQaw9X3A+kTTRdovCz5PMukm/0QC/BKSYPj3omF5Qfypn9O/c5kgpmvYUCw==
 
 brace-expansion@^1.1.7:
   version "1.1.12"
@@ -3296,10 +3296,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.37.8:
-  version "2.37.8"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.37.8.tgz#02d01b5d0f4be5cc5e07f313c62100dec045043e"
-  integrity sha512-01SDV6hR6qt9STvMF27L5Tlmjwa83s0nKgzpmFdIqs55mmAxNcZIP2viyW3BZvETsF3A1dJJBgSMVFi0bnGC+g==
+cdk-nag@^2.37.9:
+  version "2.37.9"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.37.9.tgz#e709b465519d06db4195de2539707ce69c36959e"
+  integrity sha512-Wy8EcKNuQOHpmOzOAtvSB06vQMu9kc4u3Y+bVu8nUoTCYQIBGNoZ/JNoKPtBGubfRMtU9EQTyjvwCSC1KoJjbg==
 
 cdk-stacksets@^0.0.152:
   version "0.0.152"
