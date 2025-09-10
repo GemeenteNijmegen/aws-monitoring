@@ -159,10 +159,10 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-organizations@^3.883.0":
-  version "3.883.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-organizations/-/client-organizations-3.883.0.tgz#169a51f8232f207edae59e448b3f2eaa2b79655a"
-  integrity sha512-gpU9sAD+DluHNKPzW1oED5myM6WGtbYh25sdO0xDPlYkz5tDzXyfm7ib9oCVj3cRBNQCVv3NxdYGdyGlHveBkg==
+"@aws-sdk/client-organizations@^3.885.0":
+  version "3.885.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-organizations/-/client-organizations-3.885.0.tgz#50b94ffdefabe8ca2fb32a02013821f04de133f5"
+  integrity sha512-vVX1eird8NcETH1HoguxOqevgEwzffFOjfagiY6M2HQZU0170bSCrKTkrAN+maFjVPAZGwdR2S8G1iNj6PtxRw==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -3291,10 +3291,10 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-nag@^2.37.20:
-  version "2.37.20"
-  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.37.20.tgz#5b9d49ce485b566aa6d053bf0141ab267aa49b66"
-  integrity sha512-OsLYeuytOeoh36Gu/+3YYbNl48bL51kOztUXLyt2KtLHD3Z90OKx5ON3sWub37qwPfLZa08oyj+Jjn/SThXOMg==
+cdk-nag@^2.37.21:
+  version "2.37.21"
+  resolved "https://registry.yarnpkg.com/cdk-nag/-/cdk-nag-2.37.21.tgz#863e218765938d95e7a6165a9b9d64be7ea079b9"
+  integrity sha512-4+UyhRWb2+0kzTos1fNZCjiGRXVWdQIrlrjKKVO7B4VG8MTPo2y4RA2TklO1pucIfRmTqkr1jKveinB11lOOwQ==
 
 cdk-stacksets@^0.0.152:
   version "0.0.152"
