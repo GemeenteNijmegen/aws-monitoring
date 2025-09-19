@@ -66,7 +66,7 @@
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.114.1-alpha.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.891.0",
     "@aws-sdk/client-organizations": "^3.891.0",
-    "@aws-sdk/client-s3": "^3.891.0",
+    "@aws-sdk/client-s3": "^3.892.0",
     "@aws-sdk/client-securityhub": "^3.891.0",
     "@aws-sdk/client-sns": "^3.891.0",
     "@aws-sdk/client-sqs": "^3.891.0",
@@ -76,7 +76,7 @@
     "@types/aws-lambda": "^8.10.152",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.12.2",
-    "cdk-nag": "^2.37.29",
+    "cdk-nag": "^2.37.30",
     "cdk-stacksets": "^0.0.152",
     "constructs": "^10.0.5"
   },
