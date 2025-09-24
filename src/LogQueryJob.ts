@@ -1,6 +1,6 @@
 import { Duration, aws_events_targets as targets } from 'aws-cdk-lib';
 import { CronOptions, Rule, Schedule } from 'aws-cdk-lib/aws-events';
-import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -70,9 +70,9 @@ export class LogQueryJob extends Construct {
       roleName: `log-query-job-lambda-role-${this.envIndicator}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       description: `Role for log query job execution lambda (${this.envIndicator})`,
-      managedPolicies: [{
-        managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
-      }],
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+      ],
     });
   }
 
