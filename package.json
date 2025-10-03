@@ -72,11 +72,11 @@
     "@aws-sdk/client-sqs": "^3.901.0",
     "@aws-sdk/client-sts": "^3.901.0",
     "@gemeentenijmegen/aws-constructs": "^0.0.43",
-    "@gemeentenijmegen/utils": "^0.0.37",
+    "@gemeentenijmegen/utils": "^0.0.38",
     "@types/aws-lambda": "^8.10.153",
     "aws-cdk-lib": "^2.1.0",
     "axios": "^1.12.2",
-    "cdk-nag": "^2.37.40",
+    "cdk-nag": "^2.37.41",
     "cdk-stacksets": "^0.0.152",
     "constructs": "^10.0.5"
   },
