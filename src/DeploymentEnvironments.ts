@@ -628,6 +628,24 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-sandbox-esper',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '837644359001',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-teppei',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '770404292215',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-verzoekservicewerkinkomen-accp',
         accountType: 'acceptance',
         monitor: true,
