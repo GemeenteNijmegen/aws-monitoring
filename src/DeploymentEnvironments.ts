@@ -228,7 +228,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         enableDevopsGuru: true,
       },
       {
-        accountName: 'gn-geo-data-production',
+        accountName: 'gn-data-storage-production',
         accountType: 'production',
         env: {
           account: '549334216741',
@@ -236,7 +236,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-geo-data-acceptance',
+        accountName: 'gn-data-storage-acceptance',
         accountType: 'acceptance',
         env: {
           account: '766983128454',
@@ -360,10 +360,18 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-static-websites',
+        accountName: 'gn-static-websites-prod',
         accountType: 'production',
         env: {
           account: '654477686593',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-static-websites-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '991246619216',
           region: 'eu-central-1',
         },
       },
@@ -646,7 +654,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-verzoekservicewerkinkomen-accp',
+        accountName: 'gn-ai-accp',
         accountType: 'acceptance',
         monitor: true,
         env: {
@@ -655,11 +663,29 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-verzoekservicewerkinkomen-prod',
+        accountName: 'gn-ai-prod',
         accountType: 'production',
         monitor: true,
         env: {
           account: '222634384969',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-4daagsefeesten-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '288761733826',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-4daagsefeesten-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '061039783330',
           region: 'eu-central-1',
         },
       },
