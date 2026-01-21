@@ -1,4 +1,5 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
+import { getNodeVersion } from '@gemeentenijmegen/projen-project-type';
 import { Aspects, CfnParameter, Stack, StackProps, Tags, pipelines } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
@@ -65,6 +66,9 @@ export class PipelineStack extends Stack {
       env: {
         BRANCH_NAME: this.branchName,
       },
+      installCommands: [
+        `n ${getNodeVersion()}`
+      ],
       commands: [
         'yarn install --frozen-lockfile',
         'npx projen build',
