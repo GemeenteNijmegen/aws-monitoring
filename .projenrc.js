@@ -29,9 +29,9 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-dynamodb',
     '@aws-sdk/lib-dynamodb',
     'cdk-stacksets',
+    '@gemeentenijmegen/projen-project-type',
   ],
   devDeps: [
-    '@gemeentenijmegen/projen-project-type',
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],

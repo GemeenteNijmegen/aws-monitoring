@@ -72,7 +72,6 @@ export class PipelineStack extends Stack {
       commands: [
         'yarn install --frozen-lockfile',
         'npx projen build',
-        'npx projen synth',
       ],
     });
 
