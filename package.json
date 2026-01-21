@@ -4,6 +4,8 @@
     "build": "npx projen build",
     "bump": "npx projen bump",
     "bundle": "npx projen bundle",
+    "bundle:audit/slackbot/slackbot.lambda": "npx projen bundle:audit/slackbot/slackbot.lambda",
+    "bundle:audit/slackbot/slackbot.lambda:watch": "npx projen bundle:audit/slackbot/slackbot.lambda:watch",
     "bundle:LogQueryJob/LogQueryJob.lambda": "npx projen bundle:LogQueryJob/LogQueryJob.lambda",
     "bundle:LogQueryJob/LogQueryJob.lambda:watch": "npx projen bundle:LogQueryJob/LogQueryJob.lambda:watch",
     "bundle:monitoringLambda/monitoring.lambda": "npx projen bundle:monitoringLambda/monitoring.lambda",

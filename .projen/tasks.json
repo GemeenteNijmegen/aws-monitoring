@@ -63,6 +63,27 @@
         },
         {
           "spawn": "bundle:monitoringLambda/monitoring.lambda"
+        },
+        {
+          "spawn": "bundle:audit/slackbot/slackbot.lambda"
+        }
+      ]
+    },
+    "bundle:audit/slackbot/slackbot.lambda": {
+      "name": "bundle:audit/slackbot/slackbot.lambda",
+      "description": "Create a JavaScript bundle from src/audit/slackbot/slackbot.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/slackbot/slackbot.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/slackbot/slackbot.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:audit/slackbot/slackbot.lambda:watch": {
+      "name": "bundle:audit/slackbot/slackbot.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/audit/slackbot/slackbot.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/slackbot/slackbot.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/slackbot/slackbot.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },

@@ -13,6 +13,7 @@ import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
+import { AuditSupport } from './audit/AuditSupport';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
 import { TopdeskIntegrationFunction } from './TopdeskIntegrationLambda/TopdeskIntegration-function';
@@ -38,6 +39,11 @@ export class IntegrationsStack extends Stack {
     // Setup the topdesk integration (subscribes to queue)
     const topdeskFunction = this.setupTopdeskIntegrationFunction(props);
     this.subscribeToQueue(queue, topdeskFunction);
+
+    new AuditSupport(this, 'audit-support', {
+      api,
+      environment: props.prefix,
+    });
 
   }
 
