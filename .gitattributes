@@ -21,6 +21,7 @@
 /cdk.json linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/src/audit/archiver/archiver-function.ts linguist-generated
 /src/audit/slackbot/slackbot-function.ts linguist-generated
 /src/LogQueryJob/LogQueryJob-function.ts linguist-generated
 /src/monitoringLambda/monitoring-function.ts linguist-generated

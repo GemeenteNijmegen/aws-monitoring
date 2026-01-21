@@ -101,6 +101,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-dynamodb",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/client-organizations",
       "type": "runtime"
     },
@@ -122,6 +126,10 @@
     },
     {
       "name": "@aws-sdk/client-sts",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/lib-dynamodb",
       "type": "runtime"
     },
     {

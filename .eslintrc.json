@@ -158,6 +158,7 @@
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
           "src/TopdeskIntegrationLambda/TopdeskIntegration.lambda.ts",
           "src/monitoringLambda/monitoring.lambda.ts",
+          "src/audit/archiver/archiver.lambda.ts",
           "src/audit/slackbot/slackbot.lambda.ts"
         ],
         "optionalDependencies": false,

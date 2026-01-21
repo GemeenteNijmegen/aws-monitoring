@@ -1,0 +1,41 @@
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { SlackThread } from './models/ArchivedThread';
+
+export class S3StorageService {
+  private readonly s3Client: S3Client;
+  private readonly bucketName: string;
+
+  constructor(bucketName: string) {
+    this.s3Client = new S3Client({});
+    this.bucketName = bucketName;
+  }
+
+  async storeThread(commandId: string, thread: SlackThread): Promise<string> {
+    const key = this.generateS3Key(commandId, thread.threadId);
+    const content = JSON.stringify({
+      commandId,
+      threadId: thread.threadId,
+      archivedAt: new Date().toISOString(),
+      messages: thread.messages,
+    }, null, 2);
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+      Body: content,
+      ContentType: 'application/json',
+    });
+
+    await this.s3Client.send(command);
+    return key;
+  }
+
+  private generateS3Key(commandId: string, threadId: string): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `slack-threads/${year}/${month}/${day}/${commandId}-${threadId}.json`;
+  }
+}
