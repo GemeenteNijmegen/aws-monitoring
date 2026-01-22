@@ -1,6 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { SlackCommand, SlackCommandData } from './models/SlackCommand';
+import { SlackCommand, SlackCommandData } from './models/TrackedSlackMessage';
 
 const DEFAULT_TTL = 5 * 7 * 24 * 3600; // 5 weeks in seconds
 

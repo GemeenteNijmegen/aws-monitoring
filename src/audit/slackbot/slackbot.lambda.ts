@@ -1,9 +1,9 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CommandParser } from './CommandParser';
-import { slackAuthenticate } from './slack-authenticate';
 import { CommandRepository } from '../shared/CommandRepository';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
+import { slackAuthenticate } from './slack-authenticate';
 
 const repository = new CommandRepository(process.env.COMMANDS_TABLE_NAME!);
 
@@ -21,21 +21,17 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
     console.log('Authenticated!');
 
-    // Handle command
-    const slackCommand = CommandParser.parse(event);
-    if (!slackCommand) {
-      console.log('Unable to parse command or unknown command type');
-      return response({ error: 'Unknown or invalid command' }, 400);
-    }
+    // Parse message
+    const trackedSlackMessage = TrackedSlackMessageParser.parse(event);
 
-    // Do something usefull with the command we've received
-    await repository.save(slackCommand);
+    // Save to dynamodb for tracking over time (handled by archiver)
+    await repository.save(trackedSlackMessage);
+    console.log(`Successfully saved message (${trackedSlackMessage.messageId}) to DynamoDB for ${trackedSlackMessage.trackingGoal} registration purposes`);
 
-    console.log(`Successfully saved ${slackCommand.commandType} command to DynamoDB`);
-
+    // Reply in thread
     const commandResponse = new SlackThreadResponse(
-      slackCommand.threadId,
-      `✅ - DevOps bot is following this thread and storing it as a: ${slackCommand.commandType}`,
+      trackedSlackMessage.threadId,
+      `✅ - DevOps bot is following this thread for ${trackedSlackMessage.trackingGoal} registration purposes`,
     );
 
     return response(commandResponse.getResponse());

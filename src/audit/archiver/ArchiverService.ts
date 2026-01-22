@@ -1,10 +1,10 @@
 import { createHash } from 'crypto';
+import { CommandRepository } from '../shared/CommandRepository';
+import { SlackCommand } from '../shared/models/TrackedSlackMessage';
 import { ArchiveRepository } from './ArchiveRepository';
 import { ArchivedThread, SlackThread } from './models/ArchivedThread';
 import { S3StorageService } from './S3StorageService';
 import { SlackClient } from './SlackClient';
-import { CommandRepository } from '../shared/CommandRepository';
-import { SlackCommand } from '../shared/models/SlackCommand';
 
 export class ArchiverService {
   private readonly commandRepository: CommandRepository;

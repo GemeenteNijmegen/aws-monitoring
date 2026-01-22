@@ -5,6 +5,7 @@ import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { ArchiverFunction } from './archiver/archiver-function';
 import { SlackbotFunction } from './slackbot/slackbot-function';
@@ -19,79 +20,76 @@ export interface AuditSupportProps {
 
 export class AuditSupport extends Construct {
 
+  private readonly slackSecret;
+  private readonly messageTable;
+  private readonly slackClientSecret;
+  private readonly slackClientId;
+
   constructor(scope: Construct, id: string, private readonly props: AuditSupportProps) {
     super(scope, id);
-    this.setupSlackCommands();
-    this.setupArchiver();
-  }
 
+    this.slackSecret = new Secret(this, `slackbot-secret-${this.props.environment}`, {
+      description: 'Secret for slackbot app (used to authenticate slack requsts)',
+    });
+    this.slackClientSecret = new Secret(this, `slack-client-secret-${this.props.environment}`, {
+      description: 'Slackbot client secret (to call slack api)',
+    });
+    this.slackClientId = new StringParameter(this, `slack-client-id-${this.props.environment}`, {
+      description: 'Slackbot client id (to call slack api)',
+      stringValue: '-',
+    });
 
-  setupSlackCommands() {
-    const commandsTable = new Table(this, `commands-table-${this.props.environment}`, {
+    this.messageTable = new Table(this, `message-table-${this.props.environment}`, {
       partitionKey: {
         name: 'messageId',
         type: AttributeType.STRING,
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
-      tableName: `slack-commands-${this.props.environment}`,
       timeToLiveAttribute: 'expiresAt',
     });
 
-    const slackSecret = new Secret(this, `slackbot-secret-${this.props.environment}`, {
-      description: 'Secret for slackbot app',
-    });
+    this.setupSlackbot();
+    this.setupArchiver();
+  }
 
+
+  setupSlackbot() {
     const slackbot = new SlackbotFunction(this, 'slackbot', {
       description: 'Slackbot backend',
       environment: {
-        SLACK_SECRET_ARN: slackSecret.secretArn,
-        COMMANDS_TABLE_NAME: commandsTable.tableName,
+        SLACK_SECRET_ARN: this.slackSecret.secretArn,
+        MESSAGE_TABLE_NAME: this.messageTable.tableName,
       },
     });
 
-    slackSecret.grantRead(slackbot);
-    commandsTable.grantWriteData(slackbot);
+    this.slackSecret.grantRead(slackbot);
+    this.messageTable.grantWriteData(slackbot);
 
     const slack = this.props.api.root.addResource('slackbot');
     slack.addMethod('POST', new LambdaIntegration(slackbot));
   }
 
   setupArchiver() {
-    const archiveTable = new Table(this, `archive-table-${this.props.environment}`, {
-      partitionKey: {
-        name: 'commandId',
-        type: AttributeType.STRING,
-      },
-      billingMode: BillingMode.PAY_PER_REQUEST,
-      tableName: `slack-archive-${this.props.environment}`,
-    });
-
     const archiveBucket = new Bucket(this, `archive-bucket-${this.props.environment}`, {
       bucketName: `slack-archive-${this.props.environment}`,
       encryption: BucketEncryption.S3_MANAGED,
-    });
-
-    const commandsTable = Table.fromTableName(this, `commands-table-ref-${this.props.environment}`, `slack-commands-${this.props.environment}`);
-
-    const slackTokenSecret = new Secret(this, `slack-token-secret-${this.props.environment}`, {
-      description: 'Slack bot token for API access',
     });
 
     const archiverFunction = new ArchiverFunction(this, 'archiver', {
       description: 'Archives Slack threads to S3',
       timeout: Duration.minutes(15),
       environment: {
-        COMMANDS_TABLE_NAME: commandsTable.tableName,
-        ARCHIVE_TABLE_NAME: archiveTable.tableName,
+        MESSAGE_TABLE_NAME: this.messageTable.tableName,
         ARCHIVE_BUCKET_NAME: archiveBucket.bucketName,
-        SLACK_TOKEN_ARN: slackTokenSecret.secretArn,
+        SLACK_CLIENT_SECRET_ARN: this.slackClientSecret.secretArn,
+        SLACK_CLIENT_ID_ARN: this.slackClientId.parameterArn,
       },
     });
 
-    commandsTable.grantReadData(archiverFunction);
-    archiveTable.grantReadWriteData(archiverFunction);
+    this.messageTable.grantReadData(archiverFunction);
     archiveBucket.grantWrite(archiverFunction);
-    slackTokenSecret.grantRead(archiverFunction);
+    this.slackClientSecret.grantRead(archiverFunction);
+    this.slackClientId.grantRead(archiverFunction);
 
     new Rule(this, `archiver-schedule-${this.props.environment}`, {
       schedule: Schedule.rate(Duration.hours(1)),
