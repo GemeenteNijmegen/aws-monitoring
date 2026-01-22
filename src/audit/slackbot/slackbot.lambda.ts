@@ -1,11 +1,11 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CommandRepository } from '../shared/CommandRepository';
+import { TrackedSlackMessageRepository } from '../shared/CommandRepository';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
 import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { slackAuthenticate } from './slack-authenticate';
 
-const repository = new CommandRepository(process.env.COMMANDS_TABLE_NAME!);
+const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));

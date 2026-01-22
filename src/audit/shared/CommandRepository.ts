@@ -1,10 +1,10 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { SlackCommand, SlackCommandData } from './models/TrackedSlackMessage';
+import { TrackedSlackMessage, TrackedSlackMessageData } from './models/TrackedSlackMessage';
 
 const DEFAULT_TTL = 5 * 7 * 24 * 3600; // 5 weeks in seconds
 
-export class CommandRepository {
+export class TrackedSlackMessageRepository {
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
 
@@ -17,14 +17,14 @@ export class CommandRepository {
     this.tableName = tableName;
   }
 
-  async save(command: SlackCommand, ttlSeconds: number = DEFAULT_TTL): Promise<void> {
+  async save(command: TrackedSlackMessage, ttlSeconds: number = DEFAULT_TTL): Promise<void> {
 
     const expiresAt = (Date.now() / 1000) + ttlSeconds;
 
-    const item: SlackCommandData = {
+    const item: TrackedSlackMessageData = {
       messageId: command.messageId,
       timestamp: command.timestamp.toISOString(),
-      commandType: command.commandType,
+      trackingGoal: command.trackingGoal,
       threadId: command.threadId,
       expiresAt: expiresAt,
     };
@@ -37,7 +37,7 @@ export class CommandRepository {
     await this.docClient.send(putCommand);
   }
 
-  async getAllCommands(): Promise<SlackCommand[]> {
+  async getAllCommands(): Promise<TrackedSlackMessage[]> {
     const command = new ScanCommand({
       TableName: this.tableName,
     });
@@ -46,7 +46,7 @@ export class CommandRepository {
     return (result.Items || []).map(item => ({
       messageId: item.messageId,
       timestamp: new Date(item.timestamp),
-      commandType: item.commandType as 'audit' | 'incident',
+      trackingGoal: item.trackingGoal as 'audit' | 'incident',
       threadId: item.threadId,
       expiresAt: item.expiresAt,
     }));
