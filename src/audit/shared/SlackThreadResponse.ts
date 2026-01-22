@@ -1,18 +1,29 @@
 export class SlackThreadResponse {
   constructor(
-    private readonly threadId: string,
-    private readonly message: string,
+    private readonly botToken: string,
   ) { }
 
-  getResponse() {
-    return {
-      response_type: 'in_channel',
-      thread_ts: this.threadId,
-      text: this.message,
-    };
-  }
+  async send(channelId: string, threadTs: string, message: string): Promise<void> {
+    const response = await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.botToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        channel: channelId,
+        thread_ts: threadTs,
+        text: message,
+      }),
+    });
 
-  getResponseAsString() {
-    return JSON.stringify(this.getResponse());
+    if (!response.ok) {
+      throw new Error(`Failed to send Slack message: ${response.statusText}`);
+    }
+
+    const json = await response.json() as any;
+    if (!json.ok) {
+      throw new Error(`Slack API error: ${json.error}`);
+    }
   }
 }

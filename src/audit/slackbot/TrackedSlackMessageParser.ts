@@ -14,8 +14,9 @@ export class TrackedSlackMessageParser {
     const text = slackEvent.text;
     const threadId = slackEvent.thread_ts || slackEvent.ts;
     const messageId = slackEvent.client_msg_id || slackEvent.event_ts;
+    const channelId = slackEvent.channel;
 
-    if (!text || !threadId || !messageId) {
+    if (!text || !threadId || !messageId || !channelId) {
       throw new Error('Required fields missing in slack event');
     }
 
@@ -29,6 +30,7 @@ export class TrackedSlackMessageParser {
       timestamp: new Date(),
       trackingGoal,
       threadId,
+      channelId,
     };
   }
 

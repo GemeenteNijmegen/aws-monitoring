@@ -17,15 +17,16 @@ export class TrackedSlackMessageRepository {
     this.tableName = tableName;
   }
 
-  async save(command: TrackedSlackMessage, ttlSeconds: number = DEFAULT_TTL): Promise<void> {
+  async save(message: TrackedSlackMessage, ttlSeconds: number = DEFAULT_TTL): Promise<void> {
 
     const expiresAt = (Date.now() / 1000) + ttlSeconds;
 
     const item: TrackedSlackMessageData = {
-      messageId: command.messageId,
-      timestamp: command.timestamp.toISOString(),
-      trackingGoal: command.trackingGoal,
-      threadId: command.threadId,
+      messageId: message.messageId,
+      timestamp: message.timestamp.toISOString(),
+      trackingGoal: message.trackingGoal,
+      threadId: message.threadId,
+      channelId: message.channelId,
       expiresAt: expiresAt,
     };
 
@@ -48,7 +49,7 @@ export class TrackedSlackMessageRepository {
       timestamp: new Date(item.timestamp),
       trackingGoal: item.trackingGoal as 'audit' | 'incident',
       threadId: item.threadId,
-      expiresAt: item.expiresAt,
+      channelId: item.channelId,
     }));
   }
 }

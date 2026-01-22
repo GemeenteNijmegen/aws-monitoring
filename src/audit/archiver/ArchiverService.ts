@@ -58,8 +58,7 @@ export class ArchiverService {
   private async processMessage(message: TrackedSlackMessage): Promise<void> {
     console.log(`Processing message: ${message.messageId}`);
 
-    const { channelId, threadTs } = SlackClient.extractChannelAndThread(message.threadId);
-    const thread = await this.slackClient.getThread(channelId, threadTs);
+    const thread = await this.slackClient.getThread(message.channelId, message.threadId);
 
     const s3Key = await this.s3Storage.storeThread(message.messageId, thread);
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);

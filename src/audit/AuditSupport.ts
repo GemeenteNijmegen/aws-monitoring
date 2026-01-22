@@ -53,11 +53,13 @@ export class AuditSupport extends Construct {
       description: 'Slackbot backend',
       environment: {
         SLACK_SECRET_ARN: this.slackSecret.secretArn,
+        SLACK_BOT_TOKEN_ARN: this.slackBotToken.secretArn,
         MESSAGE_TABLE_NAME: this.messageTable.tableName,
       },
     });
 
     this.slackSecret.grantRead(slackbot);
+    this.slackBotToken.grantRead(slackbot);
     this.messageTable.grantWriteData(slackbot);
 
     const slack = this.props.api.root.addResource('slackbot');

@@ -3,6 +3,7 @@ export interface TrackedSlackMessage {
   timestamp: Date;
   trackingGoal: 'audit' | 'incident';
   threadId: string;
+  channelId: string;
 }
 
 export interface TrackedSlackMessageData {
@@ -10,5 +11,6 @@ export interface TrackedSlackMessageData {
   timestamp: string;
   trackingGoal: 'audit' | 'incident';
   threadId: string;
+  channelId: string;
   expiresAt: number;
 }
