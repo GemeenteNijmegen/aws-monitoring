@@ -37,6 +37,11 @@ export class SlackClient {
 
     const json = await response.json() as any;
 
+    if (!json.ok) {
+      const errorMessage = json.error;
+      throw new Error(`Slack API error: ${errorMessage}`);
+    }
+
     const messages: SlackMessage[] = json.messages.map((msg: any) => ({
       ts: msg.ts,
       user: msg.user || msg.bot_id || 'unknown',
