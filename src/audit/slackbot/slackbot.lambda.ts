@@ -1,10 +1,10 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { slackAuthenticate } from './slack-authenticate';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { slackAuthenticate } from './slack-authenticate';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));
@@ -27,6 +27,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       return response(body, 403);
     }
     console.log('Authenticated!');
+
+    if (event.headers['X-Slack-Retry-Num']) {
+      console.log('Retry message from Slack, skipping...');
+      return response(body);
+    }
 
     // Parse message
     trackedSlackMessage = TrackedSlackMessageParser.parse(event);
