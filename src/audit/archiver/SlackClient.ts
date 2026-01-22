@@ -12,10 +12,12 @@ export class SlackClient {
     return { channelId: process.env.DEFAULT_SLACK_CHANNEL || '', threadTs: slackThreadId };
   }
 
-  private readonly token: string;
+  private readonly clientSecret: string;
+  private readonly clientId: string;
 
-  constructor(token: string) {
-    this.token = token;
+  constructor(clientSecret: string, clientId: string) {
+    this.clientSecret = clientSecret;
+    this.clientId = clientId;
   }
 
   async getThread(channelId: string, threadTs: string): Promise<SlackThread> {
@@ -26,7 +28,7 @@ export class SlackClient {
     });
     const response = await fetch(`https://slack.com/api/conversations.replies?${params}`, {
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        'Authorization': `Bearer ${this.clientSecret}`,
         'Content-Type': 'application/json',
       },
     });

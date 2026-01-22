@@ -1,9 +1,9 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { slackAuthenticate } from './slack-authenticate';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
-import { slackAuthenticate } from './slack-authenticate';
 
 const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
