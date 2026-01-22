@@ -60,7 +60,7 @@ export class ArchiverService {
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
     const s3Key = await this.s3Storage.storeThread(message.messageId, thread);
-    
+
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
     await this.slackClient.postMessage(
       message.channelId,
