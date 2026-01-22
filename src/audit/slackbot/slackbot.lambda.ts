@@ -1,14 +1,18 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { slackAuthenticate } from './slack-authenticate';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
+import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { slackAuthenticate } from './slack-authenticate';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 
 const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));
+
+
+  let trackedSlackMessage: TrackedSlackMessage | undefined = undefined;
 
   try {
 
@@ -22,22 +26,32 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     console.log('Authenticated!');
 
     // Parse message
-    const trackedSlackMessage = TrackedSlackMessageParser.parse(event);
+    trackedSlackMessage = TrackedSlackMessageParser.parse(event);
 
     // Save to dynamodb for tracking over time (handled by archiver)
     await repository.save(trackedSlackMessage);
     console.log(`Successfully saved message (${trackedSlackMessage.messageId}) to DynamoDB for ${trackedSlackMessage.trackingGoal} registration purposes`);
 
     // Reply in thread
-    const commandResponse = new SlackThreadResponse(
+    const messageResponse = new SlackThreadResponse(
       trackedSlackMessage.threadId,
       `✅ - DevOps bot is following this thread for ${trackedSlackMessage.trackingGoal} registration purposes`,
     );
 
-    return response(commandResponse.getResponse());
+    return response(messageResponse.getResponse());
   } catch (error) {
+    console.error('Error processing message:', error);
 
-    console.error('Error processing command:', error);
+    // See if we can make a nice response
+    if (trackedSlackMessage?.threadId && error instanceof Error) {
+      const messageResponse = new SlackThreadResponse(
+        trackedSlackMessage.threadId,
+        `❗️ - Failed to archive this thread! ${error.message}`,
+      );
+      return response(messageResponse.getResponse())
+    }
+
+    // Otherwise just return an internal server error
     return response({ error: 'Internal server error' }, 500);
   }
 }
