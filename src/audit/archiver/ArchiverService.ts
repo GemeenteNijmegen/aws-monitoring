@@ -10,12 +10,11 @@ export class ArchiverService {
 
   constructor(
     messageTableName: string,
-    slackClientSecret: string,
-    slackClientId: string,
+    slackBotToken: string,
     s3BucketName: string,
   ) {
     this.messageRepository = new TrackedSlackMessageRepository(messageTableName);
-    this.slackClient = new SlackClient(slackClientSecret, slackClientId);
+    this.slackClient = new SlackClient(slackBotToken);
     this.s3Storage = new S3StorageService(s3BucketName);
   }
 

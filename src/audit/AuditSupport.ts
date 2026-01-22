@@ -22,8 +22,7 @@ export class AuditSupport extends Construct {
 
   private readonly slackSecret;
   private readonly messageTable;
-  private readonly slackClientSecret;
-  private readonly slackClientId;
+  private readonly slackBotToken;
 
   constructor(scope: Construct, id: string, private readonly props: AuditSupportProps) {
     super(scope, id);
@@ -31,12 +30,8 @@ export class AuditSupport extends Construct {
     this.slackSecret = new Secret(this, `slackbot-secret-${this.props.environment}`, {
       description: 'Secret for slackbot app (used to authenticate slack requsts)',
     });
-    this.slackClientSecret = new Secret(this, `slack-client-secret-${this.props.environment}`, {
-      description: 'Slackbot client secret (to call slack api)',
-    });
-    this.slackClientId = new StringParameter(this, `slack-client-id-${this.props.environment}`, {
-      description: 'Slackbot client id (to call slack api)',
-      stringValue: '-',
+    this.slackBotToken = new Secret(this, `slack-bot-token-${this.props.environment}`, {
+      description: 'Slack Bot User OAuth Token (starts with xoxb-)',
     });
 
     this.messageTable = new Table(this, `message-table-${this.props.environment}`, {
@@ -81,15 +76,13 @@ export class AuditSupport extends Construct {
       environment: {
         MESSAGE_TABLE_NAME: this.messageTable.tableName,
         ARCHIVE_BUCKET_NAME: archiveBucket.bucketName,
-        SLACK_CLIENT_SECRET_ARN: this.slackClientSecret.secretArn,
-        SLACK_CLIENT_ID_ARN: this.slackClientId.parameterArn,
+        SLACK_BOT_TOKEN_ARN: this.slackBotToken.secretArn,
       },
     });
 
     this.messageTable.grantReadData(archiverFunction);
     archiveBucket.grantWrite(archiverFunction);
-    this.slackClientSecret.grantRead(archiverFunction);
-    this.slackClientId.grantRead(archiverFunction);
+    this.slackBotToken.grantRead(archiverFunction);
 
     new Rule(this, `archiver-schedule-${this.props.environment}`, {
       schedule: Schedule.rate(Duration.hours(1)),

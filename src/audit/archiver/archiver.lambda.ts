@@ -5,19 +5,16 @@ import { ArchiverService } from './ArchiverService';
 // Initialization
 let archiverService: ArchiverService | undefined = undefined;
 async function initialize() {
-  const slackClientSecretArn = process.env.SLACK_CLIENT_SECRET_ARN;
-  const slackClientIdArn = process.env.SLACK_CLIENT_ID_ARN;
+  const slackBotTokenArn = process.env.SLACK_BOT_TOKEN_ARN;
   const messageTableName = process.env.MESSAGE_TABLE_NAME;
   const s3BucketName = process.env.ARCHIVE_BUCKET_NAME;
-  const slackClientSecret = await AWS.getSecret(slackClientSecretArn!);
-  const slackClientId = await AWS.getParameter(slackClientIdArn!);
-  if (!messageTableName || !s3BucketName || !slackClientSecretArn || !slackClientIdArn) {
+  const slackBotToken = await AWS.getSecret(slackBotTokenArn!);
+  if (!messageTableName || !s3BucketName || !slackBotTokenArn) {
     throw new Error('Missing required environment variables');
   }
   archiverService = new ArchiverService(
     messageTableName!,
-    slackClientSecret!,
-    slackClientId!,
+    slackBotToken!,
     s3BucketName!,
   );
 }
