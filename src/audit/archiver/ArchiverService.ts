@@ -19,7 +19,6 @@ export class ArchiverService {
   }
 
   async processCommands(): Promise<void> {
-    // Load all messages from message table
     const messages = await this.getAllMessages();
     for (const message of messages) {
       try {
@@ -29,6 +28,7 @@ export class ArchiverService {
         }
       } catch (error) {
         console.error(`Error processing message ${message.messageId}:`, error);
+        await this.sendErrorNotification(message, error);
       }
     }
   }
@@ -59,8 +59,26 @@ export class ArchiverService {
     console.log(`Processing message: ${message.messageId}`);
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
-
     const s3Key = await this.s3Storage.storeThread(message.messageId, thread);
+    
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
+    await this.slackClient.postMessage(
+      message.channelId,
+      message.threadId,
+      `✅ Thread archived successfully to S3: ${s3Key}`,
+    );
+  }
+
+  private async sendErrorNotification(message: TrackedSlackMessage, error: unknown): Promise<void> {
+    try {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      await this.slackClient.postMessage(
+        message.channelId,
+        message.threadId,
+        `❌ Failed to archive thread: ${errorMessage}`,
+      );
+    } catch (notificationError) {
+      console.error('Failed to send error notification:', notificationError);
+    }
   }
 }

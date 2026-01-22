@@ -52,4 +52,28 @@ export class SlackClient {
     };
   }
 
+  async postMessage(channelId: string, threadTs: string, text: string): Promise<void> {
+    const response = await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.botToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        channel: channelId,
+        thread_ts: threadTs,
+        text,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to send Slack message: ${response.statusText}`);
+    }
+
+    const json = await response.json() as any;
+    if (!json.ok) {
+      throw new Error(`Slack API error: ${json.error}`);
+    }
+  }
+
 }
