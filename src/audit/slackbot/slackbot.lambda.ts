@@ -1,7 +1,7 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { TrackedSlackMessageRepository } from '../shared/CommandRepository';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
+import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { slackAuthenticate } from './slack-authenticate';
 

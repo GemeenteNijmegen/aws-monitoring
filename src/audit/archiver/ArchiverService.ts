@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
-import { CommandRepository } from '../shared/CommandRepository';
 import { SlackCommand } from '../shared/models/TrackedSlackMessage';
+import { CommandRepository } from '../shared/TrackedSlackMessageRepository';
 import { ArchiveRepository } from './ArchiveRepository';
 import { ArchivedThread, SlackThread } from './models/ArchivedThread';
 import { S3StorageService } from './S3StorageService';
