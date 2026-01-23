@@ -1,7 +1,7 @@
-import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
-import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 import { S3StorageService } from './S3StorageService';
 import { SlackClient } from './SlackClient';
+import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
+import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 
 export class ArchiverService {
   private readonly messageRepository: TrackedSlackMessageRepository;

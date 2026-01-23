@@ -21,6 +21,11 @@ export interface SlackFile {
   s3Key?: string;
 }
 
+export interface SlackUser {
+  id: string;
+  name: string;
+}
+
 export interface ArchivedThread {
   commandId: string;
   threadId: string;

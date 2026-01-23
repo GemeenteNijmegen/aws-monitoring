@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { SlackThread } from './models/ArchivedThread';
 
 export class S3StorageService {
@@ -30,7 +30,15 @@ export class S3StorageService {
     return key;
   }
 
-  async storeFile(commandId: string, threadId: string, fileId: string, fileName: string, fileData: Buffer, contentType: string, originalTimestamp: Date): Promise<string> {
+  async storeFile(
+    commandId: string,
+    threadId: string,
+    fileId: string,
+    fileName: string,
+    fileData: Buffer,
+    contentType: string,
+    originalTimestamp: Date,
+  ): Promise<string> {
     const year = originalTimestamp.getFullYear();
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');

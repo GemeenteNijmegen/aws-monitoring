@@ -1,10 +1,10 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { slackAuthenticate } from './slack-authenticate';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { SlackThreadResponse } from '../shared/SlackThreadResponse';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
-import { slackAuthenticate } from './slack-authenticate';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));

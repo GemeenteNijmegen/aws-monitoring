@@ -66,7 +66,7 @@ export class SlackClient {
   async downloadFile(url: string): Promise<Buffer> {
     const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${this.botToken}`,
+        Authorization: `Bearer ${this.botToken}`,
       },
     });
 
@@ -100,5 +100,6 @@ export class SlackClient {
       throw new Error(`Slack API error: ${json.error}`);
     }
   }
+
 
 }
