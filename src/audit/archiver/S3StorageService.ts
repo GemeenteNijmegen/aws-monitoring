@@ -44,15 +44,39 @@ export class S3StorageService {
     const day = String(originalTimestamp.getDate()).padStart(2, '0');
     const key = `slack-threads/${year}/${month}/${day}/${commandId}-${threadId}/${fileId}-${fileName}`;
 
+    const mimeType = this.getMimeType(fileName, contentType);
+
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
       Body: fileData,
-      ContentType: contentType,
+      ContentType: mimeType,
     });
 
     await this.s3Client.send(command);
     return key;
+  }
+
+  private getMimeType(fileName: string, slackMimeType: string): string {
+    if (slackMimeType && slackMimeType !== 'application/octet-stream') {
+      return slackMimeType;
+    }
+
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    const mimeTypes: Record<string, string> = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'webp': 'image/webp',
+      'svg': 'image/svg+xml',
+      'pdf': 'application/pdf',
+      'txt': 'text/plain',
+      'json': 'application/json',
+      'xml': 'application/xml',
+    };
+
+    return mimeTypes[ext || ''] || 'application/octet-stream';
   }
 
   private generateS3Key(commandId: string, threadId: string, timestamp: Date): string {
