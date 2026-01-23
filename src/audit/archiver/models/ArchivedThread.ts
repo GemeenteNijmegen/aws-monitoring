@@ -10,6 +10,15 @@ export interface SlackMessage {
   text: string;
   type: string;
   subtype?: string;
+  files?: SlackFile[];
+}
+
+export interface SlackFile {
+  id: string;
+  name: string;
+  mimetype: string;
+  url_private: string;
+  s3Key?: string;
 }
 
 export interface ArchivedThread {

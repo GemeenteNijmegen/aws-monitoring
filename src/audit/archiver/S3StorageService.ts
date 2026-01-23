@@ -30,6 +30,23 @@ export class S3StorageService {
     return key;
   }
 
+  async storeFile(commandId: string, threadId: string, fileId: string, fileName: string, fileData: Buffer, contentType: string, originalTimestamp: Date): Promise<string> {
+    const year = originalTimestamp.getFullYear();
+    const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
+    const day = String(originalTimestamp.getDate()).padStart(2, '0');
+    const key = `slack-threads/${year}/${month}/${day}/${commandId}-${threadId}/${fileId}-${fileName}`;
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+      Body: fileData,
+      ContentType: contentType,
+    });
+
+    await this.s3Client.send(command);
+    return key;
+  }
+
   private generateS3Key(commandId: string, threadId: string, timestamp: Date): string {
     const year = timestamp.getFullYear();
     const month = String(timestamp.getMonth() + 1).padStart(2, '0');

@@ -48,6 +48,12 @@ export class SlackClient {
       text: msg.text || '',
       type: msg.type,
       subtype: msg.subtype,
+      files: msg.files?.map((file: any) => ({
+        id: file.id,
+        name: file.name,
+        mimetype: file.mimetype,
+        url_private: file.url_private,
+      })),
     }));
 
     return {
@@ -55,6 +61,20 @@ export class SlackClient {
       messages,
       lastUpdated: new Date(),
     };
+  }
+
+  async downloadFile(url: string): Promise<Buffer> {
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${this.botToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to download file: ${response.statusText}`);
+    }
+
+    return Buffer.from(await response.arrayBuffer());
   }
 
   async postMessage(channelId: string, threadTs: string, text: string): Promise<void> {

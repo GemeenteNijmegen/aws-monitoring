@@ -69,6 +69,25 @@ export class ArchiverService {
       }
     }
 
+    // Download and store images
+    for (const msg of thread.messages) {
+      if (msg.files) {
+        for (const file of msg.files) {
+          const fileData = await this.slackClient.downloadFile(file.url_private);
+          const s3Key = await this.s3Storage.storeFile(
+            message.messageId,
+            thread.threadId,
+            file.id,
+            file.name,
+            fileData,
+            file.mimetype,
+            message.timestamp,
+          );
+          file.s3Key = s3Key;
+        }
+      }
+    }
+
     const s3Key = await this.s3Storage.storeThread(message.messageId, thread, message.timestamp);
 
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
