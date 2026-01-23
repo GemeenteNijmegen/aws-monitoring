@@ -11,7 +11,11 @@ export class S3StorageService {
   }
 
   async storeThread(commandId: string, thread: SlackThread, originalTimestamp: Date): Promise<string> {
-    const key = this.generateS3Key(commandId, thread.threadId, originalTimestamp);
+    const year = originalTimestamp.getFullYear();
+    const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
+    const day = String(originalTimestamp.getDate()).padStart(2, '0');
+    const key = `slack-threads/${year}/${month}/${day}/${commandId}-${thread.threadId}/thread.json`;
+    
     const content = JSON.stringify({
       commandId,
       threadId: thread.threadId,
@@ -79,11 +83,4 @@ export class S3StorageService {
     return mimeTypes[ext || ''] || 'application/octet-stream';
   }
 
-  private generateS3Key(commandId: string, threadId: string, timestamp: Date): string {
-    const year = timestamp.getFullYear();
-    const month = String(timestamp.getMonth() + 1).padStart(2, '0');
-    const day = String(timestamp.getDate()).padStart(2, '0');
-
-    return `slack-threads/${year}/${month}/${day}/${commandId}-${threadId}.json`;
-  }
 }
