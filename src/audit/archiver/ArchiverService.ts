@@ -1,7 +1,7 @@
-import { S3StorageService } from './S3StorageService';
-import { SlackClient } from './SlackClient';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { S3StorageService } from './S3StorageService';
+import { SlackClient } from './SlackClient';
 
 export class ArchiverService {
   private readonly messageRepository: TrackedSlackMessageRepository;
@@ -59,11 +59,11 @@ export class ArchiverService {
     console.log(`Processing message: ${message.messageId}`);
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
-    
+
     // Skip if last message is already a backup confirmation
     if (thread.messages.length > 0) {
       const lastMessage = thread.messages[thread.messages.length - 1];
-      if (lastMessage.text.startsWith('✅ Thread archived successfully')) {
+      if (lastMessage.text.includes('Thread archived successfully')) {
         console.log(`Skipping ${message.messageId}: already archived`);
         return;
       }
