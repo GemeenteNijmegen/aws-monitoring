@@ -59,7 +59,17 @@ export class ArchiverService {
     console.log(`Processing message: ${message.messageId}`);
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
-    const s3Key = await this.s3Storage.storeThread(message.messageId, thread);
+    
+    // Skip if last message is already a backup confirmation
+    if (thread.messages.length > 0) {
+      const lastMessage = thread.messages[thread.messages.length - 1];
+      if (lastMessage.text.startsWith('✅ Thread archived successfully')) {
+        console.log(`Skipping ${message.messageId}: already archived`);
+        return;
+      }
+    }
+
+    const s3Key = await this.s3Storage.storeThread(message.messageId, thread, message.timestamp);
 
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
     await this.slackClient.postMessage(
