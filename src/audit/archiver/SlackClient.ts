@@ -1,4 +1,4 @@
-import { SlackMessage, SlackThread } from './models/ArchivedThread';
+import { SlackMessage, SlackThread, SlackUser } from './models/ArchivedThread';
 
 export class SlackClient {
 
@@ -42,19 +42,21 @@ export class SlackClient {
       throw new Error(`Slack API error: ${errorMessage}`);
     }
 
-    const messages: SlackMessage[] = json.messages.map((msg: any) => ({
-      ts: msg.ts,
-      user: msg.user || msg.bot_id || 'unknown',
-      text: msg.text || '',
-      type: msg.type,
-      subtype: msg.subtype,
-      files: msg.files?.map((file: any) => ({
-        id: file.id,
-        name: file.name,
-        mimetype: file.mimetype,
-        url_private: file.url_private,
-      })),
-    }));
+    const messages: SlackMessage[] = json.messages.map((msg: any) => {
+      return {
+        ts: msg.ts,
+        user: msg.user || msg.bot_id,
+        text: msg.text || '',
+        type: msg.type,
+        subtype: msg.subtype,
+        files: msg.files?.map((file: any) => ({
+          id: file.id,
+          name: file.name,
+          mimetype: file.mimetype,
+          url_private: file.url_private,
+        })),
+      };
+    });
 
     return {
       threadId: threadTs,
@@ -101,5 +103,34 @@ export class SlackClient {
     }
   }
 
+  async getUsers(): Promise<SlackUser[]> {
+    const response = await fetch('https://slack.com/api/users.list', {
+      headers: {
+        'Authorization': `Bearer ${this.botToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Slack API error: ${response.statusText}`);
+    }
+
+    const json = await response.json() as any;
+
+    if (!json.ok) {
+      const errorMessage = json.error;
+      throw new Error(`Slack API error: ${errorMessage}`);
+    }
+
+    const users: SlackUser[] = json.members.map((member: any) => {
+      return {
+        id: member.id,
+        name: member.name,
+      };
+    });
+
+    return users;
+
+  }
 
 }

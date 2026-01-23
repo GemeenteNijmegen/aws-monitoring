@@ -1,7 +1,8 @@
-import { S3StorageService } from './S3StorageService';
-import { SlackClient } from './SlackClient';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { SlackUser } from './models/ArchivedThread';
+import { S3StorageService } from './S3StorageService';
+import { SlackClient } from './SlackClient';
 
 export class ArchiverService {
   private readonly messageRepository: TrackedSlackMessageRepository;
@@ -20,11 +21,14 @@ export class ArchiverService {
 
   async processCommands(): Promise<void> {
     const messages = await this.getAllMessages();
+
+    const users = await this.slackClient.getUsers();
+
     for (const message of messages) {
       try {
         const shouldProcess = this.shouldProcessMessage(message);
         if (shouldProcess) {
-          await this.processMessage(message);
+          await this.processMessage(message, users);
         }
       } catch (error) {
         console.error(`Error processing message ${message.messageId}:`, error);
@@ -55,7 +59,7 @@ export class ArchiverService {
     return message.timestamp >= lastMidnight;
   }
 
-  private async processMessage(message: TrackedSlackMessage): Promise<void> {
+  private async processMessage(message: TrackedSlackMessage, users: SlackUser[]): Promise<void> {
     console.log(`Processing message: ${message.messageId}`);
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
@@ -71,6 +75,9 @@ export class ArchiverService {
 
     // Download and store images
     for (const msg of thread.messages) {
+      // Lookup user
+      msg.user = this.findUserWithMessage(msg, users);
+      // Download files
       if (msg.files) {
         for (const file of msg.files) {
           const fileData = await this.slackClient.downloadFile(file.url_private);
@@ -109,5 +116,15 @@ export class ArchiverService {
     } catch (notificationError) {
       console.error('Failed to send error notification:', notificationError);
     }
+  }
+
+  private findUserWithMessage(message: any, users: SlackUser[]) {
+    // Lookup user in users
+    const userId = message.user || message.bot_id;
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      return user.name;
+    }
+    return 'unknown';
   }
 }
