@@ -66,4 +66,5 @@ junit.xml
 !/src/monitoringLambda/monitoring-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
+!/.nvmrc
 !/.projenrc.js

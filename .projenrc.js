@@ -27,9 +27,9 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-sts',
     '@aws-sdk/client-sns',
     'cdk-stacksets',
+    '@gemeentenijmegen/projen-project-type',
   ],
   devDeps: [
-    '@gemeentenijmegen/projen-project-type',
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],
