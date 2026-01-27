@@ -2,7 +2,7 @@
 
 * text=auto eol=lf
 *.snap linguist-generated
-/.eslintrc.json linguist-generated
+/.eslintrc.json linguist-generated linguist-language=JSON-with-Comments
 /.gitattributes linguist-generated
 /.github/pull_request_template.md linguist-generated
 /.github/workflows/auto-merge.yml linguist-generated
@@ -13,6 +13,7 @@
 /.github/workflows/upgrade-sandbox.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.nvmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -26,6 +27,6 @@
 /src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts linguist-generated
 /src/SlackInteractivityLambda/SlackInteractivity-function.ts linguist-generated
 /src/TopdeskIntegrationLambda/TopdeskIntegration-function.ts linguist-generated
-/tsconfig.dev.json linguist-generated
-/tsconfig.json linguist-generated
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
+/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
 /yarn.lock linguist-generated
