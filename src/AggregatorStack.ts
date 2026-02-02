@@ -5,8 +5,6 @@ import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
-import { getConfiguration } from './DeploymentEnvironments';
-import { LogQueryJob } from './LogQueryJob';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
 import { Statics } from './statics';
@@ -53,10 +51,9 @@ class Notifier extends Construct {
     super(scope, id);
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix, props.branchName);
-    this.setupLogQueryJob(props.prefix, props.branchName);
   }
 
-  setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
+  private setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
 
     // Create the lambda and inject the webhook urls
     const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda', {
@@ -95,7 +92,7 @@ class Notifier extends Construct {
 
   }
 
-  setupMonitoringFunction(prefix: string, branchName: string) {
+  private setupMonitoringFunction(prefix: string, branchName: string) {
     const lambda = new MonitoringFunction(this, 'slack-lambda', {
       environment: {
         BRANCH_NAME: branchName,
@@ -107,14 +104,6 @@ class Notifier extends Construct {
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
     this.subscribeLambda(lambda);
-  }
-
-  setupLogQueryJob(prefix: string, branchName: string) {
-    new LogQueryJob(this, 'log-query-job', {
-      prefix: prefix,
-      branchName: branchName,
-      deployToEnvironments: getConfiguration(branchName).deployToEnvironments,
-    });
   }
 
   /**

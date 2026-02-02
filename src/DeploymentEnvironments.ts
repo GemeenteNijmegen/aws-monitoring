@@ -1,5 +1,4 @@
 import { Environment } from 'aws-cdk-lib';
-import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
 import { Priority, SpecificPriority, Statics } from './statics';
 
 export type AccountType = 'acceptance' | 'production' | 'development' | 'test' | 'sandbox';
@@ -30,15 +29,6 @@ export interface DeploymentEnvironment {
    * Flag to enable DevOps guru (AWS service)
    */
   enableDevopsGuru?: boolean;
-
-  /**
-   * Query definitions that will run during the
-   * scheduled log query job.
-   * Note: the lambda assumes the log-query-job-role present in the gn-audit account.
-   * To incldue a query here gant that role permissions to the corresponding log groups.
-   * @default none
-   */
-  queryDefinitions?: CloudWatchInsightsQueryProps[];
 
   /**
    * Define key or role monitoring conditions on the OrgTrail
