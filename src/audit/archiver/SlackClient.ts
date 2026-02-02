@@ -1,3 +1,4 @@
+import { SlackMessage as SlackMessageBuilder } from '../shared/SlackMessage';
 import { SlackMessage, SlackThread, SlackUser } from './models/ArchivedThread';
 
 export class SlackClient {
@@ -80,7 +81,17 @@ export class SlackClient {
     return Buffer.from(await response.arrayBuffer());
   }
 
-  async postMessage(channelId: string, threadTs: string, text: string): Promise<void> {
+  async postMessage(channelId: string, threadTs: string, message: string | SlackMessageBuilder): Promise<void> {
+
+    const msg = message instanceof SlackMessageBuilder ? JSON.stringify(message.getSlackMessage()) : message;
+
+    let content: any = {};
+    if (message instanceof SlackMessageBuilder) {
+      content = message.getSlackMessage();
+    } else {
+      content = { text: message };
+    }
+
     const response = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers: {
@@ -90,7 +101,7 @@ export class SlackClient {
       body: JSON.stringify({
         channel: channelId,
         thread_ts: threadTs,
-        text,
+        ...content,
       }),
     });
 

@@ -1,4 +1,5 @@
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
+import { SlackMessage } from '../shared/SlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 import { SlackUser } from './models/ArchivedThread';
 import { S3StorageService } from './S3StorageService';
@@ -101,17 +102,17 @@ export class ArchiverService {
     await this.slackClient.postMessage(
       message.channelId,
       message.threadId,
-      `✅ Thread archived successfully to S3: ${s3Key}`,
+      successMessage(),
     );
   }
 
   private async sendErrorNotification(message: TrackedSlackMessage, error: unknown): Promise<void> {
     try {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       await this.slackClient.postMessage(
         message.channelId,
         message.threadId,
-        `❌ Failed to archive thread: ${errorMessage}`,
+        errorMessage(errorMsg),
       );
     } catch (notificationError) {
       console.error('Failed to send error notification:', notificationError);
@@ -127,4 +128,17 @@ export class ArchiverService {
     }
     return 'unknown';
   }
+}
+
+
+export function successMessage() {
+  return new SlackMessage()
+    .addHeader('✅ Incident vastgelegd')
+    .addSection('De huidige discussie is succesvol opgeslagen voor auditdoeleinden. Vervolgberichten in deze thread worden automatisch toegevoegd.');
+}
+
+export function errorMessage(reason: string) {
+  return new SlackMessage()
+    .addHeader('❗️ Er ging iets mis')
+    .addSection(`Fout: ${reason}`);
 }

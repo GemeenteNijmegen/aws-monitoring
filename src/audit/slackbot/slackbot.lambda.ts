@@ -2,8 +2,9 @@ import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { slackAuthenticate } from './slack-authenticate';
 import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
+import { SlackClient } from '../archiver/SlackClient';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
-import { SlackThreadResponse } from '../shared/SlackThreadResponse';
+import { SlackMessage } from '../shared/SlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
@@ -11,7 +12,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   // Setup
   const secret = await getSlackSecret();
-  const slackThreadResponse = new SlackThreadResponse(await getSlackBotToken());
+  const slackThreadResponse = new SlackClient(await getSlackBotToken());
   const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
   let trackedSlackMessage: TrackedSlackMessage | undefined = undefined;
@@ -41,7 +42,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     console.log(`Successfully saved message (${trackedSlackMessage.messageId}) to DynamoDB for ${trackedSlackMessage.trackingGoal} registration purposes`);
 
     // Send response
-    await slackThreadResponse.send(trackedSlackMessage.channelId, trackedSlackMessage.threadId, `✅ - DevOps bot is following this thread for ${trackedSlackMessage.trackingGoal} registration purposes`);
+    await slackThreadResponse.postMessage(
+      trackedSlackMessage.channelId,
+      trackedSlackMessage.threadId,
+      successMessage(trackedSlackMessage.trackingGoal),
+    );
     return response(body);
 
   } catch (error) {
@@ -49,11 +54,24 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     // send a nice error if possible
     if (trackedSlackMessage?.threadId && error instanceof Error) {
-      await slackThreadResponse.send(trackedSlackMessage.channelId, trackedSlackMessage.threadId, `❗️ - Failed to archive this thread. ${error.message} `);
+      await slackThreadResponse.postMessage(trackedSlackMessage.channelId, trackedSlackMessage.threadId, errorMessage(error.message));
     }
 
     return response(500);
   }
+}
+
+function successMessage(category: string) {
+  return new SlackMessage()
+    .addHeader('🔎 Audit tracking gestart')
+    .addContext({ Category: category })
+    .addSection('Deze thread wordt nu gevolgd voor incidentregistratie. Nieuwe berichten worden automatisch opgeslagen.');
+}
+
+function errorMessage(reason: string) {
+  return new SlackMessage()
+    .addHeader('❗️ Er ging iets mis')
+    .addSection(`Fout: ${reason}`);
 }
 
 
