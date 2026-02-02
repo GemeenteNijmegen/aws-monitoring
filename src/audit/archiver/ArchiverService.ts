@@ -81,8 +81,8 @@ export class ArchiverService {
       // Download files
       if (msg.files) {
         for (const file of msg.files) {
-          console.log('Downloading file from', file.url_private_download);
-          const fileData = await this.slackClient.downloadFile(file.url_private_download);
+          console.log('Downloading file from', file.url_private);
+          const fileData = await this.slackClient.downloadFile(file.url_private);
           const s3Key = await this.s3Storage.storeFile(
             message.messageId,
             thread.threadId,

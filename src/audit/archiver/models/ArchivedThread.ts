@@ -17,7 +17,7 @@ export interface SlackFile {
   id: string;
   name: string;
   mimetype: string;
-  url_private_download: string;
+  url_private: string;
   s3Key?: string;
 }
 
