@@ -54,6 +54,7 @@ export class SlackClient {
           name: file.name,
           mimetype: file.mimetype,
           url_private: file.url_private,
+          url_private_download: file.url_private_download,
         })),
       };
     });

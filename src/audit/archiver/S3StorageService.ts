@@ -15,7 +15,7 @@ export class S3StorageService {
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');
     const key = `slack-threads/${year}/${month}/${day}/${commandId}-${thread.threadId}/thread.json`;
-    
+
     const content = JSON.stringify({
       commandId,
       threadId: thread.threadId,
@@ -68,16 +68,16 @@ export class S3StorageService {
 
     const ext = fileName.split('.').pop()?.toLowerCase();
     const mimeTypes: Record<string, string> = {
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'webp': 'image/webp',
-      'svg': 'image/svg+xml',
-      'pdf': 'application/pdf',
-      'txt': 'text/plain',
-      'json': 'application/json',
-      'xml': 'application/xml',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      webp: 'image/webp',
+      svg: 'image/svg+xml',
+      pdf: 'application/pdf',
+      txt: 'text/plain',
+      json: 'application/json',
+      xml: 'application/xml',
     };
 
     return mimeTypes[ext || ''] || 'application/octet-stream';
