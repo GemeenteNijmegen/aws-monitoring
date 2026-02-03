@@ -1,7 +1,6 @@
 export interface SlackThread {
   threadId: string;
   messages: SlackMessage[];
-  lastUpdated: Date;
 }
 
 export interface SlackMessage {

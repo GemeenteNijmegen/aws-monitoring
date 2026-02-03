@@ -66,7 +66,7 @@ describe('ArchiverService', () => {
 
     expect(mockGetUsers).toHaveBeenCalled();
     expect(mockGetThread).toHaveBeenCalledWith('channel-1', 'thread-1');
-    expect(mockStoreThread).toHaveBeenCalledWith('msg-1', thread, message.timestamp);
+    expect(mockStoreThread).toHaveBeenCalledWith('msg-1', thread, message.timestamp, 'audit');
     expect(mockPostMessage).toHaveBeenCalledWith('channel-1', 'thread-1', expect.anything());
   });
 
@@ -167,7 +167,11 @@ describe('ArchiverService', () => {
     await service.processCommands();
 
     expect(mockDownloadFile).toHaveBeenCalledWith('https://slack.com/file');
-    expect(mockStoreFile).toHaveBeenCalledWith('msg-1', 'thread-1', 'file1', 'test.png', expect.any(Buffer), 'image/png', message.timestamp);
+    expect(mockStoreFile).toHaveBeenCalledWith('msg-1', 'thread-1', 'file1', 'test.png',
+      expect.any(Buffer),
+      'image/png',
+      message.timestamp,
+      'audit');
   });
 
 });

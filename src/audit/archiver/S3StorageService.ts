@@ -10,7 +10,12 @@ export class S3StorageService {
     this.bucketName = bucketName;
   }
 
-  async storeThread(commandId: string, thread: SlackThread, originalTimestamp: Date, trackingGoal: string): Promise<string> {
+  async storeThread(
+    commandId: string,
+    thread: SlackThread,
+    originalTimestamp: Date,
+    trackingGoal: string,
+  ): Promise<string> {
     const year = originalTimestamp.getFullYear();
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');

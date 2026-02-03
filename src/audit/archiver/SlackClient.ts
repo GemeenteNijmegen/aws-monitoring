@@ -20,50 +20,58 @@ export class SlackClient {
   }
 
   async getThread(channelId: string, threadTs: string): Promise<SlackThread> {
-    const params = new URLSearchParams({
-      channel: channelId,
-      ts: threadTs,
-      inclusive: 'true',
-    });
-    const response = await fetch(`https://slack.com/api/conversations.replies?${params}`, {
-      headers: {
-        'Authorization': `Bearer ${this.botToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    let allMessages: any[] = [];
+    let cursor: string | undefined;
 
-    if (!response.ok) {
-      throw new Error(`Slack API error: ${response.statusText}`);
-    }
+    do {
+      const params = new URLSearchParams({
+        channel: channelId,
+        ts: threadTs,
+        inclusive: 'true',
+        limit: '200',
+        ...(cursor && { cursor }),
+      });
 
-    const json = await response.json() as any;
+      const response = await fetch(`https://slack.com/api/conversations.replies?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${this.botToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!json.ok) {
-      const errorMessage = json.error;
-      throw new Error(`Slack API error: ${errorMessage}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Slack API error: ${response.statusText}`);
+      }
 
-    const messages: SlackMessage[] = json.messages.map((msg: any) => {
-      return {
-        ts: msg.ts,
-        user: msg.user || msg.bot_id,
-        text: msg.text || '',
-        type: msg.type,
-        subtype: msg.subtype,
-        files: msg.files?.map((file: any) => ({
-          id: file.id,
-          name: file.name,
-          mimetype: file.mimetype,
-          url_private: file.url_private,
-          url_private_download: file.url_private_download,
-        })),
-      };
-    });
+      const json = await response.json() as any;
+
+      if (!json.ok) {
+        throw new Error(`Slack API error: ${json.error}`);
+      }
+
+      allMessages.push(...json.messages);
+      cursor = json.response_metadata?.next_cursor;
+    } while (cursor);
+
+    const messages: SlackMessage[] = allMessages.map((msg: any) => ({
+      ...msg,
+      ts: msg.ts,
+      user: msg.user || msg.bot_id,
+      text: msg.text || '',
+      type: msg.type,
+      subtype: msg.subtype,
+      files: msg.files?.map((file: any) => ({
+        ...file,
+        id: file.id,
+        name: file.name,
+        mimetype: file.mimetype,
+        url_private: file.url_private,
+      })),
+    }));
 
     return {
       threadId: threadTs,
       messages,
-      lastUpdated: new Date(),
     };
   }
 
