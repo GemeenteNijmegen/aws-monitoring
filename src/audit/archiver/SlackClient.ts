@@ -82,9 +82,6 @@ export class SlackClient {
   }
 
   async postMessage(channelId: string, threadTs: string, message: string | SlackMessageBuilder): Promise<void> {
-
-    const msg = message instanceof SlackMessageBuilder ? JSON.stringify(message.getSlackMessage()) : message;
-
     let content: any = {};
     if (message instanceof SlackMessageBuilder) {
       content = message.getSlackMessage();

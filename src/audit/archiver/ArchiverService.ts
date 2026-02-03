@@ -3,6 +3,7 @@ import { SlackMessage } from '../shared/SlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
 import { SlackUser } from './models/ArchivedThread';
 import { S3StorageService } from './S3StorageService';
+import { ScheduleLogic } from './ScheduleLogic';
 import { SlackClient } from './SlackClient';
 
 export class ArchiverService {
@@ -27,7 +28,8 @@ export class ArchiverService {
 
     for (const message of messages) {
       try {
-        const shouldProcess = this.shouldProcessMessage(message);
+        const logic = new ScheduleLogic();
+        const shouldProcess = logic.shouldProcessMessage(message.timestamp);
         if (shouldProcess) {
           await this.processMessage(message, users);
         }
@@ -42,24 +44,6 @@ export class ArchiverService {
     return this.messageRepository.getAllCommands();
   }
 
-  private shouldProcessMessage(message: TrackedSlackMessage): boolean {
-    const now = new Date();
-    const messageAge = now.getTime() - message.timestamp.getTime();
-    const oneHour = 60 * 60 * 1000;
-    const oneDay = 24 * oneHour;
-
-    // For messages newer than 1 day, process every invocation
-    if (messageAge < oneDay) {
-      return true;
-    }
-
-    // For older messages, process once a day
-    const lastMidnight = new Date(now);
-    lastMidnight.setHours(0, 0, 0, 0);
-
-    return message.timestamp >= lastMidnight;
-  }
-
   private async processMessage(message: TrackedSlackMessage, users: SlackUser[]): Promise<void> {
     console.log(`Processing message: ${message.messageId}`);
 
@@ -68,7 +52,7 @@ export class ArchiverService {
     // Skip if last message is already a backup confirmation
     if (thread.messages.length > 0) {
       const lastMessage = thread.messages[thread.messages.length - 1];
-      if (lastMessage.text.includes('Thread archived successfully')) {
+      if (lastMessage.text.includes('Incident vastgelegd')) {
         console.log(`Skipping ${message.messageId}: already archived`);
         return;
       }

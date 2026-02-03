@@ -1,77 +1,25 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { slackAuthenticate } from './slack-authenticate';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { SlackClient } from '../archiver/SlackClient';
-import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
-import { SlackMessage } from '../shared/SlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { SlackbotHandler } from './SlackbotHandler';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
   // Setup
   const secret = await getSlackSecret();
-  const slackThreadResponse = new SlackClient(await getSlackBotToken());
+  const slackClient = new SlackClient(await getSlackBotToken());
   const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
-  let trackedSlackMessage: TrackedSlackMessage | undefined = undefined;
-  try {
+  const handler = new SlackbotHandler({
+    slackSecret: secret,
+    slackClient: slackClient,
+    trackedSlackMessagesRepository: repository
+  });
 
-    // Parse body
-    const body = JSON.parse(event.body ?? '{}');
+  return await handler.handleRequest(event);
 
-    // Authenticate
-    const authenticated = await slackAuthenticate(event, secret);
-    if (!authenticated) {
-      console.log('Unauthorized!');
-      return response(body, 403);
-    }
-    console.log('Authenticated!');
-
-    if (event.headers['X-Slack-Retry-Num']) {
-      console.log('Retry message from Slack, skipping...');
-      return response(body);
-    }
-
-    // Parse message
-    trackedSlackMessage = TrackedSlackMessageParser.parse(event);
-
-    // Store message in message table
-    await repository.save(trackedSlackMessage);
-    console.log(`Successfully saved message (${trackedSlackMessage.messageId}) to DynamoDB for ${trackedSlackMessage.trackingGoal} registration purposes`);
-
-    // Send response
-    await slackThreadResponse.postMessage(
-      trackedSlackMessage.channelId,
-      trackedSlackMessage.threadId,
-      successMessage(trackedSlackMessage.trackingGoal),
-    );
-    return response(body);
-
-  } catch (error) {
-    console.error('Error processing message:', error);
-
-    // send a nice error if possible
-    if (trackedSlackMessage?.threadId && error instanceof Error) {
-      await slackThreadResponse.postMessage(trackedSlackMessage.channelId, trackedSlackMessage.threadId, errorMessage(error.message));
-    }
-
-    return response(500);
-  }
-}
-
-function successMessage(category: string) {
-  return new SlackMessage()
-    .addHeader('🔎 Audit tracking gestart')
-    .addContext({ Category: category })
-    .addSection('Deze thread wordt nu gevolgd voor incidentregistratie. Nieuwe berichten worden automatisch opgeslagen.');
-}
-
-function errorMessage(reason: string) {
-  return new SlackMessage()
-    .addHeader('❗️ Er ging iets mis')
-    .addSection(`Fout: ${reason}`);
 }
 
 
@@ -99,16 +47,3 @@ async function getSlackBotToken() {
 }
 
 
-function response(body: any, statusCode: number = 200) {
-  // Handle Slack URL verification challenge
-  if (body.type === 'url_verification') {
-    return {
-      statusCode: statusCode,
-      body: JSON.stringify({ challenge: body.challenge }),
-    };
-  }
-  return {
-    statusCode: statusCode,
-    body: '',
-  };
-}
