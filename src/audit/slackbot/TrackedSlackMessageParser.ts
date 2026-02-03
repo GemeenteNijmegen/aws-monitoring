@@ -34,7 +34,7 @@ export class TrackedSlackMessageParser {
     };
   }
 
-  private static getTrackingGoal(text: string): 'audit' | 'incident' | null {
+  private static getTrackingGoal(text: string): 'audit' | 'incident' {
     const lowerText = text.toLowerCase();
     if (lowerText.includes('audit')) {
       return 'audit';
@@ -42,7 +42,7 @@ export class TrackedSlackMessageParser {
     if (lowerText.includes('incident')) {
       return 'incident';
     }
-    return null;
+    throw Error(`Unknown tracking goal: ${text}`);
   }
 
 }

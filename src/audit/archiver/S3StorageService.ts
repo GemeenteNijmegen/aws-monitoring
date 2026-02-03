@@ -10,11 +10,11 @@ export class S3StorageService {
     this.bucketName = bucketName;
   }
 
-  async storeThread(commandId: string, thread: SlackThread, originalTimestamp: Date): Promise<string> {
+  async storeThread(commandId: string, thread: SlackThread, originalTimestamp: Date, trackingGoal: string): Promise<string> {
     const year = originalTimestamp.getFullYear();
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');
-    const key = `slack-threads/${year}/${month}/${day}/${commandId}-${thread.threadId}/thread.json`;
+    const key = `${trackingGoal}/${year}/${month}/${day}/${commandId}-${thread.threadId}/thread.json`;
 
     const content = JSON.stringify({
       commandId,
@@ -42,11 +42,12 @@ export class S3StorageService {
     fileData: Buffer,
     contentType: string,
     originalTimestamp: Date,
+    trackingGoal: string,
   ): Promise<string> {
     const year = originalTimestamp.getFullYear();
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');
-    const key = `slack-threads/${year}/${month}/${day}/${commandId}-${threadId}/${fileId}-${fileName}`;
+    const key = `${trackingGoal}/${year}/${month}/${day}/${commandId}-${threadId}/${fileId}-${fileName}`;
 
     const mimeType = this.getMimeType(fileName, contentType);
 

@@ -7,7 +7,7 @@
 - Stores to S3 the thread (JSON) and attachments.
 
 ## How to use
-- Start tracking: `@auditbot <audit|incident>`. (keywaord is audit or incident to determine catagory).
+- Start tracking: `@auditbot <audit|incident>`. (keyword is audit or incident to determine catagory).
 
 
 ## Impression

@@ -77,13 +77,15 @@ export class ArchiverService {
             fileData,
             file.mimetype,
             message.timestamp,
+            message.trackingGoal,
           );
           file.s3Key = s3Key;
         }
       }
     }
 
-    const s3Key = await this.s3Storage.storeThread(message.messageId, thread, message.timestamp);
+    // Store the thread itself
+    const s3Key = await this.s3Storage.storeThread(message.messageId, thread, message.timestamp, message.trackingGoal);
 
     console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
     await this.slackClient.postMessage(
