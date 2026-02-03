@@ -6,6 +6,8 @@ import { S3StorageService } from './S3StorageService';
 import { ScheduleLogic } from './ScheduleLogic';
 import { SlackClient } from './SlackClient';
 
+export const SUCCESS_TEXT = 'Thread vastgelegd';
+
 export class ArchiverService {
   private readonly messageRepository: TrackedSlackMessageRepository;
   private readonly slackClient: SlackClient;
@@ -52,7 +54,7 @@ export class ArchiverService {
     // Skip if last message is already a backup confirmation
     if (thread.messages.length > 0) {
       const lastMessage = thread.messages[thread.messages.length - 1];
-      if (lastMessage.text.includes('Incident vastgelegd')) {
+      if (lastMessage.text.includes(SUCCESS_TEXT)) {
         console.log(`Skipping ${message.messageId}: already archived`);
         return;
       }
@@ -118,7 +120,7 @@ export class ArchiverService {
 
 export function successMessage() {
   return new SlackMessage()
-    .addHeader('✅ Incident vastgelegd')
+    .addHeader(`✅ ${SUCCESS_TEXT}`)
     .addSection('De huidige discussie is succesvol opgeslagen voor auditdoeleinden. Vervolgberichten in deze thread worden automatisch toegevoegd.');
 }
 

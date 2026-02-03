@@ -1,5 +1,5 @@
 import { TrackedSlackMessage } from '../../shared/models/TrackedSlackMessage';
-import { ArchiverService } from '../ArchiverService';
+import { ArchiverService, SUCCESS_TEXT } from '../ArchiverService';
 import { SlackUser } from '../models/ArchivedThread';
 
 const mockGetAllCommands = jest.fn();
@@ -120,7 +120,7 @@ describe('ArchiverService', () => {
       threadId: 'thread-1',
       messages: [
         { ts: '1', user: 'user1', text: 'test', type: 'message' },
-        { ts: '2', user: 'bot', text: 'Thread archived successfully', type: 'message' },
+        { ts: '2', user: 'bot', text: SUCCESS_TEXT, type: 'message' },
       ],
       lastUpdated: new Date(),
     };

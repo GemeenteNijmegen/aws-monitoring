@@ -1,8 +1,8 @@
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { SlackbotHandler } from './SlackbotHandler';
 import { SlackClient } from '../archiver/SlackClient';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
-import { SlackbotHandler } from './SlackbotHandler';
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('Received event:', JSON.stringify(event, null, 2));
@@ -12,13 +12,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const slackClient = new SlackClient(await getSlackBotToken());
   const repository = new TrackedSlackMessageRepository(process.env.MESSAGE_TABLE_NAME!);
 
-  const handler = new SlackbotHandler({
+  const slackbotHandler = new SlackbotHandler({
     slackSecret: secret,
     slackClient: slackClient,
-    trackedSlackMessagesRepository: repository
+    trackedSlackMessagesRepository: repository,
   });
 
-  return await handler.handleRequest(event);
+  return slackbotHandler.handleRequest(event);
 
 }
 

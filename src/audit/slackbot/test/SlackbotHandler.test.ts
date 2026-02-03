@@ -3,6 +3,7 @@ import { SlackbotHandler } from '../SlackbotHandler';
 
 jest.mock('../slack-authenticate');
 
+// eslint-disable-next-line
 import { slackAuthenticate } from '../slack-authenticate';
 
 const mockAuthenticate = slackAuthenticate as jest.MockedFunction<typeof slackAuthenticate>;
@@ -29,41 +30,41 @@ describe('SlackbotHandler', () => {
     const event = {
       body: JSON.stringify(
         {
-          "event": {
-            "type": "app_mention",
-            "user": "123123",
-            "ts": "123123123.123123123",
-            "client_msg_id": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
-            "text": "<@123123123> audit",
-            "thread_ts": "123123123.123123",
-            "blocks": [
+          event: {
+            type: 'app_mention',
+            user: '123123',
+            ts: '123123123.123123123',
+            client_msg_id: 'xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx',
+            text: '<@123123123> audit',
+            thread_ts: '123123123.123123',
+            blocks: [
               {
-                "type": "rich_text",
-                "block_id": "NcxSj",
-                "elements": [
+                type: 'rich_text',
+                block_id: 'NcxSj',
+                elements: [
                   {
-                    "type": "rich_text_section",
-                    "elements": [
+                    type: 'rich_text_section',
+                    elements: [
                       {
-                        "type": "user",
-                        "user_id": "U0ACJ7WMQN8"
+                        type: 'user',
+                        user_id: 'U0ACJ7WMQN8',
                       },
                       {
-                        "type": "text",
-                        "text": " audit"
-                      }
-                    ]
-                  }
-                ]
-              }
+                        type: 'text',
+                        text: ' audit',
+                      },
+                    ],
+                  },
+                ],
+              },
             ],
-            "channel": "abcde",
-            "event_ts": "123123123.123123"
+            channel: 'abcde',
+            event_ts: '123123123.123123',
           },
-          "type": "event_callback",
-          "event_id": "ABCDEF",
-          "event_time": 123123123
-        }
+          type: 'event_callback',
+          event_id: 'ABCDEF',
+          event_time: 123123123,
+        },
       ),
       headers: {},
       httpMethod: 'POST',
