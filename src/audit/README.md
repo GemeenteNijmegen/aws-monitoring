@@ -18,3 +18,9 @@ The two screenshots below should give an impression of the usage and interaction
 
 ### Incident:
 ![Incident thread](./docs/thread-incident.png)
+
+
+
+# Openstaande punten
+- Een thread verwijderen
+- Wat met berichten die verwijderd worden (mutaties opslaan, dat kan niet in slack) dit geeft ook een rede om dit verder uit te bouwen
