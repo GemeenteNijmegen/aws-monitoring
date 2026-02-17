@@ -70,6 +70,12 @@ export interface Configuration {
   pipelineStackCdkName: string;
 
   /**
+   * Deploy audit slackbot
+   * @default not deployed
+   */
+  deployAuditSlackbot?: boolean;
+
+  /**
    * Define key or role monitoring conditions on the OrgTrail
    * that apply to all accounts
    * @default none
@@ -695,6 +701,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'sandbox',
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
+    deployAuditSlackbot: true,
     deployToEnvironments: [
       {
         accountName: 'workload-test',

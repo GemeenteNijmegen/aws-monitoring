@@ -23,6 +23,11 @@ export interface IntegrationsStackProps extends StackProps {
    * Environment prefix to use in parameters
    */
   prefix: string;
+  /**
+   * Deploy audit slackbot
+   * @default false
+   */
+  deployAuditSlackbot?: boolean;
 }
 
 export class IntegrationsStack extends Stack {
@@ -40,10 +45,12 @@ export class IntegrationsStack extends Stack {
     const topdeskFunction = this.setupTopdeskIntegrationFunction(props);
     this.subscribeToQueue(queue, topdeskFunction);
 
-    new AuditSupport(this, 'audit-support', {
-      api,
-      environment: props.prefix,
-    });
+    if (props.deployAuditSlackbot === true) {
+      new AuditSupport(this, 'audit-support', {
+        api,
+        environment: props.prefix,
+      });
+    }
 
   }
 
