@@ -46,6 +46,14 @@ export abstract class Statics {
   };
 
   /**
+   * Gn network account
+   */
+  static readonly gnNetwork = {
+    account: '043872078922',
+    region: 'eu-central-1',
+  };
+
+  /**
    * Priorities for monitoring
    */
   static readonly monitoringPriorities = ['low', 'medium', 'high', 'critical'];

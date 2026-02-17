@@ -554,11 +554,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-network',
         accountType: 'production',
-        monitor: false,
-        env: {
-          account: '043872078922',
-          region: 'eu-central-1',
-        },
+        monitor: true,
+        env: Statics.gnNetwork,
+        enableDevopsGuru: false,
       },
       {
         accountName: 'gn-mijn-services-dev',

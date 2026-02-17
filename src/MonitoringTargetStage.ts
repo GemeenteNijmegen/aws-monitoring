@@ -9,6 +9,7 @@ import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventbridgeForwarderStack } from './EventbridgeForwarderStack';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { NetworkStack } from './NetworkStack';
 import { ParameterStack } from './ParameterStack';
 import { Priority, Statics } from './statics';
 
@@ -59,6 +60,11 @@ export class MonitoringTargetStage extends Stage {
 
     deploymentEnvironments.forEach(environment => {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
+    });
+
+    new NetworkStack(this, 'gn-network', {
+      description: 'Monitors network aspects of the gn-network account',
+      env: Statics.gnNetwork,
     });
 
     const parameterPrefix = props.isProduction ? 'prod' : 'dev';
