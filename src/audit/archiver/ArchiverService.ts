@@ -1,0 +1,133 @@
+import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
+import { SlackMessage } from '../shared/SlackMessage';
+import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
+import { SlackUser } from './models/ArchivedThread';
+import { S3StorageService } from './S3StorageService';
+import { ScheduleLogic } from './ScheduleLogic';
+import { SlackClient } from './SlackClient';
+
+export const SUCCESS_TEXT = 'Thread vastgelegd';
+
+export class ArchiverService {
+  private readonly messageRepository: TrackedSlackMessageRepository;
+  private readonly slackClient: SlackClient;
+  private readonly s3Storage: S3StorageService;
+
+  constructor(
+    messageTableName: string,
+    slackBotToken: string,
+    s3BucketName: string,
+  ) {
+    this.messageRepository = new TrackedSlackMessageRepository(messageTableName);
+    this.slackClient = new SlackClient(slackBotToken);
+    this.s3Storage = new S3StorageService(s3BucketName);
+  }
+
+  async processCommands(): Promise<void> {
+    const messages = await this.getAllMessages();
+
+    const users = await this.slackClient.getUsers();
+
+    for (const message of messages) {
+      try {
+        const logic = new ScheduleLogic();
+        const shouldProcess = logic.shouldProcessMessage(message.timestamp);
+        if (shouldProcess) {
+          await this.processMessage(message, users);
+        }
+      } catch (error) {
+        console.error(`Error processing message ${message.messageId}:`, error);
+        await this.sendErrorNotification(message, error);
+      }
+    }
+  }
+
+  private async getAllMessages(): Promise<TrackedSlackMessage[]> {
+    return this.messageRepository.getAllCommands();
+  }
+
+  private async processMessage(message: TrackedSlackMessage, users: SlackUser[]): Promise<void> {
+    console.log(`Processing message: ${message.messageId}`);
+
+    const thread = await this.slackClient.getThread(message.channelId, message.threadId);
+
+    // Skip if last message is already a backup confirmation
+    if (thread.messages.length > 0) {
+      const lastMessage = thread.messages[thread.messages.length - 1];
+      if (lastMessage.text.includes(SUCCESS_TEXT)) {
+        console.log(`Skipping ${message.messageId}: already archived`);
+        return;
+      }
+    }
+
+    // Download and store images
+    for (const msg of thread.messages) {
+      // Lookup user
+      msg.user = this.findUserWithMessage(msg, users);
+      // Download files
+      if (msg.files) {
+        for (const file of msg.files) {
+          console.log('Downloading file from', file.url_private);
+          const fileData = await this.slackClient.downloadFile(file.url_private);
+          const s3Key = await this.s3Storage.storeFile(
+            message.messageId,
+            message.threadId,
+            file.id,
+            file.name,
+            fileData,
+            file.mimetype,
+            message.timestamp,
+            message.trackingGoal,
+          );
+          file.s3Key = s3Key;
+        }
+      }
+    }
+
+    // Store the thread itself
+    const s3Key = await this.s3Storage.storeThread(message.messageId, thread, message.timestamp, message.trackingGoal);
+
+    console.log(`Successfully archived thread for message ${message.messageId} to ${s3Key}`);
+    await this.slackClient.postMessage(
+      message.channelId,
+      message.threadId,
+      successMessage(),
+    );
+  }
+
+  private async sendErrorNotification(message: TrackedSlackMessage, error: unknown): Promise<void> {
+    try {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      await this.slackClient.postMessage(
+        message.channelId,
+        message.threadId,
+        errorMessage(errorMsg),
+      );
+    } catch (notificationError) {
+      console.error('Failed to send error notification:', notificationError);
+    }
+  }
+
+  private findUserWithMessage(message: any, users: SlackUser[]) {
+    // Lookup user in users
+    const userId = message.user || message.bot_id;
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      return user.name;
+    }
+    return 'unknown';
+  }
+}
+
+
+export function successMessage() {
+  return new SlackMessage()
+    .addHeader(`✅ ${SUCCESS_TEXT}`)
+    .addSection('De huidige discussie is succesvol opgeslagen voor auditdoeleinden. Vervolgberichten in deze thread worden automatisch toegevoegd.');
+}
+
+export function errorMessage(reason: string) {
+  return new SlackMessage()
+    .addHeader('❗️ Er ging iets mis')
+    .addSection(`Fout: ${reason}`);
+}

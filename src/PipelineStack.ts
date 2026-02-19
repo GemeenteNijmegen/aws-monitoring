@@ -44,6 +44,7 @@ export class PipelineStack extends Stack {
       deployToEnvironments: props.deployToEnvironments,
       isProduction: props.isProduction,
       branchName: props.branchName,
+      configuration: props.configuration,
     });
     pipeline.addStage(monitoring);
 
@@ -68,10 +69,12 @@ export class PipelineStack extends Stack {
       env: {
         BRANCH_NAME: this.branchName,
       },
+      installCommands: [
+        `n ${getNodeVersion()}`,
+      ],
       commands: [
         'yarn install --frozen-lockfile',
         'npx projen build',
-        'npx projen synth',
       ],
     });
 

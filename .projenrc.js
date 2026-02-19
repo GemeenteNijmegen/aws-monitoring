@@ -26,6 +26,8 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-sts',
     '@aws-sdk/client-sns',
+    '@aws-sdk/client-dynamodb',
+    '@aws-sdk/lib-dynamodb',
     'cdk-stacksets',
     '@gemeentenijmegen/projen-project-type',
   ],
@@ -33,8 +35,10 @@ const project = new GemeenteNijmegenCdkApp({
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],
-  /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  tsconfig: {
+    compilerOptions: {
+      isolatedModules: true,
+    },
+  },
 });
 project.synth();

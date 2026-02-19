@@ -63,6 +63,48 @@
         },
         {
           "spawn": "bundle:monitoringLambda/monitoring.lambda"
+        },
+        {
+          "spawn": "bundle:audit/archiver/archiver.lambda"
+        },
+        {
+          "spawn": "bundle:audit/slackbot/slackbot.lambda"
+        }
+      ]
+    },
+    "bundle:audit/archiver/archiver.lambda": {
+      "name": "bundle:audit/archiver/archiver.lambda",
+      "description": "Create a JavaScript bundle from src/audit/archiver/archiver.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/archiver/archiver.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/archiver/archiver.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:audit/archiver/archiver.lambda:watch": {
+      "name": "bundle:audit/archiver/archiver.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/audit/archiver/archiver.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/archiver/archiver.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/archiver/archiver.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
+        }
+      ]
+    },
+    "bundle:audit/slackbot/slackbot.lambda": {
+      "name": "bundle:audit/slackbot/slackbot.lambda",
+      "description": "Create a JavaScript bundle from src/audit/slackbot/slackbot.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/slackbot/slackbot.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/slackbot/slackbot.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
+        }
+      ]
+    },
+    "bundle:audit/slackbot/slackbot.lambda:watch": {
+      "name": "bundle:audit/slackbot/slackbot.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/audit/slackbot/slackbot.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/audit/slackbot/slackbot.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/slackbot/slackbot.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
@@ -419,13 +461,13 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,aws-sdk-client-mock,axios-mock-adapter,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,ts-jest,ts-node,typescript,@aws-cdk/aws-apigatewayv2-alpha,@aws-cdk/aws-apigatewayv2-integrations-alpha,@aws-sdk/client-cloudwatch-logs,@aws-sdk/client-organizations,@aws-sdk/client-s3,@aws-sdk/client-securityhub,@aws-sdk/client-sns,@aws-sdk/client-sqs,@aws-sdk/client-sts,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/projen-project-type,@gemeentenijmegen/utils,@types/aws-lambda,axios,cdk-nag,cdk-stacksets"
+          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,aws-sdk-client-mock,axios-mock-adapter,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,ts-jest,ts-node,typescript,@aws-cdk/aws-apigatewayv2-alpha,@aws-cdk/aws-apigatewayv2-integrations-alpha,@aws-sdk/client-cloudwatch-logs,@aws-sdk/client-dynamodb,@aws-sdk/client-organizations,@aws-sdk/client-s3,@aws-sdk/client-securityhub,@aws-sdk/client-sns,@aws-sdk/client-sqs,@aws-sdk/client-sts,@aws-sdk/lib-dynamodb,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/projen-project-type,@gemeentenijmegen/utils,@types/aws-lambda,axios,cdk-nag,cdk-stacksets"
         },
         {
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @stylistic/eslint-plugin @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk aws-sdk-client-mock axios-mock-adapter commit-and-tag-version esbuild eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit projen ts-jest ts-node typescript @aws-cdk/aws-apigatewayv2-alpha @aws-cdk/aws-apigatewayv2-integrations-alpha @aws-sdk/client-cloudwatch-logs @aws-sdk/client-organizations @aws-sdk/client-s3 @aws-sdk/client-securityhub @aws-sdk/client-sns @aws-sdk/client-sqs @aws-sdk/client-sts @gemeentenijmegen/aws-constructs @gemeentenijmegen/projen-project-type @gemeentenijmegen/utils @types/aws-lambda aws-cdk-lib axios cdk-nag cdk-stacksets constructs"
+          "exec": "yarn upgrade @stylistic/eslint-plugin @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk aws-sdk-client-mock axios-mock-adapter commit-and-tag-version esbuild eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit projen ts-jest ts-node typescript @aws-cdk/aws-apigatewayv2-alpha @aws-cdk/aws-apigatewayv2-integrations-alpha @aws-sdk/client-cloudwatch-logs @aws-sdk/client-dynamodb @aws-sdk/client-organizations @aws-sdk/client-s3 @aws-sdk/client-securityhub @aws-sdk/client-sns @aws-sdk/client-sqs @aws-sdk/client-sts @aws-sdk/lib-dynamodb @gemeentenijmegen/aws-constructs @gemeentenijmegen/projen-project-type @gemeentenijmegen/utils @types/aws-lambda aws-cdk-lib axios cdk-nag cdk-stacksets constructs"
         },
         {
           "exec": "npx projen"

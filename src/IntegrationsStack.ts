@@ -13,6 +13,7 @@ import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
+import { AuditSupport } from './audit/AuditSupport';
 import { SlackInteractivityFunction } from './SlackInteractivityLambda/SlackInteractivity-function';
 import { Statics } from './statics';
 import { TopdeskIntegrationFunction } from './TopdeskIntegrationLambda/TopdeskIntegration-function';
@@ -22,6 +23,11 @@ export interface IntegrationsStackProps extends StackProps {
    * Environment prefix to use in parameters
    */
   prefix: string;
+  /**
+   * Deploy audit slackbot
+   * @default false
+   */
+  deployAuditSlackbot?: boolean;
 }
 
 export class IntegrationsStack extends Stack {
@@ -38,6 +44,13 @@ export class IntegrationsStack extends Stack {
     // Setup the topdesk integration (subscribes to queue)
     const topdeskFunction = this.setupTopdeskIntegrationFunction(props);
     this.subscribeToQueue(queue, topdeskFunction);
+
+    if (props.deployAuditSlackbot === true) {
+      new AuditSupport(this, 'audit-support', {
+        api,
+        environment: props.prefix,
+      });
+    }
 
   }
 

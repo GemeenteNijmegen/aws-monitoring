@@ -17,6 +17,8 @@
     ".projen/tasks.json",
     "cdk.json",
     "LICENSE",
+    "src/audit/archiver/archiver-function.ts",
+    "src/audit/slackbot/slackbot-function.ts",
     "src/LogQueryJob/LogQueryJob-function.ts",
     "src/monitoringLambda/monitoring-function.ts",
     "src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts",
