@@ -40,7 +40,7 @@ export class NetworkStack extends Stack {
     });
 
     new Alarm(this, 'vpn-tunnel-down', {
-      alarmName: `vpn-tunnel-down${VPN_TUNNEL_ALARM_CRITICALITY.alarmSuffix}`,
+      alarmName: `vpn-tunnel-down${VPN_TUNNEL_ALARM_CRITICALITY.alarmSuffix()}`,
       metric: metric,
       evaluationPeriods: 2,
       threshold: 0.5,

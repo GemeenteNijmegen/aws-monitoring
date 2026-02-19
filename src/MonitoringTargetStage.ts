@@ -62,10 +62,12 @@ export class MonitoringTargetStage extends Stage {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
 
-    new NetworkStack(this, 'gn-network', {
-      description: 'Monitors network aspects of the gn-network account',
-      env: Statics.gnNetwork,
-    });
+    if (props.isProduction) {
+      new NetworkStack(this, 'gn-network', {
+        description: 'Monitors network aspects of the gn-network account',
+        env: Statics.gnNetwork,
+      });
+    }
 
     const parameterPrefix = props.isProduction ? 'prod' : 'dev';
     const parameterStack = new ParameterStack(this, 'parameters', {
