@@ -63,8 +63,8 @@ export class MonitoringTargetStage extends Stage {
     });
 
     if (props.isProduction) {
-      new NetworkStack(this, 'gn-network', {
-        description: 'Monitors network aspects of the gn-network account',
+      new NetworkStack(this, 'gn-network-specific', {
+        description: 'Monitors network aspects of the gn-network account (such as VPN tunnels)',
         env: Statics.gnNetwork,
       });
     }
