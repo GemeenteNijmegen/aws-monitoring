@@ -47,9 +47,6 @@
       "description": "Prepare assets",
       "steps": [
         {
-          "spawn": "bundle:LogQueryJob/LogQueryJob.lambda"
-        },
-        {
           "spawn": "bundle:OrgtrailMonitorLambda/OrgTrailMonitor.lambda"
         },
         {
@@ -105,24 +102,6 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/audit/slackbot/slackbot.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/audit/slackbot/slackbot.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
-        }
-      ]
-    },
-    "bundle:LogQueryJob/LogQueryJob.lambda": {
-      "name": "bundle:LogQueryJob/LogQueryJob.lambda",
-      "description": "Create a JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/*"
-        }
-      ]
-    },
-    "bundle:LogQueryJob/LogQueryJob.lambda:watch": {
-      "name": "bundle:LogQueryJob/LogQueryJob.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/LogQueryJob/LogQueryJob.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/LogQueryJob/LogQueryJob.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/LogQueryJob/LogQueryJob.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --watch"
         }
       ]
     },
