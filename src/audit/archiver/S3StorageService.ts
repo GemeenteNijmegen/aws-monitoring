@@ -19,7 +19,8 @@ export class S3StorageService {
     const year = originalTimestamp.getFullYear();
     const month = String(originalTimestamp.getMonth() + 1).padStart(2, '0');
     const day = String(originalTimestamp.getDate()).padStart(2, '0');
-    const key = `${trackingGoal}/${year}/${month}/${day}/${commandId}-${thread.threadId}/thread.json`;
+    const filename = `thread-${Date.now()}.json`; // include timestamp to not overwrite previous threads.
+    const key = `${trackingGoal}/${year}/${month}/${day}/${commandId}-${thread.threadId}/${filename}`;
 
     const content = JSON.stringify({
       commandId,
