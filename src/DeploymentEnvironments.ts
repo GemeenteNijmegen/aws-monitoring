@@ -168,6 +168,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'main',
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
+    deployAuditSlackbot: true,
     globalMonitoringRules: [
       {
         roleMonitoring: {
