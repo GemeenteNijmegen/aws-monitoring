@@ -67,7 +67,7 @@ export class AuditSupport extends Construct {
 
   setupArchiver() {
     const archiveBucket = new Bucket(this, `archive-bucket-${this.props.environment}`, {
-      bucketName: `slack-archive-${this.props.environment}`,
+      bucketName: `gemeente-nijmegen-slack-archive-${this.props.environment}`,
       encryption: BucketEncryption.S3_MANAGED,
     });
 
