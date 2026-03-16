@@ -25,6 +25,7 @@ export class S3StorageService {
     const content = JSON.stringify({
       commandId,
       threadId: thread.threadId,
+      permalink: thread.permalink,
       archivedAt: new Date().toISOString(),
       messages: thread.messages,
     }, null, 2);

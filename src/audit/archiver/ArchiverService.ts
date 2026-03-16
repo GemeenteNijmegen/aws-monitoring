@@ -50,6 +50,7 @@ export class ArchiverService {
     console.log(`Processing message: ${message.messageId}`);
 
     const thread = await this.slackClient.getThread(message.channelId, message.threadId);
+    thread.permalink = await this.slackClient.getPermalink(message.channelId, message.threadId);
 
     // Skip if last message is already a backup confirmation
     if (thread.messages.length > 0) {

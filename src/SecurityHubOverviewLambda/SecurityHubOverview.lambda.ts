@@ -1,11 +1,10 @@
-import { SecurityHubClient, GetFindingsCommand } from '@aws-sdk/client-securityhub';
-import { ScheduledEvent } from 'aws-lambda';
+import { GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
 const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
 
-export async function handler(_event: ScheduledEvent) {
+export async function handler() {
 
   // Send to slack
   try {
@@ -87,7 +86,7 @@ async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
 
 
 function lookupAccountName(account?: string) {
-  if (!account) { return 'undefined account';}
+  if (!account) { return 'undefined account'; }
   const configuration = deploymentEnvironments[process.env.BRANCH_NAME ?? 'main'];
   const accountConfig = configuration?.deployToEnvironments.find(config => config.env.account == account);
   return accountConfig?.accountName ?? account;
