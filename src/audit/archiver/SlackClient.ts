@@ -123,7 +123,7 @@ export class SlackClient {
   async getPermalink(channelId: string, messageTs: string): Promise<string> {
     const params = new URLSearchParams({ channel: channelId, message_ts: messageTs });
     const response = await fetch(`https://slack.com/api/chat.getPermalink?${params}`, {
-      headers: { 'Authorization': `Bearer ${this.botToken}` },
+      headers: { Authorization: `Bearer ${this.botToken}` },
     });
     const json = await response.json() as any;
     if (!json.ok) {

@@ -1,8 +1,8 @@
-import { HandledEvent, IHandler } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
-import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 import { Configuration } from '../DeploymentEnvironments';
 import { Priority, Statics } from '../statics';
+import { HandledEvent, IHandler } from './IHandler';
+import { AlarmMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, CustomSnsMessageFormatter, DevopsGuruMessageFormatter, DriftDetectionStatusFormatter, Ec2MessageFormatter, EcsMessageFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, OrgTrailMessageFormatter, SecurityHubFormatter, UnhandledEventFormatter } from './MessageFormatter';
+import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -151,7 +151,7 @@ export class SnsEventHandler implements IHandler {
   };
 
   /** If priority is high or critical, reset to medium for non-production-accounts */
-  private limitPriorityForNonProductionAccounts(priority: Priority, account: string):Priority {
+  private limitPriorityForNonProductionAccounts(priority: Priority, account: string): Priority {
     if (['high', 'critical'].includes(priority)) {
       const accountConfiguration = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
       if (accountConfiguration?.accountType && accountConfiguration.accountType != 'production') {
@@ -166,7 +166,7 @@ export class SnsEventHandler implements IHandler {
     return account ?? '';
   }
 
-  parsePriorityFromEvent(event: any) : Priority {
+  parsePriorityFromEvent(event: any): Priority {
     try {
       const topicArn = event?.Records[0]?.Sns?.TopicArn;
       if (topicArn.endsWith('high')) {
@@ -196,6 +196,7 @@ export function parseMessageFromEvent(event: any): any {
   try {
     return JSON.parse(event?.Records[0]?.Sns?.Message);
   } catch (error) {
+    console.error(error);
     console.error('Failed parsing message, not JSON? Message: ' + event?.Records[0]?.Sns?.Message);
   }
 }
