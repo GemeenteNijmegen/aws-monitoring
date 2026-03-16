@@ -1,5 +1,6 @@
 export interface SlackThread {
   threadId: string;
+  permalink?: string;
   messages: SlackMessage[];
 }
 

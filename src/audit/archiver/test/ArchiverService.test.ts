@@ -7,6 +7,7 @@ const mockGetThread = jest.fn();
 const mockPostMessage = jest.fn();
 const mockGetUsers = jest.fn();
 const mockDownloadFile = jest.fn();
+const mockGetPermalink = jest.fn();
 const mockStoreThread = jest.fn();
 const mockStoreFile = jest.fn();
 
@@ -22,6 +23,7 @@ jest.mock('../SlackClient', () => ({
     postMessage: mockPostMessage,
     getUsers: mockGetUsers,
     downloadFile: mockDownloadFile,
+    getPermalink: mockGetPermalink,
   })),
 }));
 
