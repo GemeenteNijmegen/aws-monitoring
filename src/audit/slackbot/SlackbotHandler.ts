@@ -1,10 +1,10 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import { slackAuthenticate } from './slack-authenticate';
+import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 import { SlackClient } from '../archiver/SlackClient';
 import { TrackedSlackMessage } from '../shared/models/TrackedSlackMessage';
 import { SlackMessage } from '../shared/SlackMessage';
 import { TrackedSlackMessageRepository } from '../shared/TrackedSlackMessageRepository';
-import { slackAuthenticate } from './slack-authenticate';
-import { TrackedSlackMessageParser } from './TrackedSlackMessageParser';
 
 export interface SlackbotHandlerOptions {
   slackSecret: string;
