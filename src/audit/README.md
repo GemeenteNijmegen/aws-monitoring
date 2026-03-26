@@ -8,7 +8,7 @@
 - Store each thread separately to account for changes and updates an create a audit log for each thread.
 
 ## How to use
-- Start tracking: `@auditbot <audit|incident>`. (keyword is audit or incident to determine catagory).
+- Start tracking: `@auditbot` or `@auditbot <audit|incident>`. Defaults to audit if no keyword is provided.
 
 
 ## Impression
