@@ -1,5 +1,5 @@
-import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import * as zlib from 'zlib';
+import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import { HandledEvent, IHandler } from './IHandler';
 import { CloudTrailErrorLogsMessageFormatter, LogsMessageFormatter } from './MessageFormatter';
 import { stringMatchesPatternInArray } from './utils';
