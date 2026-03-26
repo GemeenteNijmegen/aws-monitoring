@@ -21,9 +21,6 @@ export class TrackedSlackMessageParser {
     }
 
     const trackingGoal = this.getTrackingGoal(text);
-    if (!trackingGoal) {
-      throw new Error('Could not determine tracking goal from message');
-    }
 
     return {
       messageId,
@@ -36,13 +33,10 @@ export class TrackedSlackMessageParser {
 
   private static getTrackingGoal(text: string): 'audit' | 'incident' {
     const lowerText = text.toLowerCase();
-    if (lowerText.includes('audit')) {
-      return 'audit';
-    }
     if (lowerText.includes('incident')) {
       return 'incident';
     }
-    throw Error(`Unknown tracking goal: ${text}`);
+    return 'audit';
   }
 
 }

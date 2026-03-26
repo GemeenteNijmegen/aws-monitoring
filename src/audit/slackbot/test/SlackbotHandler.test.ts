@@ -220,7 +220,7 @@ describe('SlackbotHandler', () => {
     const event = {
       body: JSON.stringify({
         type: 'event_callback',
-        event: { type: 'app_mention' }, // Missing required fields
+        event: { type: 'app_mention' }, // Missing required fields (text, ts, channel)
       }),
       headers: {},
       httpMethod: 'POST',
@@ -241,5 +241,42 @@ describe('SlackbotHandler', () => {
 
     expect(result.statusCode).toBe(500);
     expect(mockSave).not.toHaveBeenCalled();
+  });
+
+  test('defaults to audit when no keyword is provided', async () => {
+    const event = {
+      body: JSON.stringify({
+        type: 'event_callback',
+        event: {
+          type: 'app_mention',
+          text: '<@BOT123>',
+          channel: 'C123',
+          ts: '1234.5678',
+          client_msg_id: 'msg-789',
+        },
+      }),
+      headers: {},
+      httpMethod: 'POST',
+      path: '/slack/events',
+      pathParameters: null,
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {} as any,
+      resource: '',
+      isBase64Encoded: false,
+      multiValueHeaders: {},
+    } as APIGatewayProxyEvent;
+
+    mockAuthenticate.mockResolvedValue(true);
+    mockSave.mockResolvedValue(undefined);
+    mockPostMessage.mockResolvedValue(undefined);
+
+    const result = await handler.handleRequest(event);
+
+    expect(result.statusCode).toBe(200);
+    expect(mockSave).toHaveBeenCalledWith(
+      expect.objectContaining({ trackingGoal: 'audit' }),
+    );
   });
 });

@@ -81,7 +81,7 @@ export class SlackbotHandler {
 
   private successMessage(category: string) {
     return new SlackMessage()
-      .addHeader('🔎 Audit tracking gestart')
+      .addHeader(`🔎 ${category.charAt(0).toUpperCase() + category.slice(1)} tracking gestart`)
       .addContext({ Category: category })
       .addSection('Deze thread wordt nu gevolgd voor archivering. Nieuwe berichten worden automatisch opgeslagen.');
   }
