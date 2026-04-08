@@ -1,12 +1,13 @@
-import { GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
+import { AwsSecurityFinding, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
+import { SecurityHubService } from './SecurityHubService';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
-const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
+const securityHubService = new SecurityHubService(
+  new SecurityHubClient({ region: process.env.AWS_REGION }),
+);
 
 export async function handler() {
-
-  // Send to slack
   try {
     await sendOverviewToSlack();
   } catch (error) {
@@ -15,75 +16,47 @@ export async function handler() {
     message.addSection('⚠ Could not send SecurityHub overview to Slack, check logs');
     await message.send('high');
   }
-
 }
 
 async function sendOverviewToSlack() {
   const message = new SlackMessage();
   message.addHeader('SecurityHub finding overview');
 
-  const criticalFindings = await getFindingsWithSeverity('CRITICAL');
-  const criticalFindingsFound = criticalFindings && criticalFindings.length > 0;
-  if (criticalFindingsFound) {
-    message.addSection('❗️ Critical findings');
-    criticalFindings.forEach(finding => {
-      const accountName = lookupAccountName(finding.AwsAccountId);
-      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
-    });
-  }
+  const criticalFindings = await securityHubService.getActiveFindings('CRITICAL');
+  const highFindings = await securityHubService.getActiveFindings('HIGH');
 
-  const highFindings = await getFindingsWithSeverity('HIGH');
-  const highFindingsFound = highFindings && highFindings.length > 0;
-  if (highFindingsFound) {
-    message.addSection('⚠️ High findings');
-    highFindings.forEach(finding => {
-      const accountName = lookupAccountName(finding.AwsAccountId);
-      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
-    });
-  }
+  addFindingsSection(message, '❗️ Critical findings', criticalFindings);
+  addFindingsSection(message, '⚠️ High findings', highFindings);
 
-  if (!criticalFindingsFound && !highFindingsFound) {
+  if (criticalFindings.length === 0 && highFindings.length === 0) {
     message.addSection('✅ No high or critical findings');
   }
 
   await message.send('high');
 }
 
-
-async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
-
-  const command = new GetFindingsCommand({
-    Filters: {
-      SeverityLabel: [{
-        Comparison: 'EQUALS',
-        Value: severityLabel,
-      }],
-      WorkflowStatus: [ // Show new and notified findings
-        {
-          Comparison: 'EQUALS',
-          Value: 'NEW',
-        },
-        {
-          Comparison: 'EQUALS',
-          Value: 'NOTIFIED',
-        },
-      ],
-      RecordState: [{ // Only show active findings
-        Comparison: 'EQUALS',
-        Value: 'ACTIVE',
-      }],
-    },
-  });
-
-  try {
-    const resp = await securityHubClient.send(command);
-    return resp.Findings;
-  } catch (error) {
-    console.error(error);
-    throw Error('Could not get findings, check logs');
-  }
+function isContainerFinding(finding: AwsSecurityFinding): boolean {
+  return finding.Resources?.some(r => r.Type === 'AwsEcrContainerImage') ?? false;
 }
 
+function addFindingsSection(message: SlackMessage, header: string, findings: AwsSecurityFinding[]) {
+  if (findings.length === 0) return;
+
+  const containerCount = findings.filter(isContainerFinding).length;
+  const otherFindings = findings.filter(f => !isContainerFinding(f));
+
+  if (otherFindings.length > 0) {
+    message.addSection(header);
+    otherFindings.forEach(finding => {
+      const accountName = lookupAccountName(finding.AwsAccountId);
+      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
+    });
+  }
+
+  if (containerCount > 0) {
+    message.addSection(`There were also ${containerCount} ${header.toLowerCase().replace(/[^a-z ]/g, '').trim()} in container images in ECR repositories.`);
+  }
+}
 
 function lookupAccountName(account?: string) {
   if (!account) { return 'undefined account'; }
