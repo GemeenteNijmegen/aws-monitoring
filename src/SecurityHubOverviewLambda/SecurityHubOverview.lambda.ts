@@ -3,6 +3,8 @@ import { deploymentEnvironments } from '../DeploymentEnvironments';
 import { SecurityHubService } from './SecurityHubService';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
+const MAX_FINDINGS_PER_CRITICALITY = 50;
+
 const securityHubService = new SecurityHubService(
   new SecurityHubClient({ region: process.env.AWS_REGION }),
 );
@@ -28,10 +30,6 @@ async function sendOverviewToSlack() {
   addFindingsSection(message, '❗️ Critical findings', criticalFindings);
   addFindingsSection(message, '⚠️ High findings', highFindings);
 
-  if (criticalFindings.length === 0 && highFindings.length === 0) {
-    message.addSection('✅ No high or critical findings');
-  }
-
   await message.send('high');
 }
 
@@ -45,16 +43,31 @@ function addFindingsSection(message: SlackMessage, header: string, findings: Aws
   const containerCount = findings.filter(isContainerFinding).length;
   const otherFindings = findings.filter(f => !isContainerFinding(f));
 
-  if (otherFindings.length > 0) {
-    message.addSection(header);
-    otherFindings.forEach(finding => {
-      const accountName = lookupAccountName(finding.AwsAccountId);
-      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
-    });
+  message.addSection(header);
+
+  // No findings
+  if (containerCount == 0 && otherFindings.length == 0) {
+    message.addSection('✅ No findings');
+    return;
   }
 
+  // Compile all other findings into a string (truncate at 50 findings)
+  const otherFindingsMessage: string[] = [];
+  if (otherFindings.length > 0) {
+    otherFindings.splice(0, MAX_FINDINGS_PER_CRITICALITY).forEach(finding => {
+      const accountName = lookupAccountName(finding.AwsAccountId);
+      otherFindingsMessage.push(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
+    });
+
+    if (otherFindings.length > MAX_FINDINGS_PER_CRITICALITY) {
+      otherFindingsMessage.push(`... and ${otherFindings.length - MAX_FINDINGS_PER_CRITICALITY} more findings`);
+    }
+    message.addSection(otherFindingsMessage.join('\n'));
+  }
+
+  // Add container finding count
   if (containerCount > 0) {
-    message.addSection(`There were also ${containerCount} ${header.toLowerCase().replace(/[^a-z ]/g, '').trim()} in container images in ECR repositories.`);
+    message.addSection(`There are ${containerCount} ${header.toLowerCase().replace(/[^a-z ]/g, '').trim()} in container images in ECR repositories.`);
   }
 }
 
