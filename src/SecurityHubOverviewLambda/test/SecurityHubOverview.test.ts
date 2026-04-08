@@ -23,6 +23,10 @@ function getSlackBlocks(): any[] {
   return data.blocks;
 }
 
+function allBlockTexts(blocks: any[]): string {
+  return blocks.map((b: any) => b.text.text).join('\n');
+}
+
 function makeFinding(overrides: Record<string, any> = {}) {
   return {
     Title: overrides.Title ?? 'Some finding',
@@ -52,17 +56,16 @@ function mockFindings(criticalFindings: any[], highFindings: any[]) {
 
 describe('SecurityHub overview', () => {
 
-  test('No findings shows all clear message', async () => {
+  test('No findings sends only the header', async () => {
     mockFindings([], []);
     await handler();
 
     const blocks = getSlackBlocks();
-    expect(blocks).toHaveLength(2); // header + all clear
+    expect(blocks).toHaveLength(1);
     expect(blocks[0].text.text).toContain('SecurityHub finding overview');
-    expect(blocks[1].text.text).toContain('✅ No high or critical findings');
   });
 
-  test('Critical non-container findings are listed individually', async () => {
+  test('Critical non-container findings are combined in a single block', async () => {
     mockFindings(
       [makeFinding({ Title: 'Critical vuln 1' }), makeFinding({ Title: 'Critical vuln 2' })],
       [],
@@ -70,23 +73,25 @@ describe('SecurityHub overview', () => {
     await handler();
 
     const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts).toContain('❗️ Critical findings');
-    expect(texts.some((t: string) => t.includes('Critical vuln 1'))).toBe(true);
-    expect(texts.some((t: string) => t.includes('Critical vuln 2'))).toBe(true);
+    // header + critical section header + critical findings block
+    expect(blocks).toHaveLength(3);
+    expect(blocks[1].text.text).toContain('❗️ Critical findings');
+    expect(blocks[2].text.text).toContain('Critical vuln 1');
+    expect(blocks[2].text.text).toContain('Critical vuln 2');
   });
 
-  test('High non-container findings are listed individually', async () => {
+  test('High non-container findings are combined in a single block', async () => {
     mockFindings(
       [],
-      [makeFinding({ Title: 'High vuln 1' })],
+      [makeFinding({ Title: 'High vuln 1' }), makeFinding({ Title: 'High vuln 2' })],
     );
     await handler();
 
     const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts).toContain('⚠️ High findings');
-    expect(texts.some((t: string) => t.includes('High vuln 1'))).toBe(true);
+    expect(blocks).toHaveLength(3);
+    expect(blocks[1].text.text).toContain('⚠️ High findings');
+    expect(blocks[2].text.text).toContain('High vuln 1');
+    expect(blocks[2].text.text).toContain('High vuln 2');
   });
 
   test('Container findings are counted, not listed individually', async () => {
@@ -101,11 +106,12 @@ describe('SecurityHub overview', () => {
     );
     await handler();
 
-    const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts.some((t: string) => t.includes('Real critical finding'))).toBe(true);
-    expect(texts.some((t: string) => t.includes('Container CVE-2024-1234'))).toBe(false);
-    expect(texts.some((t: string) => t.includes('3') && t.includes('critical findings') && t.includes('container images'))).toBe(true);
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('Real critical finding');
+    expect(text).not.toContain('Container CVE-2024-1234');
+    expect(text).toContain('3');
+    expect(text).toContain('critical findings');
+    expect(text).toContain('container images');
   });
 
   test('Only container findings shows count but no individual listings', async () => {
@@ -115,12 +121,11 @@ describe('SecurityHub overview', () => {
     );
     await handler();
 
-    const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts.some((t: string) => t.includes('2') && t.includes('container images'))).toBe(true);
-    expect(texts.some((t: string) => t.includes('1') && t.includes('container images'))).toBe(true);
-    // No "all clear" message since there are findings
-    expect(texts.some((t: string) => t.includes('✅'))).toBe(false);
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('2');
+    expect(text).toContain('1');
+    expect(text).toContain('container images');
+    expect(text).not.toContain('Container CVE-2024-1234');
   });
 
   test('Account name is resolved from deployment environments', async () => {
@@ -130,9 +135,8 @@ describe('SecurityHub overview', () => {
     );
     await handler();
 
-    const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts.some((t: string) => t.includes('gn-mijn-nijmegen-prod'))).toBe(true);
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('gn-mijn-nijmegen-prod');
   });
 
   test('Unknown account falls back to account id', async () => {
@@ -142,9 +146,8 @@ describe('SecurityHub overview', () => {
     );
     await handler();
 
-    const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts.some((t: string) => t.includes('999999999999'))).toBe(true);
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('999999999999');
   });
 
   test('Pagination collects all findings', async () => {
@@ -157,15 +160,26 @@ describe('SecurityHub overview', () => {
       if (callCount === 2) {
         return { Findings: [makeFinding({ Title: 'Page 2 finding' })] };
       }
-      // High findings - empty
       return { Findings: [] };
     });
     await handler();
 
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('Page 1 finding');
+    expect(text).toContain('Page 2 finding');
+  });
+
+  test('Findings block is truncated when exceeding max section length', async () => {
+    const manyFindings = Array.from({ length: 50 }, (_, i) =>
+      makeFinding({ Title: `Finding with a long title to fill up space number ${i}` }),
+    );
+    mockFindings(manyFindings, []);
+    await handler();
+
     const blocks = getSlackBlocks();
-    const texts = blocks.map((b: any) => b.text.text);
-    expect(texts.some((t: string) => t.includes('Page 1 finding'))).toBe(true);
-    expect(texts.some((t: string) => t.includes('Page 2 finding'))).toBe(true);
+    // The findings block should be replaced with the omitted message
+    const findingsBlock = blocks[2].text.text;
+    expect(findingsBlock).toBe('(message ommited)');
   });
 
   test('Error sends failure message to slack', async () => {
