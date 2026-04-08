@@ -695,7 +695,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'workload-test',
         accountType: 'development',
-        env: Statics.sandboxEnvironment,
+        env: Statics.gnWorkloadTestEnvironment,
         enableDevopsGuru: true,
         monitoringRules: [
           {

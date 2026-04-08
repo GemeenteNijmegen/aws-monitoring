@@ -32,7 +32,7 @@ export abstract class Statics {
     region: 'eu-central-1',
   };
 
-  static readonly sandboxEnvironment = {
+  static readonly gnWorkloadTestEnvironment = {
     account: Statics.gnTestAccount,
     region: 'eu-central-1',
   };
