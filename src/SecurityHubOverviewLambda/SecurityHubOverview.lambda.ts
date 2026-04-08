@@ -1,7 +1,7 @@
 import { AwsSecurityFinding, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
-import { SlackMessage } from '../monitoringLambda/SlackMessage';
 import { SecurityHubService } from './SecurityHubService';
+import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
 const MAX_FINDINGS_PER_CRITICALITY = 50;
 
@@ -62,7 +62,7 @@ function addFindingsSection(message: SlackMessage, header: string, findings: Aws
     if (otherFindings.length > MAX_FINDINGS_PER_CRITICALITY) {
       otherFindingsMessage.push(`... and ${otherFindings.length - MAX_FINDINGS_PER_CRITICALITY} more findings`);
     }
-    message.addSection(otherFindingsMessage.join('\n'))
+    message.addSection(otherFindingsMessage.join('\n'));
   }
 
   // Add container finding count
