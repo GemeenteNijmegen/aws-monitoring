@@ -34,6 +34,12 @@ jest.mock('../S3StorageService', () => ({
   })),
 }));
 
+jest.mock('../ScheduleLogic', () => ({
+  ScheduleLogic: jest.fn().mockImplementation(() => ({
+    shouldProcessMessage: jest.fn().mockReturnValue(true),
+  })),
+}));
+
 describe('ArchiverService', () => {
   let service: ArchiverService;
 
@@ -62,6 +68,7 @@ describe('ArchiverService', () => {
     mockGetAllCommands.mockResolvedValue([message]);
     mockGetUsers.mockResolvedValue(users);
     mockGetThread.mockResolvedValue(thread);
+    mockGetPermalink.mockResolvedValue('https://slack.com/permalink');
     mockStoreThread.mockResolvedValue('s3://bucket/key');
 
     await service.processCommands();
@@ -102,6 +109,7 @@ describe('ArchiverService', () => {
     mockGetAllCommands.mockResolvedValue([recentMessage]);
     mockGetUsers.mockResolvedValue([]);
     mockGetThread.mockResolvedValue({ threadId: 'thread-1', messages: [], lastUpdated: new Date() });
+    mockGetPermalink.mockResolvedValue('https://slack.com/permalink');
     mockStoreThread.mockResolvedValue('s3://bucket/key');
 
     await service.processCommands();
@@ -130,6 +138,7 @@ describe('ArchiverService', () => {
     mockGetAllCommands.mockResolvedValue([message]);
     mockGetUsers.mockResolvedValue([]);
     mockGetThread.mockResolvedValue(thread);
+    mockGetPermalink.mockResolvedValue('https://slack.com/permalink');
 
     await service.processCommands();
 
@@ -162,6 +171,7 @@ describe('ArchiverService', () => {
     mockGetAllCommands.mockResolvedValue([message]);
     mockGetUsers.mockResolvedValue([]);
     mockGetThread.mockResolvedValue(thread);
+    mockGetPermalink.mockResolvedValue('https://slack.com/permalink');
     mockDownloadFile.mockResolvedValue(Buffer.from('file-data'));
     mockStoreFile.mockResolvedValue('s3://bucket/file-key');
     mockStoreThread.mockResolvedValue('s3://bucket/thread-key');
