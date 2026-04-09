@@ -1,7 +1,7 @@
 import { AwsSecurityFinding, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
-import { SecurityHubService } from './SecurityHubService';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
+import { SecurityHubService } from './SecurityHubService';
 
 const MAX_FINDINGS_PER_CRITICALITY = 50;
 
@@ -61,7 +61,7 @@ function addFindingsSection(message: SlackMessage, header: string, findings: Aws
   if (otherFindings.length > 0) {
     otherFindings.splice(0, MAX_FINDINGS_PER_CRITICALITY).forEach(finding => {
       const accountName = lookupAccountName(finding.AwsAccountId);
-      otherFindingsMessage.push(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
+      otherFindingsMessage.push(`- ${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
     });
 
     if (otherFindings.length > MAX_FINDINGS_PER_CRITICALITY) {
