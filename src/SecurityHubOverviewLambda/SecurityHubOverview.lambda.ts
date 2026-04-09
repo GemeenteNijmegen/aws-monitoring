@@ -24,12 +24,17 @@ async function sendOverviewToSlack() {
   const message = new SlackMessage();
   message.addHeader('SecurityHub finding overview');
 
+  console.info('Collecting findings...');
   const criticalFindings = await securityHubService.getActiveFindings('CRITICAL');
   const highFindings = await securityHubService.getActiveFindings('HIGH');
 
+  console.info('Formatting CRITICAL findings...');
   addFindingsSection(message, '❗️ Critical findings', criticalFindings);
+  console.info('Formatting HIGH findings...');
   addFindingsSection(message, '⚠️ High findings', highFindings);
 
+  console.info('Sending message...');
+  console.debug('Message', JSON.stringify(message.getSlackMessage()));
   await message.send('high');
 }
 

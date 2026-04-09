@@ -3,6 +3,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { handler } from '../SecurityHubOverview.lambda';
+import { MAX_FINDINGS_PER_CRITICALITY } from '../SecurityHubService';
 
 const securityHubMock = mockClient(SecurityHubClient);
 let axiosMock: MockAdapter;
@@ -167,6 +168,28 @@ describe('SecurityHub overview', () => {
     const text = allBlockTexts(getSlackBlocks());
     expect(text).toContain('Page 1 finding');
     expect(text).toContain('Page 2 finding');
+  });
+
+  test('Pagination stops when MAX_FINDINGS_PER_CRITICALITY is reached', async () => {
+    let callCount = 0;
+    securityHubMock.on(GetFindingsCommand).callsFake(() => {
+      callCount++;
+      // First call: return MAX findings with a NextToken
+      if (callCount === 1) {
+        const findings = Array.from({ length: MAX_FINDINGS_PER_CRITICALITY }, (_, i) =>
+          makeFinding({ Title: `Finding ${i}` }),
+        );
+        return { Findings: findings, NextToken: 'more-results' };
+      }
+      // Should not be called for critical findings, only for high
+      return { Findings: [] };
+    });
+    await handler();
+
+    // 1 call for critical (stopped due to limit) + 1 call for high = 2
+    expect(callCount).toBe(2);
+    const text = allBlockTexts(getSlackBlocks());
+    expect(text).toContain('Finding 0');
   });
 
   test('Findings block is truncated when exceeding max section length', async () => {

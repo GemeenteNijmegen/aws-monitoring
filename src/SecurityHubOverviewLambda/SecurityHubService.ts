@@ -1,5 +1,6 @@
 import { AwsSecurityFinding, GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
 
+export const MAX_FINDINGS_PER_CRITICALITY = 50;
 export type SeverityLabel = 'CRITICAL' | 'HIGH';
 
 export class SecurityHubService {
@@ -31,7 +32,7 @@ export class SecurityHubService {
         findings.push(...resp.Findings);
       }
       nextToken = resp.NextToken;
-    } while (nextToken);
+    } while (nextToken && findings.length < MAX_FINDINGS_PER_CRITICALITY);
     return findings;
   }
 }
