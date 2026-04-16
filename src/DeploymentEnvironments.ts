@@ -684,6 +684,33 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-mule-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '013052902779',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mule-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '938595516784',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mule-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '664926621746',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
