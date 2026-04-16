@@ -1,7 +1,7 @@
 import { AwsSecurityFinding, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
-import { SlackMessage } from '../monitoringLambda/SlackMessage';
 import { SecurityHubService } from './SecurityHubService';
+import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
 const MAX_FINDINGS_PER_CRITICALITY = 50;
 
