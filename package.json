@@ -79,7 +79,7 @@
     "@gemeentenijmegen/utils": "^0.0.38",
     "@types/aws-lambda": "^8.10.161",
     "aws-cdk-lib": "^2.1.0",
-    "axios": "^1.15.0",
+    "axios": "^1.15.1",
     "cdk-nag": "^2.37.55",
     "cdk-stacksets": "^0.0.153",
     "constructs": "^10.0.5"
