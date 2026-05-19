@@ -711,6 +711,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
+      {
+        accountName: 'gn-kcc-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '111035763707',
+          region: 'eu-central-1',
+        },
+      },
     ],
   },
   sandbox: {
