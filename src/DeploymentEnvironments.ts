@@ -516,6 +516,25 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-sandbox-alan',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '854108471106',
+          region: 'eu-central-1',
+        },
+      },
+      ,
+      {
+        accountName: 'gn-sandbox-joostv',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '247673029522',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-sandbox-wieteke',
         accountType: 'sandbox',
         monitor: false,
