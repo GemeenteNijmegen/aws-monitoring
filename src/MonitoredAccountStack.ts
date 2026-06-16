@@ -1,5 +1,6 @@
 import { Stack, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { ClockDriftMonitoring } from './ClockDriftLambda/ClockDriftMonitoring';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
@@ -24,6 +25,10 @@ export class MonitoredAccountStack extends Stack {
 
     if (props.enableDevopsGuru) {
       new DevopsGuruMonitoring(this, 'devopsguru');
+    }
+
+    if (props.enableClockDriftMonitor) {
+      new ClockDriftMonitoring(this, 'clock-drift-monitor', { accountName: props.accountName });
     }
 
   }

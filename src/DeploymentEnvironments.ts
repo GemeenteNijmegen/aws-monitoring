@@ -31,6 +31,16 @@ export interface DeploymentEnvironment {
   enableDevopsGuru?: boolean;
 
   /**
+   * Flag to enable the clock drift monitor lambda for this account.
+   *
+   * Checks, on a schedule, whether the lambda execution environment's clock
+   * matches real time, and alerts via slack when it doesn't (within a
+   * margin). Always records the measured drift as a CloudWatch metric.
+   * @default false
+   */
+  enableClockDriftMonitor?: boolean;
+
+  /**
    * Define key or role monitoring conditions on the OrgTrail
    * that apply to this specific account
    * @default none
@@ -733,6 +743,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         accountType: 'development',
         env: Statics.gnWorkloadTestEnvironment,
         enableDevopsGuru: true,
+        enableClockDriftMonitor: true,
         monitoringRules: [
           {
             roleMonitoring: {

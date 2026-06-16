@@ -24,6 +24,7 @@
 /package.json linguist-generated
 /src/audit/archiver/archiver-function.ts linguist-generated
 /src/audit/slackbot/slackbot-function.ts linguist-generated
+/src/ClockDriftLambda/ClockDrift-function.ts linguist-generated
 /src/monitoringLambda/monitoring-function.ts linguist-generated
 /src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts linguist-generated
 /src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts linguist-generated
