@@ -1,12 +1,13 @@
 import { Duration, aws_events_targets as targets } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Key } from 'aws-cdk-lib/aws-kms';
 import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
 import { ClockDriftFunction } from './ClockDrift-function';
-import { Priority } from '../statics';
+import { Priority, Statics } from '../statics';
 
 export interface ClockDriftMonitoringProps {
   /**
@@ -65,6 +66,10 @@ export class ClockDriftMonitoring extends Construct {
       },
     });
     topic.grantPublish(monitorFunction);
+
+    const topicKeyArn = StringParameter.valueForStringParameter(this, Statics.ssmMpaPlatformTopicKmsKeyArn);
+    const topicKey = Key.fromKeyArn(this, 'topic-key', topicKeyArn);
+    topicKey.grant(monitorFunction, 'kms:GenerateDataKey*');
 
     new Rule(this, 'schedule', {
       description: `Run clock drift check for ${props.accountName} every 15 minutes`,
