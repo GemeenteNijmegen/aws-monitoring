@@ -20,3 +20,4 @@ Voor grouping op hetzelfde Slack-bericht is `detail.communicationId` daarom de b
 
 AWS docs:
 https://docs.aws.amazon.com/health/latest/ug/aws-health-events-eventbridge-schema.html
+https://docs.aws.amazon.com/health/latest/ug/pagnation-of-health-events.html
