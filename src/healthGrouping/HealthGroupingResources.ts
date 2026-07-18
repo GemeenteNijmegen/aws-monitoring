@@ -59,8 +59,14 @@ export class HealthGroupingResources extends Construct {
         HEALTH_GROUPING_TABLE_NAME: this.table.tableName,
         HEALTH_GROUPING_TIMER_QUEUE_URL: this.timerQueue.queueUrl,
         HEALTH_GROUPING_ENABLED: `${healthGrouping?.enabled ?? false}`,
+        HEALTH_GROUPING_PRIORITY: 'high',
       },
     });
+
+    for (const priority of Statics.monitoringPriorities) {
+      const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
+      lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
+    }
 
     return lambda;
   }
@@ -99,6 +105,7 @@ export class HealthGroupingResources extends Construct {
         BRANCH_NAME: branchName,
         HEALTH_GROUPING_TABLE_NAME: this.table.tableName,
         HEALTH_GROUPING_ENABLED: `${healthGrouping?.enabled ?? false}`,
+        HEALTH_GROUPING_PRIORITY: 'high',
       },
     });
 
