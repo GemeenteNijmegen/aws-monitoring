@@ -66,6 +66,17 @@ export interface Configuration {
   deployAuditSlackbot?: boolean;
 
   /**
+   * Feature flags for the separate AWS Health grouping flow
+   */
+  healthGrouping?: {
+    /**
+     * Enables the separate Health intake lambda
+     * @default false
+     */
+    enabled?: boolean;
+  };
+
+  /**
    * Define key or role monitoring conditions on the OrgTrail
    * that apply to all accounts
    * @default none
@@ -169,6 +180,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
     deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: false,
+    },
     globalMonitoringRules: [
       {
         roleMonitoring: {
@@ -727,6 +741,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: true,
+    },
     deployToEnvironments: [
       {
         accountName: 'workload-test',

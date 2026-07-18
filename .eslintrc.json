@@ -160,6 +160,8 @@
           "src/monitoringLambda/monitoring.lambda.ts",
           "src/audit/archiver/archiver.lambda.ts",
           "src/audit/slackbot/slackbot.lambda.ts",
+          "src/healthGrouping/healthEventLambda/healthEvent.lambda.ts",
+          "src/healthGrouping/healthTimerLambda/healthTimer.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],
