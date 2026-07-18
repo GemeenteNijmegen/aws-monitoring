@@ -2,8 +2,7 @@ import { Logger } from '@aws-lambda-powertools/logger';
 import { SNSEvent, SNSEventRecord } from 'aws-lambda';
 import { createHealthGroupIdentity, AwsHealthEvent } from '../support/HealthGroupKey';
 import { FirstHealthMessageFormatter } from '../support/HealthMessageFormatter';
-
-const firstHealthPriority = 'high';
+import { healthGroupingPriority } from '../support/HealthPriority';
 
 export interface HealthEventRepository {
   groupExists(groupKey: string): Promise<boolean>;
@@ -74,10 +73,11 @@ export class HealthEventHandler {
         this.logger.info('Health flow: checked group existence', { isFirst });
 
         if (isFirst) {
+          const priority = healthGroupingPriority([healthEvent.account]);
           const firstMessage = new FirstHealthMessageFormatter(healthEvent).format();
-          await firstMessage.send(firstHealthPriority);
+          await firstMessage.send(priority);
           this.logger.info('Health flow: sent first Slack message', {
-            priority: firstHealthPriority,
+            priority,
           });
           await this.dependencies.repository.createGroup(identity, timestamp);
           this.logger.info('Health flow: created group record');
