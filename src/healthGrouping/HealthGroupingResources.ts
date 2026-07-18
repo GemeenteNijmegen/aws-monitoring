@@ -81,7 +81,7 @@ export class HealthGroupingResources extends Construct {
     })));
   }
 
-  private setupHealthGroupingTimerQueue(timerDelay: Duration = Duration.minutes(15)) {
+  private setupHealthGroupingTimerQueue(timerDelay: Duration = Duration.minutes(3)) {
     const timerDeadLetterQueue = new Queue(this, 'timer-dlq', {
       encryption: QueueEncryption.SQS_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,

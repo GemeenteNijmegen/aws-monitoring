@@ -33,6 +33,12 @@ Gebruik deze JSON-bestanden in de AWS Lambda console om de nieuwe Health-flow sn
   - maar met unieke event- en communication-ids
   - handig als de standaard full-flow al eerder tegen dezelfde tabel is gebruikt
 
+- `healthEventLambda-bulk-flow-50-events.json`
+  - 60 events totaal
+  - 50 events in 1 grote global groep
+  - 10 events in 1 tweede groep
+  - handig om batching, opslag en grouped gedrag realistischer te belasten
+
 ## Wat je daarna controleert
 
 - logs van `healthEventLambda`

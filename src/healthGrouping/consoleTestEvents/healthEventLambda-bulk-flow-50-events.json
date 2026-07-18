@@ -1,0 +1,364 @@
+{
+  "Records": [
+    {
+      "Sns": {
+        "MessageId": "message-global-1",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-1\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110001\",\"time\":\"2026-07-18T14:00:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 1. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110001\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-2",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-2\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110002\",\"time\":\"2026-07-18T14:01:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 2. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110002\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-3",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-3\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110003\",\"time\":\"2026-07-18T14:02:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 3. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110003\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-4",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-4\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110004\",\"time\":\"2026-07-18T14:03:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 4. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110004\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-5",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-5\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110005\",\"time\":\"2026-07-18T14:04:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 5. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110005\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-6",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-6\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110006\",\"time\":\"2026-07-18T14:05:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 6. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110006\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-7",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-7\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110007\",\"time\":\"2026-07-18T14:06:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 7. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110007\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-8",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-8\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110008\",\"time\":\"2026-07-18T14:07:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 8. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110008\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-9",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-9\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110009\",\"time\":\"2026-07-18T14:08:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 9. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110009\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-10",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-10\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110010\",\"time\":\"2026-07-18T14:09:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 10. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110010\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-11",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-11\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110011\",\"time\":\"2026-07-18T14:10:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 11. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110011\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-12",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-12\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110012\",\"time\":\"2026-07-18T14:11:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 12. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110012\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-13",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-13\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110013\",\"time\":\"2026-07-18T14:12:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 13. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110013\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-14",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-14\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110014\",\"time\":\"2026-07-18T14:13:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 14. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110014\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-15",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-15\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110015\",\"time\":\"2026-07-18T14:14:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 15. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110015\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-16",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-16\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110016\",\"time\":\"2026-07-18T14:15:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 16. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110016\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-17",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-17\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110017\",\"time\":\"2026-07-18T14:16:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 17. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110017\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-18",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-18\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110018\",\"time\":\"2026-07-18T14:17:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 18. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110018\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-19",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-19\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110019\",\"time\":\"2026-07-18T14:18:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 19. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110019\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-20",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-20\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110020\",\"time\":\"2026-07-18T14:19:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 20. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110020\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-21",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-21\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110021\",\"time\":\"2026-07-18T14:20:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 21. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110021\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-22",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-22\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110022\",\"time\":\"2026-07-18T14:21:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 22. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110022\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-23",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-23\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110023\",\"time\":\"2026-07-18T14:22:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 23. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110023\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-24",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-24\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110024\",\"time\":\"2026-07-18T14:23:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 24. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110024\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-25",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-25\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110025\",\"time\":\"2026-07-18T14:24:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 25. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110025\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-26",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-26\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110026\",\"time\":\"2026-07-18T14:25:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 26. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110026\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-27",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-27\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110027\",\"time\":\"2026-07-18T14:26:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 27. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110027\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-28",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-28\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110028\",\"time\":\"2026-07-18T14:27:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 28. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110028\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-29",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-29\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110029\",\"time\":\"2026-07-18T14:28:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 29. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110029\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-30",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-30\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110030\",\"time\":\"2026-07-18T14:29:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 30. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110030\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-31",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-31\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110031\",\"time\":\"2026-07-18T14:30:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 31. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110031\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-32",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-32\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110032\",\"time\":\"2026-07-18T14:31:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 32. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110032\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-33",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-33\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110033\",\"time\":\"2026-07-18T14:32:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 33. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110033\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-34",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-34\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110034\",\"time\":\"2026-07-18T14:33:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 34. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110034\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-35",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-35\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110035\",\"time\":\"2026-07-18T14:34:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 35. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110035\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-36",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-36\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110036\",\"time\":\"2026-07-18T14:35:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 36. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110036\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-37",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-37\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110037\",\"time\":\"2026-07-18T14:36:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 37. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110037\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-38",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-38\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110038\",\"time\":\"2026-07-18T14:37:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 38. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110038\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-39",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-39\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110039\",\"time\":\"2026-07-18T14:38:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 39. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110039\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-40",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-40\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110040\",\"time\":\"2026-07-18T14:39:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 40. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110040\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-41",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-41\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110041\",\"time\":\"2026-07-18T14:40:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 41. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110041\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-42",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-42\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110042\",\"time\":\"2026-07-18T14:41:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 42. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110042\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-43",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-43\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110043\",\"time\":\"2026-07-18T14:42:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 43. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110043\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-44",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-44\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110044\",\"time\":\"2026-07-18T14:43:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 44. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110044\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-45",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-45\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110045\",\"time\":\"2026-07-18T14:44:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 45. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110045\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-46",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-46\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110046\",\"time\":\"2026-07-18T14:45:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 46. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110046\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-47",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-47\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110047\",\"time\":\"2026-07-18T14:46:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 47. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110047\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-48",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-48\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110048\",\"time\":\"2026-07-18T14:47:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 48. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110048\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-49",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-49\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110049\",\"time\":\"2026-07-18T14:48:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 49. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110049\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-global-50",
+        "Message": "{\"version\":\"0\",\"id\":\"event-global-50\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"111111110050\",\"time\":\"2026-07-18T14:49:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_BULK_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-bulk-global-50\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nBulk global billing communication update 50. Billing estimates may be incorrect until recovery is complete.\"}],\"affectedAccount\":\"111111110050\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-1",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-1\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220001\",\"time\":\"2026-07-18T15:00:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 1. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220001\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-2",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-2\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220002\",\"time\":\"2026-07-18T15:01:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 2. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220002\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-3",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-3\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220003\",\"time\":\"2026-07-18T15:02:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 3. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220003\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-4",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-4\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220004\",\"time\":\"2026-07-18T15:03:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 4. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220004\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-5",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-5\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220005\",\"time\":\"2026-07-18T15:04:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 5. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220005\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-6",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-6\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220006\",\"time\":\"2026-07-18T15:05:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 6. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220006\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-7",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-7\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220007\",\"time\":\"2026-07-18T15:06:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 7. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220007\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-8",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-8\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220008\",\"time\":\"2026-07-18T15:07:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 8. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220008\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-9",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-9\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220009\",\"time\":\"2026-07-18T15:08:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 9. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220009\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    },
+    {
+      "Sns": {
+        "MessageId": "message-secondary-10",
+        "Message": "{\"version\":\"0\",\"id\":\"event-secondary-10\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222220010\",\"time\":\"2026-07-18T15:09:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/EC2/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE/AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE_SECONDARY_PUBLIC\",\"service\":\"EC2\",\"eventTypeCode\":\"AWS_EC2_OPERATIONAL_CONNECTIVITY_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-secondary-10\",\"startTime\":\"Sat, 18 Jul 2026 14:00:00 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 14:05:00 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Secondary public connectivity communication update 10. Some instances may see intermittent network loss.\"}],\"affectedAccount\":\"222222220010\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}"
+      }
+    }
+  ]
+}

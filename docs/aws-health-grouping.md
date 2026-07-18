@@ -18,6 +18,29 @@ Praktisch:
 
 Voor grouping op hetzelfde Slack-bericht is `detail.communicationId` daarom de belangrijkste sleutel.
 
+## Functionele flow
+
+```mermaid
+flowchart TD
+  A[AWS Health event via SNS] -->|ontvang| B[healthEventLambda]
+  B -->|bepaal sleutel| C[Groepssleutel bepalen<br/>eventArn + communicationId]
+  C -->|sla event op| H[Event item opslaan in DynamoDB]
+  C -->|check| D{Bestaat groep al?}
+
+  D -->|nee| E[FIRST naar Slack]
+  E -->|maak groep| F[Group item opslaan in DynamoDB]
+  F -->|plan timer| G[Timerbericht naar SQS queue]
+
+  G -->|wacht| I[SQS delivery delay]
+  I -->|lever af| J[healthTimerLambda]
+  J -->|laad groep + events| K[Groep en events ophalen uit DynamoDB]
+  K -->|tel events| L{Aantal events > 1?}
+
+  L -->|nee| M[Groep sluiten in DynamoDB]
+  L -->|ja| N[GROUPED naar Slack]
+  N -->|sluit groep| O[Groep sluiten in DynamoDB]
+```
+
 AWS docs:
 https://docs.aws.amazon.com/health/latest/ug/aws-health-events-eventbridge-schema.html
 https://docs.aws.amazon.com/health/latest/ug/pagnation-of-health-events.html

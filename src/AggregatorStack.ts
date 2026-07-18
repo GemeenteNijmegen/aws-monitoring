@@ -116,7 +116,6 @@ class Notifier extends Construct {
       prefix,
       branchName,
       topics: this.monitoringTopics,
-      timerDelay: Duration.minutes(3),
     });
   }
 
