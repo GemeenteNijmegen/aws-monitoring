@@ -49,6 +49,9 @@ export class HealthEventHandler {
       recordCount: event.Records.length,
     });
 
+    const failedRecordIds: string[] = [];
+    let firstFailure: Error | undefined;
+
     for (const record of event.Records) {
       try {
         const healthEvent = this.parseHealthEvent(record);
@@ -96,9 +99,21 @@ export class HealthEventHandler {
         }
       } catch (error) {
         this.logger.error('Health flow: failed processing SNS record', error as Error);
+        failedRecordIds.push(record.Sns.MessageId);
+        if (!firstFailure) {
+          firstFailure = error as Error;
+        }
       } finally {
         this.logger.resetKeys();
       }
+    }
+
+    if (firstFailure) {
+      this.logger.error('Health flow: one or more SNS records failed in this batch', {
+        failedRecordCount: failedRecordIds.length,
+        failedRecordIds,
+      });
+      throw firstFailure;
     }
   }
 
