@@ -2,8 +2,7 @@ import { Logger } from '@aws-lambda-powertools/logger';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { HealthGroupEventRecord, HealthGroupRecord, HealthTimerMessage } from '../support/HealthGroupingTypes';
 import { GroupedHealthMessageFormatter } from '../support/HealthMessageFormatter';
-
-const groupedHealthPriority = 'high';
+import { healthGroupingPriority } from '../support/HealthPriority';
 
 export interface HealthTimerRepository {
   getGroup(groupKey: string): Promise<HealthGroupRecord | undefined>;
@@ -95,14 +94,15 @@ export class HealthTimerHandler {
         try {
           const groupedEvent = events[0]?.event as StoredHealthEvent;
           const accountNames = uniqueAccounts.sort();
+          const priority = healthGroupingPriority(uniqueAccounts);
           const slackMessage = new GroupedHealthMessageFormatter({
             accountNames,
             eventCount: events.length,
             event: groupedEvent,
           }).format();
-          await slackMessage.send(groupedHealthPriority);
+          await slackMessage.send(priority);
           this.logger.info('Health timer flow: sent grouped Slack message', {
-            priority: groupedHealthPriority,
+            priority,
           });
           await this.dependencies.repository.closeGroup(timerMessage.groupKey);
           this.logger.info('Health timer flow: closed group after grouped Slack message');
@@ -110,7 +110,7 @@ export class HealthTimerHandler {
           this.logger.info('Health timer flow: completed grouped processing', {
             eventCount: events.length,
             uniqueAccountCount: uniqueAccounts.length,
-            priority: groupedHealthPriority,
+            priority,
           });
         } catch (error) {
           // Voor nu laten we de groep hier bewust niet heropenen.

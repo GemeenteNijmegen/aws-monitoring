@@ -28,8 +28,10 @@ export class HealthGroupingResources extends Construct {
     this.table = this.setupHealthGroupingTable();
     this.timerQueue = this.setupHealthGroupingTimerQueue(props.timerDelay);
     this.healthEventLambda = this.setupHealthEventLambda(props.prefix, props.branchName);
+    this.table.grantReadWriteData(this.healthEventLambda);
     this.subscribeHealthLambda(props.topics, this.healthEventLambda);
     this.healthTimerLambda = this.setupHealthTimerLambda(props.prefix, props.branchName);
+    this.table.grantReadWriteData(this.healthTimerLambda);
     this.connectHealthQueue(this.healthEventLambda, this.healthTimerLambda, this.timerQueue);
   }
 
