@@ -20,7 +20,11 @@ export class FakeHealthGroupingRepository implements HealthEventRepository, Heal
     return this.groups.has(groupKey);
   }
 
-  async createGroup(identity: HealthGroupIdentity, createdAt: string): Promise<void> {
+  async createGroup(identity: HealthGroupIdentity, createdAt: string): Promise<boolean> {
+    if (this.groups.has(identity.groupKey)) {
+      return false;
+    }
+
     this.groups.set(identity.groupKey, {
       groupKey: identity.groupKey,
       eventArn: identity.eventArn,
@@ -29,13 +33,20 @@ export class FakeHealthGroupingRepository implements HealthEventRepository, Heal
       firstSeenAt: createdAt,
       lastSeenAt: createdAt,
     });
+    return true;
   }
 
-  async saveEvent(identity: HealthGroupIdentity, event: RepositoryEvent): Promise<void> {
+  async saveEvent(identity: HealthGroupIdentity, event: RepositoryEvent): Promise<boolean> {
     const existingEvents = this.events.get(identity.groupKey) ?? [];
+    if (existingEvents.some(existingEvent => existingEvent.eventId === event.id)) {
+      return false;
+    }
+
     const eventRecord: HealthGroupEventRecord = {
       groupKey: identity.groupKey,
       eventId: event.id,
+      eventArn: identity.eventArn,
+      communicationId: identity.communicationId,
       account: event.account ?? 'unknown',
       affectedAccount: event.detail?.affectedAccount,
       receivedAt: event.time ?? new Date().toISOString(),
@@ -44,6 +55,14 @@ export class FakeHealthGroupingRepository implements HealthEventRepository, Heal
 
     existingEvents.push(eventRecord);
     this.events.set(identity.groupKey, existingEvents);
+    const group = this.groups.get(identity.groupKey);
+    if (group) {
+      this.groups.set(identity.groupKey, {
+        ...group,
+        lastSeenAt: eventRecord.receivedAt,
+      });
+    }
+    return true;
   }
 
   async getGroup(groupKey: string): Promise<HealthGroupRecord | undefined> {

@@ -54,6 +54,7 @@ export class HealthGroupingResources extends Construct {
     const healthGrouping = getConfiguration(branchName).healthGrouping;
     const lambda = new HealthEventFunction(this, 'health-event-lambda', {
       description: `AWS Health event lambda (${prefix})`,
+      timeout: Duration.seconds(30),
       environment: {
         BRANCH_NAME: branchName,
         HEALTH_GROUPING_TABLE_NAME: this.table.tableName,
@@ -101,6 +102,7 @@ export class HealthGroupingResources extends Construct {
     const healthGrouping = getConfiguration(branchName).healthGrouping;
     const lambda = new HealthTimerFunction(this, 'health-timer-lambda', {
       description: `AWS Health timer lambda (${prefix})`,
+      timeout: Duration.seconds(30),
       environment: {
         BRANCH_NAME: branchName,
         HEALTH_GROUPING_TABLE_NAME: this.table.tableName,
@@ -124,6 +126,8 @@ export class HealthGroupingResources extends Construct {
   ) {
     timerQueue.grantSendMessages(healthEventLambda);
     timerQueue.grantConsumeMessages(healthTimerLambda);
-    healthTimerLambda.addEventSource(new SqsEventSource(timerQueue));
+    healthTimerLambda.addEventSource(new SqsEventSource(timerQueue, {
+      reportBatchItemFailures: true,
+    }));
   }
 }

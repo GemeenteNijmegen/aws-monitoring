@@ -36,31 +36,50 @@ export class HealthGroupingRepository {
     createdAt: string,
     now: Date = new Date(),
     ttlSeconds: number = DEFAULT_GROUP_TTL_SECONDS,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const ttl = Math.floor(now.getTime() / 1000) + ttlSeconds;
     const groupRecord = createGroupRecord(identity, createdAt, ttl);
 
-    await this.docClient.send(new PutCommand({
-      TableName: this.tableName,
-      Item: groupItem(groupRecord),
-      ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)',
-    }));
+    try {
+      await this.docClient.send(new PutCommand({
+        TableName: this.tableName,
+        Item: groupItem(groupRecord),
+        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)',
+      }));
+      return true;
+    } catch (error) {
+      if (isConditionalUpdateFailure(error)) {
+        return false;
+      }
+      throw error;
+    }
   }
 
   async saveEvent(
     identity: HealthGroupIdentity,
     event: HealthGroupingRepositoryEvent,
     now: Date = new Date(),
-  ): Promise<void> {
+    ttlSeconds: number = DEFAULT_GROUP_TTL_SECONDS,
+  ): Promise<boolean> {
     const timestamp = eventTimestamp(event, now);
-    const eventRecord = createEventRecord(identity.groupKey, event, timestamp);
+    const ttl = Math.floor(now.getTime() / 1000) + ttlSeconds;
+    const eventRecord = createEventRecord(identity, event, timestamp, ttl);
 
     // Losse events worden opgeslagen; timerverwerking bepaalt later aantallen en samenvatting.
-    await this.docClient.send(new PutCommand({
-      TableName: this.tableName,
-      Item: eventItem(eventRecord),
-      ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)',
-    }));
+    try {
+      await this.docClient.send(new PutCommand({
+        TableName: this.tableName,
+        Item: eventItem(eventRecord),
+        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)',
+      }));
+      await this.touchGroup(identity.groupKey, timestamp);
+      return true;
+    } catch (error) {
+      if (isConditionalUpdateFailure(error)) {
+        return false;
+      }
+      throw error;
+    }
   }
 
   async getGroup(groupKey: string): Promise<HealthGroupRecord | undefined> {
@@ -128,6 +147,17 @@ export class HealthGroupingRepository {
       },
     }));
   }
+
+  private async touchGroup(groupKey: string, lastSeenAt: string): Promise<void> {
+    await this.docClient.send(new UpdateCommand({
+      TableName: this.tableName,
+      Key: groupItemKey(groupKey),
+      UpdateExpression: 'SET lastSeenAt = :lastSeenAt',
+      ExpressionAttributeValues: {
+        ':lastSeenAt': lastSeenAt,
+      },
+    }));
+  }
 }
 
 function groupPartitionKey(groupKey: string): string {
@@ -162,16 +192,20 @@ function createGroupRecord(
 }
 
 function createEventRecord(
-  groupKey: string,
+  identity: HealthGroupIdentity,
   event: HealthGroupingRepositoryEvent,
   timestamp: string,
+  ttl: number,
 ): HealthGroupEventRecord {
   return {
-    groupKey,
+    groupKey: identity.groupKey,
     eventId: event.id,
+    eventArn: identity.eventArn,
+    communicationId: identity.communicationId,
     account: eventAccount(event),
     affectedAccount: event.detail?.affectedAccount,
     receivedAt: timestamp,
+    ttl,
     event,
   };
 }

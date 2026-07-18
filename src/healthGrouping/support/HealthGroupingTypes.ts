@@ -17,9 +17,12 @@ export interface HealthGroupRecord {
 export interface HealthGroupEventRecord {
   readonly groupKey: string;
   readonly eventId: string;
+  readonly eventArn: string;
+  readonly communicationId: string;
   readonly account: string;
   readonly affectedAccount?: string;
   readonly receivedAt: string;
+  readonly ttl?: number;
   readonly event: unknown;
 }
 

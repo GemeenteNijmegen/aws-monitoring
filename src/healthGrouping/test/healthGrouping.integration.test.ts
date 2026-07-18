@@ -94,7 +94,9 @@ describe('Health grouping integration', () => {
     expect(storedEventsBeforeTimer).toHaveLength(1);
     expect(sendSlackMessage).toHaveBeenCalledTimes(1);
 
-    await expect(healthTimerHandler.handle(createTimerEvent(firstScheduledTimerMessage(scheduledTimerMessages)))).resolves.toBeUndefined();
+    await expect(healthTimerHandler.handle(createTimerEvent(firstScheduledTimerMessage(scheduledTimerMessages)))).resolves.toEqual({
+      batchItemFailures: [],
+    });
 
     const closedGroup = await repository.getGroup(expectedGroupKey);
     const storedEventsAfterTimer = await repository.getGroupEvents(expectedGroupKey);
@@ -132,7 +134,9 @@ describe('Health grouping integration', () => {
     expect(storedEventsBeforeTimer).toHaveLength(2);
     expect(sendSlackMessage).toHaveBeenCalledTimes(1);
 
-    await expect(healthTimerHandler.handle(createTimerEvent(firstScheduledTimerMessage(scheduledTimerMessages)))).resolves.toBeUndefined();
+    await expect(healthTimerHandler.handle(createTimerEvent(firstScheduledTimerMessage(scheduledTimerMessages)))).resolves.toEqual({
+      batchItemFailures: [],
+    });
 
     const closedGroup = await repository.getGroup(expectedGroupKey);
     const storedEventsAfterTimer = await repository.getGroupEvents(expectedGroupKey);
@@ -189,13 +193,43 @@ describe('Health grouping integration', () => {
     expect(sendSlackMessage).toHaveBeenCalledTimes(3);
 
     for (const timerMessage of scheduledTimerMessages) {
-      await expect(healthTimerHandler.handle(createTimerEvent(timerMessage))).resolves.toBeUndefined();
+      await expect(healthTimerHandler.handle(createTimerEvent(timerMessage))).resolves.toEqual({
+        batchItemFailures: [],
+      });
     }
 
     expect((await repository.getGroup(billingGroupKey))?.status).toBe('closed');
     expect((await repository.getGroup(acmGroupedGroupKey))?.status).toBe('closed');
     expect((await repository.getGroup(acmFirstOnlyGroupKey))?.status).toBe('closed');
     expect(sendSlackMessage).toHaveBeenCalledTimes(5);
+
+    sendSlackMessage.mockRestore();
+  });
+
+  test('duplicate event id is skipped without failing the flow', async () => {
+    const {
+      repository,
+      scheduledTimerMessages,
+      sendSlackMessage,
+      healthEventHandler,
+      healthTimerHandler,
+    } = createTestContext();
+    const duplicateEvent = await loadHealthEvent('health-public-account-a.json');
+    const expectedGroupKey = 'arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_EXAMPLE_PUBLIC#health-communication-public-1';
+
+    await expect(healthEventHandler.handle(duplicateEvent)).resolves.toBeUndefined();
+    await expect(healthEventHandler.handle(duplicateEvent)).resolves.toBeUndefined();
+
+    expect(scheduledTimerMessages).toHaveLength(1);
+    expect(await repository.getGroupEvents(expectedGroupKey)).toHaveLength(1);
+    expect(sendSlackMessage).toHaveBeenCalledTimes(1);
+
+    await expect(healthTimerHandler.handle(createTimerEvent(firstScheduledTimerMessage(scheduledTimerMessages)))).resolves.toEqual({
+      batchItemFailures: [],
+    });
+
+    expect((await repository.getGroup(expectedGroupKey))?.status).toBe('closed');
+    expect(sendSlackMessage).toHaveBeenCalledTimes(1);
 
     sendSlackMessage.mockRestore();
   });

@@ -28,6 +28,11 @@ Gebruik deze JSON-bestanden in de AWS Lambda console om de nieuwe Health-flow sn
     - 2x `GROUPED`
     - 1 groep alleen `FIRST`
 
+- `healthEventLambda-full-flow-6-events-unique.json`
+  - zelfde flow als hierboven
+  - maar met unieke event- en communication-ids
+  - handig als de standaard full-flow al eerder tegen dezelfde tabel is gebruikt
+
 ## Wat je daarna controleert
 
 - logs van `healthEventLambda`

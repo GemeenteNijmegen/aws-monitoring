@@ -1,5 +1,5 @@
 import { Logger } from '@aws-lambda-powertools/logger';
-import { SQSEvent, SQSRecord } from 'aws-lambda';
+import { SQSEvent, SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import { HealthGroupEventRecord, HealthGroupRecord, HealthTimerMessage } from '../support/HealthGroupingTypes';
 import { GroupedHealthMessageFormatter } from '../support/HealthMessageFormatter';
 import { healthGroupingPriority } from '../support/HealthPriority';
@@ -36,21 +36,23 @@ export class HealthTimerHandler {
     });
   }
 
-  async handle(event: SQSEvent) {
+  async handle(event: SQSEvent): Promise<SQSBatchResponse> {
     this.logger.info('Health timer flow: received SQS batch', {
       recordCount: event.Records.length,
     });
 
-    for (const record of event.Records) {
-      const timerMessage = this.parseTimerMessage(record);
-      this.logger.appendKeys({
-        groupKey: timerMessage.groupKey,
-        scheduledAt: timerMessage.scheduledAt,
-        messageId: record.messageId,
-        receiveCount: record.attributes.ApproximateReceiveCount,
-      });
+    const batchItemFailures: SQSBatchResponse['batchItemFailures'] = [];
 
+    for (const record of event.Records) {
       try {
+        const timerMessage = this.parseTimerMessage(record);
+        this.logger.appendKeys({
+          groupKey: timerMessage.groupKey,
+          scheduledAt: timerMessage.scheduledAt,
+          messageId: record.messageId,
+          receiveCount: record.attributes.ApproximateReceiveCount,
+        });
+
         this.logger.info('Health timer flow: parsed SQS timer message');
         const group = await this.dependencies.repository.getGroup(timerMessage.groupKey);
         const events = await this.dependencies.repository.getGroupEvents(timerMessage.groupKey);
@@ -121,10 +123,17 @@ export class HealthTimerHandler {
           this.logger.warn('Health timer flow: grouped processing failed while group remains claimed');
           throw error;
         }
+      } catch (error) {
+        this.logger.error('Health timer flow: failed processing timer message', error as Error);
+        batchItemFailures.push({
+          itemIdentifier: record.messageId,
+        });
       } finally {
         this.logger.resetKeys();
       }
     }
+
+    return { batchItemFailures };
   }
 
   private parseTimerMessage(record: SQSRecord): HealthTimerMessage {

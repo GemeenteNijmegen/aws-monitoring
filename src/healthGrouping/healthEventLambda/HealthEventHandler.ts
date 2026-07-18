@@ -6,8 +6,8 @@ import { healthGroupingPriority } from '../support/HealthPriority';
 
 export interface HealthEventRepository {
   groupExists(groupKey: string): Promise<boolean>;
-  createGroup(identity: ReturnType<typeof createHealthGroupIdentity>, createdAt: string): Promise<void>;
-  saveEvent(identity: ReturnType<typeof createHealthGroupIdentity>, event: ParsedHealthEvent): Promise<void>;
+  createGroup(identity: ReturnType<typeof createHealthGroupIdentity>, createdAt: string): Promise<boolean>;
+  saveEvent(identity: ReturnType<typeof createHealthGroupIdentity>, event: ParsedHealthEvent): Promise<boolean>;
 }
 
 export interface HealthEventDependencies {
@@ -50,24 +50,24 @@ export class HealthEventHandler {
     });
 
     for (const record of event.Records) {
-      const healthEvent = this.parseHealthEvent(record);
-      const identity = createHealthGroupIdentity(healthEvent);
-      const timestamp = healthEvent.time ?? new Date().toISOString();
-      this.logger.appendKeys({
-        groupKey: identity.groupKey,
-        eventArn: identity.eventArn,
-        communicationId: identity.communicationId,
-        eventId: healthEvent.id,
-        account: healthEvent.account,
-        eventTypeCode: healthEvent.detail?.eventTypeCode,
-        eventScopeCode: healthEvent.detail?.eventScopeCode,
-        page: healthEvent.detail?.page,
-        totalPages: healthEvent.detail?.totalPages,
-        snsMessageId: record.Sns.MessageId,
-        scheduledAt: timestamp,
-      });
-
       try {
+        const healthEvent = this.parseHealthEvent(record);
+        const identity = createHealthGroupIdentity(healthEvent);
+        const timestamp = healthEvent.time ?? new Date().toISOString();
+        this.logger.appendKeys({
+          groupKey: identity.groupKey,
+          eventArn: identity.eventArn,
+          communicationId: identity.communicationId,
+          eventId: healthEvent.id,
+          account: healthEvent.account,
+          eventTypeCode: healthEvent.detail?.eventTypeCode,
+          eventScopeCode: healthEvent.detail?.eventScopeCode,
+          page: healthEvent.detail?.page,
+          totalPages: healthEvent.detail?.totalPages,
+          snsMessageId: record.Sns.MessageId,
+          scheduledAt: timestamp,
+        });
+
         this.logger.info('Health flow: parsed SNS record');
         const isFirst = !(await this.dependencies.repository.groupExists(identity.groupKey));
         this.logger.info('Health flow: checked group existence', { isFirst });
@@ -79,16 +79,23 @@ export class HealthEventHandler {
           this.logger.info('Health flow: sent first Slack message', {
             priority,
           });
-          await this.dependencies.repository.createGroup(identity, timestamp);
-          this.logger.info('Health flow: created group record');
-          await this.dependencies.scheduleTimer(identity.groupKey, timestamp);
+          const groupCreated = await this.dependencies.repository.createGroup(identity, timestamp);
+          if (groupCreated) {
+            this.logger.info('Health flow: created group record');
+            await this.dependencies.scheduleTimer(identity.groupKey, timestamp);
+          } else {
+            this.logger.warn('Health flow: group record already existed while handling first event');
+          }
         }
 
-        await this.dependencies.repository.saveEvent(identity, healthEvent);
-        this.logger.info('Health flow: stored event record', { isFirst });
+        const eventStored = await this.dependencies.repository.saveEvent(identity, healthEvent);
+        if (eventStored) {
+          this.logger.info('Health flow: stored event record', { isFirst });
+        } else {
+          this.logger.warn('Health flow: duplicate event skipped', { isFirst });
+        }
       } catch (error) {
         this.logger.error('Health flow: failed processing SNS record', error as Error);
-        throw error;
       } finally {
         this.logger.resetKeys();
       }
