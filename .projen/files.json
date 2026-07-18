@@ -19,6 +19,7 @@
     "LICENSE",
     "src/audit/archiver/archiver-function.ts",
     "src/audit/slackbot/slackbot-function.ts",
+    "src/ClockDriftLambda/ClockDrift-function.ts",
     "src/healthGrouping/healthEventLambda/healthEvent-function.ts",
     "src/healthGrouping/healthTimerLambda/healthTimer-function.ts",
     "src/monitoringLambda/monitoring-function.ts",

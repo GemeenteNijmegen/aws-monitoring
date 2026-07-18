@@ -153,6 +153,7 @@
         "devDependencies": [
           "**/test/**",
           "**/build-tools/**",
+          "src/ClockDriftLambda/ClockDrift.lambda.ts",
           "src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
           "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",

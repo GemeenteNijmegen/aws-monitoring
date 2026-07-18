@@ -24,6 +24,7 @@
 /package.json linguist-generated
 /src/audit/archiver/archiver-function.ts linguist-generated
 /src/audit/slackbot/slackbot-function.ts linguist-generated
+/src/ClockDriftLambda/ClockDrift-function.ts linguist-generated
 /src/healthGrouping/healthEventLambda/healthEvent-function.ts linguist-generated
 /src/healthGrouping/healthTimerLambda/healthTimer-function.ts linguist-generated
 /src/monitoringLambda/monitoring-function.ts linguist-generated

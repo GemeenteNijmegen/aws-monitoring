@@ -58,6 +58,7 @@ junit.xml
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
+!/src/ClockDriftLambda/ClockDrift-function.ts
 !/src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts
 !/src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts
 !/src/SlackInteractivityLambda/SlackInteractivity-function.ts
