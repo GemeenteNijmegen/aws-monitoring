@@ -32,20 +32,42 @@ describe('SNS events', () => {
   const snsHandler = new SnsEventHandler(config);
   const logsHandler = new LogsEventHandler();
 
-  test('ecs task state change', async () => {
+  test('ecs task state change intermediate (one-off, PENDING) is suppressed', async () => {
     const event = await getEventFromFilePath('samples/ecs-task-state-change.json');
-
-    const handled = snsHandler.handle(event);
     expect(snsHandler.canHandle(event)).toBeTruthy();
     expect(logsHandler.canHandle(event)).toBeFalsy();
+    // One-off task in a non-STOPPED intermediate state — no alert
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('ecs scheduled task success is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-success.json');
+    expect(snsHandler.canHandle(event)).toBeTruthy();
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('ecs scheduled task failure triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
+    const handled = snsHandler.handle(event);
     expect(handled).not.toBeFalsy();
     if (handled == false) { return; }
+    // Account 12345678 is development → high downgraded to medium
     expect(handled.priority).toBe('medium');
-
     const json = JSON.stringify(handled.message.getSlackMessage());
-    expect(json).toContain('type: *ECS Task State Change, cluster joost-test*');
-    expect(json).toContain('ECS Task not in desired state (state PENDING, desired RUNNING)');
+    expect(json).toContain('Scheduled task failed');
+    expect(json).toContain('vac-container (exit 1)');
+  });
 
+  test('ecs scheduled task failed-to-start triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed-to-start.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    // Account 12345678 is development → high downgraded to medium
+    expect(handled.priority).toBe('medium');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Scheduled task failed');
+    expect(json).toContain('Task failed to start');
   });
 
   test('ec2 instance state change', async () => {

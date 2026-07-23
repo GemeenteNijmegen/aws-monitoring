@@ -3,6 +3,7 @@ import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 import { Configuration } from '../DeploymentEnvironments';
 import { Priority, Statics } from '../statics';
+import { classifyEcsTask } from './EcsTaskClassifier';
 
 /**
  * This maps the type of notifications this lambda can handle. Not all notifications should trigger
@@ -46,7 +47,7 @@ const events: Record<string, Event> = {
     formatter: (message, account, priority) => new AlarmMessageFormatter(message, account, priority),
   },
   'ECS Task State Change': {
-    shouldTriggerAlert: () => true,
+    shouldTriggerAlert: (message: any) => ecsTaskStateShouldTriggerAlert(message),
     formatter: (message, account, priority) => new EcsMessageFormatter(message, account, priority),
     priority: 'high',
   },
@@ -235,6 +236,30 @@ export function getEventType(message: any, event?: any): keyof typeof events {
   return 'unhandledEvent';
 }
 
+
+function ecsTaskStateShouldTriggerAlert(message: any): boolean {
+  const detail = message?.detail;
+  if (classifyEcsTask(detail) === 'service') {
+    return true;
+  }
+  // Suppress intermediate transitions (PROVISIONING / PENDING / RUNNING / …)
+  if (detail?.lastStatus !== 'STOPPED') {
+    return false;
+  }
+  // Alert on TaskFailedToStart
+  if (detail?.stopCode === 'TaskFailedToStart') {
+    return true;
+  }
+  // Suppress clean completions: all containers exited with code 0
+  if (detail?.stopCode === 'EssentialContainerExited') {
+    const containers: any[] = detail?.containers ?? [];
+    if (containers.every((c: any) => c.exitCode === 0)) {
+      return false;
+    }
+  }
+  // Any other stopped state (non-zero exit, etc.) is a failure
+  return true;
+}
 
 /**
  * Only alerts from or to state ALARM should notify. From insufficient data to

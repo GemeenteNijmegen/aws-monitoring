@@ -1,0 +1,19 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-west-1:12345678:monitoring-stack-monitoring-snstopic-high:00000000-0000-0000-0000-000000000000",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "00000000-0000-0000-0000-000000000000",
+        "TopicArn": "arn:aws:sns:eu-west-1:12345678:monitoring-stack-monitoring-snstopic-high",
+        "Subject": null,
+        "Message": "{\"version\":\"0\",\"id\":\"71777ffc-1d16-3d18-9299-1a2a19c30005\",\"detail-type\":\"ECS Task State Change\",\"source\":\"aws.ecs\",\"account\":\"12345678\",\"time\":\"2022-08-16T11:25:00Z\",\"region\":\"eu-west-1\",\"resources\":[\"arn:aws:ecs:eu-west-1:12345678:task/dev-test/01ae51f2e0d8409f9ba55adde55f83dc\"],\"detail\":{\"clusterArn\":\"arn:aws:ecs:eu-west-1:12345678:cluster/dev-test\",\"group\":\"family:sometaskfamily\",\"startedBy\":\"chronos-schedule/kcc-infra-stack-ela\",\"launchType\":\"FARGATE\",\"lastStatus\":\"STOPPED\",\"desiredStatus\":\"STOPPED\",\"stopCode\":\"EssentialContainerExited\",\"stoppedReason\":\"Essential container in task exited\",\"containers\":[{\"name\":\"vac-container\",\"lastStatus\":\"STOPPED\",\"exitCode\":1}],\"taskArn\":\"arn:aws:ecs:eu-west-1:12345678:task/dev-test/01ae51f2e0d8409f9ba55adde55f83dc\",\"taskDefinitionArn\":\"arn:aws:ecs:eu-west-1:12345678:task-definition/dev-test:1\"}}",
+        "Timestamp": "2022-08-16T11:25:00Z",
+        "SignatureVersion": "1",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

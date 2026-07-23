@@ -1,0 +1,19 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high:00000000-0000-0000-0000-000000000000",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "00000000-0000-0000-0000-000000000000",
+                "TopicArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high",
+                "Subject": null,
+                "Message": "{\"version\":\"0\",\"source\":\"aws.ecs\",\"account\":\"111122223333\",\"time\":\"2020-05-23T12:31:14Z\",\"region\":\"us-west-2\",\"resources\":[\"arn:aws:ecs:us-west-2:111122223333:service/default/servicetest\"],\"id\":\"ddca6449-b258-46c0-8653-e0e3aEXAMPLE\",\"detail-type\":\"ECS Deployment State Change\",\"detail\":{\"eventType\":\"INFO\",\"eventName\":\"SERVICE_DEPLOYMENT_COMPLETED\",\"deploymentId\":\"ecs-svc/123\",\"updatedAt\":\"2020-05-23T11:11:11Z\",\"reason\":\"ECS deployment ecs-svc/123 completed.\"}}",
+                "Timestamp": "2020-05-23T12:31:14Z",
+                "SignatureVersion": "1",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

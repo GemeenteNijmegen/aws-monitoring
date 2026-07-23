@@ -1,0 +1,19 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high:00000000-0000-0000-0000-000000000000",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "00000000-0000-0000-0000-000000000000",
+                "TopicArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high",
+                "Subject": null,
+                "Message": "{\"version\":\"0\",\"source\":\"aws.ecs\",\"account\":\"111122223333\",\"time\":\"2019-11-19T19:55:38Z\",\"region\":\"us-west-2\",\"resources\":[\"arn:aws:ecs:us-west-2:111122223333:service/default/servicetest\"],\"id\":\"57c9506e-9d21-294c-d2fe-e8738da7e67d\",\"detail-type\":\"ECS Service Action\",\"detail\":{\"eventType\":\"WARN\",\"eventName\":\"SERVICE_TASK_START_IMPAIRED\",\"clusterArn\":\"arn:aws:ecs:us-west-2:111122223333:cluster/default\",\"createdAt\":\"2019-11-19T19:55:38.725Z\"}}",
+                "Timestamp": "2019-11-19T19:55:38Z",
+                "SignatureVersion": "1",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

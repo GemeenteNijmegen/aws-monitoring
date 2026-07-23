@@ -1,4 +1,5 @@
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
+import { classifyEcsTask } from './EcsTaskClassifier';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
@@ -107,10 +108,16 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
 
 export class EcsMessageFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {
-    const status = this.event?.detail?.lastStatus;
-    const desiredStatus = this.event?.detail?.desiredStatus;
-    const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\n - ');
-    const clusterName = this.event?.detail?.clusterArn.split('/').pop();
+    const detail = this.event?.detail;
+    const clusterName = detail?.clusterArn.split('/').pop();
+
+    if (classifyEcsTask(detail) !== 'service') {
+      return this.constructScheduledTaskFailureMessage(message, detail, clusterName);
+    }
+
+    const status = detail?.lastStatus;
+    const desiredStatus = detail?.desiredStatus;
+    const containerString = detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\n - ');
     const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
 
     if (status != desiredStatus) {
@@ -123,9 +130,35 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
       account: this.lookupAccountName(this.account),
     });
     message.addSection(`Containers involved: \n - ${containerString}`);
-    if (this.event?.detail.stoppedReason) {
-      message.addSection(`Stopped for reason: \n - ${this.event?.detail.stoppedReason}`);
+    if (detail?.stoppedReason) {
+      message.addSection(`Stopped for reason: \n - ${detail.stoppedReason}`);
     }
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+
+  private constructScheduledTaskFailureMessage(message: Message, detail: any, clusterName: string): Message {
+    const taskFamily = detail?.group?.replace('family:', '') ?? 'unknown';
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/tasks`;
+
+    message.addHeader(`❗️ Scheduled task failed: ${taskFamily}`);
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${clusterName}`,
+      account: this.lookupAccountName(this.account),
+    });
+
+    if (detail?.stopCode === 'TaskFailedToStart') {
+      message.addSection(`Task failed to start: ${detail?.stoppedReason ?? 'unknown reason'}`);
+    } else {
+      const containers: any[] = detail?.containers ?? [];
+      const failed = containers.filter((c: any) => c.exitCode !== 0);
+      const containerString = failed.map((c: any) => `${c.name} (exit ${c.exitCode})`).join('\n - ');
+      message.addSection(`Container(s) exited with error: \n - ${containerString}`);
+      if (detail?.stoppedReason) {
+        message.addSection(`Reason: ${detail.stoppedReason}`);
+      }
+    }
+
     message.addLink('Bekijk cluster', target);
     return message;
   }
