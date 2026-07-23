@@ -1,10 +1,10 @@
 import { Stack, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { ClockDriftMonitoring } from './ClockDriftLambda/ClockDriftMonitoring';
 import { DefaultAlarms } from './DefaultAlarms';
 import { DeploymentEnvironment } from './DeploymentEnvironments';
 import { DevopsGuruMonitoring } from './DevopsGuruMonitoring';
 import { EventSubscription } from './EventSubscription';
-import { LogQueryAccessRole } from './LogQueryAccessRole';
 import { EventSubscriptionConfiguration } from './MonitoringTargetStage';
 import { Statics } from './statics';
 
@@ -23,18 +23,12 @@ export class MonitoredAccountStack extends Stack {
     this.addEventSubscriptions(props);
     new DefaultAlarms(this, 'default-alarms');
 
-    /**
-     * If the account needs to be queried by the log query job (eg. props.queryDefinitons is defined)
-     * setup a role to be assumed by the (centralized) log query lambda.
-     */
-    if (props.queryDefinitions) {
-      new LogQueryAccessRole(this, 'logqueryrole', {
-        queryDefinitions: props.queryDefinitions,
-      });
-    }
-
     if (props.enableDevopsGuru) {
       new DevopsGuruMonitoring(this, 'devopsguru');
+    }
+
+    if (props.enableClockDriftMonitor) {
+      new ClockDriftMonitoring(this, 'clock-drift-monitor', { accountName: props.accountName });
     }
 
   }
@@ -71,6 +65,21 @@ export class MonitoredAccountStack extends Stack {
           detailType: ['ECS Task State Change', 'ECS Deployment State Change', 'ECS Service Action'],
         },
         ruleDescription: 'Send ECS task, deployment, and service-action notifications to SNS',
+      },
+      // Temporarily check this to figure out failing health checks in ECS
+      // https://github.com/aws-samples/amazon-ecs-agent-connection-monitoring
+      // https://github.com/aws-samples/amazon-ecs-agent-connection-monitoring/blob/main/ecs-agent-monitoring.yaml
+      {
+        id: 'ecs-container-agent-disconnect',
+        criticality: 'low',
+        pattern: {
+          source: ['aws.ecs'],
+          detail: {
+            agentConnected: [false],
+            status: ['ACTIVE'],
+          },
+        },
+        ruleDescription: 'Send ECS container disconnect notices to SNS',
       },
       {
         id: 'ec2-spot-instance-interruption',

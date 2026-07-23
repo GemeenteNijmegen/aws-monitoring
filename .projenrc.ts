@@ -1,8 +1,9 @@
-const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/projen-project-type');
+import { GemeenteNijmegenCdkApp } from '@gemeentenijmegen/projen-project-type';
 const project = new GemeenteNijmegenCdkApp({
   cdkVersion: '2.1.0',
   defaultReleaseBranch: 'main',
   name: 'aws-monitoring',
+  projenrcTs: true,
   depsUpgradeOptions: {
     workflowOptions: {
       branches: ['sandbox'],
@@ -22,19 +23,25 @@ const project = new GemeenteNijmegenCdkApp({
     '@aws-sdk/client-sqs',
     '@aws-sdk/client-securityhub',
     '@aws-sdk/client-organizations',
+    '@aws-sdk/client-cloudwatch',
     '@aws-sdk/client-cloudwatch-logs',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-sts',
     '@aws-sdk/client-sns',
+    '@aws-sdk/client-dynamodb',
+    '@aws-sdk/lib-dynamodb',
+    '@aws-lambda-powertools/logger',
     'cdk-stacksets',
+    '@gemeentenijmegen/projen-project-type',
   ],
   devDeps: [
-    '@gemeentenijmegen/projen-project-type',
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],
-  /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  tsconfig: {
+    compilerOptions: {
+      isolatedModules: true,
+    },
+  },
 });
 project.synth();

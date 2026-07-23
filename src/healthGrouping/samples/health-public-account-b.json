@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium:subscription-public-b",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "message-public-b",
+        "TopicArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium",
+        "Message": "{\"version\":\"0\",\"id\":\"event-public-b\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"222222222222\",\"time\":\"2026-07-17T19:56:44Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:global::event/BILLING/AWS_BILLING_OPERATIONAL_ISSUE/AWS_BILLING_OPERATIONAL_ISSUE_EXAMPLE_PUBLIC\",\"service\":\"BILLING\",\"eventTypeCode\":\"AWS_BILLING_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-public-1\",\"startTime\":\"Fri, 17 Jul 2026 08:33:36 GMT\",\"lastUpdatedTime\":\"Fri, 17 Jul 2026 19:56:18 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"global\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nInaccurate Estimated Billing Data\\n\\n[12:56 PM PDT] Example public communication update for account B. Billing estimates may be incorrect until recovery is complete. No customer action is required.\"}],\"affectedAccount\":\"222222222222\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}",
+        "Timestamp": "2026-07-17T19:56:45.776Z",
+        "SignatureVersion": "1",
+        "Signature": "example-signature-public-b",
+        "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/example-cert.pem",
+        "Subject": "AWS Health Event",
+        "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=subscription-public-b",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

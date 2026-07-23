@@ -2,17 +2,18 @@ import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Aspects, Stack, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { EventPattern } from 'aws-cdk-lib/aws-events';
 import { Role } from 'aws-cdk-lib/aws-iam';
-import { DeploymentType, StackSet, StackSetTarget, StackSetTemplate, Capability } from 'cdk-stacksets';
+import { Capability, DeploymentType, StackSet, StackSetTarget, StackSetTemplate } from 'cdk-stacksets';
 import { Construct } from 'constructs';
 import { AggregatorStack } from './AggregatorStack';
-import { DeploymentEnvironment } from './DeploymentEnvironments';
+import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
 import { EventbridgeForwarderStack } from './EventbridgeForwarderStack';
 import { IntegrationsStack } from './IntegrationsStack';
 import { MonitoredAccountStack } from './MonitoredAccountStack';
+import { NetworkStack } from './NetworkStack';
 import { ParameterStack } from './ParameterStack';
 import { Priority, Statics } from './statics';
 
-export interface MonitoringTargetStageProps extends StageProps {
+export interface MonitoringTargetStageProps extends StageProps, Configurable {
   deployToEnvironments: DeploymentEnvironment[];
   isProduction?: boolean;
   branchName: string;
@@ -61,6 +62,13 @@ export class MonitoringTargetStage extends Stage {
       new MonitoredAccountStack(this, `${environment.accountName}`, environment);
     });
 
+    if (props.isProduction) {
+      new NetworkStack(this, 'gn-network-specific', {
+        description: 'Monitors network aspects of the gn-network account (such as VPN tunnels)',
+        env: Statics.gnNetwork,
+      });
+    }
+
     const parameterPrefix = props.isProduction ? 'prod' : 'dev';
     const parameterStack = new ParameterStack(this, 'parameters', {
       env: Statics.aggregatorEnvironment,
@@ -75,6 +83,7 @@ export class MonitoringTargetStage extends Stage {
     new IntegrationsStack(this, 'integrations', {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
+      deployAuditSlackbot: props.configuration.deployAuditSlackbot,
     }).addDependency(parameterStack);
 
   }

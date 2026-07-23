@@ -1,5 +1,4 @@
 import { Environment } from 'aws-cdk-lib';
-import { CloudWatchInsightsQueryProps } from './LogQueryJob/Query';
 import { Priority, SpecificPriority, Statics } from './statics';
 
 export type AccountType = 'acceptance' | 'production' | 'development' | 'test' | 'sandbox';
@@ -32,13 +31,14 @@ export interface DeploymentEnvironment {
   enableDevopsGuru?: boolean;
 
   /**
-   * Query definitions that will run during the
-   * scheduled log query job.
-   * Note: the lambda assumes the log-query-job-role present in the gn-audit account.
-   * To incldue a query here gant that role permissions to the corresponding log groups.
-   * @default none
+   * Flag to enable the clock drift monitor lambda for this account.
+   *
+   * Checks, on a schedule, whether the lambda execution environment's clock
+   * matches real time, and alerts via slack when it doesn't (within a
+   * margin). Always records the measured drift as a CloudWatch metric.
+   * @default false
    */
-  queryDefinitions?: CloudWatchInsightsQueryProps[];
+  enableClockDriftMonitor?: boolean;
 
   /**
    * Define key or role monitoring conditions on the OrgTrail
@@ -68,6 +68,23 @@ export interface Configuration {
    * The CDK id for the pipeline stack (in main.ts)
    */
   pipelineStackCdkName: string;
+
+  /**
+   * Deploy audit slackbot
+   * @default not deployed
+   */
+  deployAuditSlackbot?: boolean;
+
+  /**
+   * Feature flags for the separate AWS Health grouping flow
+   */
+  healthGrouping?: {
+    /**
+     * Enables the separate Health intake lambda
+     * @default false
+     */
+    enabled?: boolean;
+  };
 
   /**
    * Define key or role monitoring conditions on the OrgTrail
@@ -172,6 +189,10 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'main',
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
+    deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: false,
+    },
     globalMonitoringRules: [
       {
         roleMonitoring: {
@@ -228,7 +249,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         enableDevopsGuru: true,
       },
       {
-        accountName: 'gn-geo-data-production',
+        accountName: 'gn-data-storage-production',
         accountType: 'production',
         env: {
           account: '549334216741',
@@ -236,7 +257,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-geo-data-acceptance',
+        accountName: 'gn-data-storage-acceptance',
         accountType: 'acceptance',
         env: {
           account: '766983128454',
@@ -360,10 +381,18 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-static-websites',
+        accountName: 'gn-static-websites-prod',
         accountType: 'production',
         env: {
           account: '654477686593',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-static-websites-accp',
+        accountType: 'acceptance',
+        env: {
+          account: '991246619216',
           region: 'eu-central-1',
         },
       },
@@ -540,9 +569,16 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
       {
         accountName: 'gn-network',
         accountType: 'production',
-        monitor: false,
+        monitor: true,
+        env: Statics.gnNetwork,
+        enableDevopsGuru: false,
+      },
+      {
+        accountName: 'gn-mijn-services-dev',
+        accountType: 'development',
+        monitor: true,
         env: {
-          account: '043872078922',
+          account: '958979025885',
           region: 'eu-central-1',
         },
       },
@@ -619,7 +655,25 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-verzoekservicewerkinkomen-accp',
+        accountName: 'gn-sandbox-esper',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '837644359001',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-sandbox-teppei',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '770404292215',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-ai-accp',
         accountType: 'acceptance',
         monitor: true,
         env: {
@@ -628,11 +682,65 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-verzoekservicewerkinkomen-prod',
+        accountName: 'gn-ai-prod',
         accountType: 'production',
         monitor: true,
         env: {
           account: '222634384969',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-4daagsefeesten-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '288761733826',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-4daagsefeesten-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '061039783330',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mule-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '013052902779',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mule-accp',
+        accountType: 'acceptance',
+        monitor: true,
+        env: {
+          account: '938595516784',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-mule-prod',
+        accountType: 'production',
+        monitor: true,
+        env: {
+          account: '664926621746',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-kcc-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '111035763707',
           region: 'eu-central-1',
         },
       },
@@ -642,12 +750,17 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     branchName: 'sandbox',
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
+    deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: true,
+    },
     deployToEnvironments: [
       {
         accountName: 'workload-test',
         accountType: 'development',
-        env: Statics.sandboxEnvironment,
+        env: Statics.gnWorkloadTestEnvironment,
         enableDevopsGuru: true,
+        enableClockDriftMonitor: true,
         monitoringRules: [
           {
             roleMonitoring: {

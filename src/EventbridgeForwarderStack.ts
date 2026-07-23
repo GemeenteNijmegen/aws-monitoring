@@ -13,6 +13,10 @@ export class EventbridgeForwarderStack extends StackSetStack {
   constructor(scope: Construct, id: string, props: EventbridgeForwarderStackProps) {
     super(scope, id);
 
+    // Note deployments takes a long time as this is a stack set.
+    // It can probably be sped up by setting some properties for parrallel deployment.
+    // https://github.com/cdklabs/cdk-stacksets
+
     new EventBusForwardingRule(this, 'forward', {
       targetRegion: props.targetRegion,
       eventPattern: {
@@ -20,5 +24,14 @@ export class EventbridgeForwarderStack extends StackSetStack {
         detailType: ['CloudWatch Alarm State Change'],
       },
     });
+
+    new EventBusForwardingRule(this, 'forward-health', {
+      targetRegion: props.targetRegion,
+      eventPattern: {
+        source: ['aws.health'],
+      },
+    });
+
+
   }
 }

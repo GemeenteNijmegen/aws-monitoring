@@ -32,7 +32,7 @@ export abstract class Statics {
     region: 'eu-central-1',
   };
 
-  static readonly sandboxEnvironment = {
+  static readonly gnWorkloadTestEnvironment = {
     account: Statics.gnTestAccount,
     region: 'eu-central-1',
   };
@@ -42,6 +42,14 @@ export abstract class Statics {
    */
   static readonly mpaEnvironment = {
     account: '427617903428',
+    region: 'eu-central-1',
+  };
+
+  /**
+   * Gn network account
+   */
+  static readonly gnNetwork = {
+    account: '043872078922',
     region: 'eu-central-1',
   };
 

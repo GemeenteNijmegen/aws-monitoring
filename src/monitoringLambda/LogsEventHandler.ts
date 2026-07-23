@@ -1,7 +1,7 @@
 import * as zlib from 'zlib';
 import { CloudWatchLogsDecodedData, CloudWatchLogsEvent } from 'aws-lambda';
 import { HandledEvent, IHandler } from './IHandler';
-import { LogsMessageFormatter, CloudTrailErrorLogsMessageFormatter } from './MessageFormatter';
+import { CloudTrailErrorLogsMessageFormatter, LogsMessageFormatter } from './MessageFormatter';
 import { stringMatchesPatternInArray } from './utils';
 
 
@@ -61,6 +61,7 @@ export class LogsEventHandler implements IHandler {
         console.debug(foundFields.length);
         return foundFields.length == requiredFields.length;
       } catch (error) {
+        console.error(error);
         return false;
       }
     });

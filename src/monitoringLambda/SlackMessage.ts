@@ -30,7 +30,7 @@ export class SlackMessage {
       type: 'header',
       text: {
         type: 'plain_text',
-        text: text.substring(0, MAX_HEADER_LENGTH -1),
+        text: text.substring(0, MAX_HEADER_LENGTH - 1),
         emoji: true,
       },
     });
@@ -111,13 +111,11 @@ export class SlackMessage {
     }
     const message = this.getSlackMessage();
 
-    console.debug('Message:', JSON.stringify(message));
-    const resp = await axios.post(url, JSON.stringify(message), {
+    await axios.post(url, JSON.stringify(message), {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    console.log(resp);
   }
 
   getSlackUrl(priority: string) {

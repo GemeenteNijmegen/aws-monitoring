@@ -1,13 +1,15 @@
-import { SecurityHubClient, GetFindingsCommand } from '@aws-sdk/client-securityhub';
-import { ScheduledEvent } from 'aws-lambda';
+import { AwsSecurityFinding, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { deploymentEnvironments } from '../DeploymentEnvironments';
+import { SecurityHubService } from './SecurityHubService';
 import { SlackMessage } from '../monitoringLambda/SlackMessage';
 
-const securityHubClient = new SecurityHubClient({ region: process.env.AWS_REGION });
+const MAX_FINDINGS_PER_CRITICALITY = 50;
 
-export async function handler(_event: ScheduledEvent) {
+const securityHubService = new SecurityHubService(
+  new SecurityHubClient({ region: process.env.AWS_REGION }),
+);
 
-  // Send to slack
+export async function handler() {
   try {
     await sendOverviewToSlack();
   } catch (error) {
@@ -16,78 +18,66 @@ export async function handler(_event: ScheduledEvent) {
     message.addSection('⚠ Could not send SecurityHub overview to Slack, check logs');
     await message.send('high');
   }
-
 }
 
 async function sendOverviewToSlack() {
   const message = new SlackMessage();
   message.addHeader('SecurityHub finding overview');
 
-  const criticalFindings = await getFindingsWithSeverity('CRITICAL');
-  const criticalFindingsFound = criticalFindings && criticalFindings.length > 0;
-  if (criticalFindingsFound) {
-    message.addSection('❗️ Critical findings');
-    criticalFindings.forEach(finding => {
-      const accountName = lookupAccountName(finding.AwsAccountId);
-      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
-    });
-  }
+  console.info('Collecting findings...');
+  const criticalFindings = await securityHubService.getActiveFindings('CRITICAL');
+  const highFindings = await securityHubService.getActiveFindings('HIGH');
 
-  const highFindings = await getFindingsWithSeverity('HIGH');
-  const highFindingsFound = highFindings && highFindings.length > 0;
-  if (highFindingsFound) {
-    message.addSection('⚠️ High findings');
-    highFindings.forEach(finding => {
-      const accountName = lookupAccountName(finding.AwsAccountId);
-      message.addSection(`${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
-    });
-  }
+  console.info('Formatting CRITICAL findings...');
+  addFindingsSection(message, '❗️ Critical findings', criticalFindings);
+  console.info('Formatting HIGH findings...');
+  addFindingsSection(message, '⚠️ High findings', highFindings);
 
-  if (!criticalFindingsFound && !highFindingsFound) {
-    message.addSection('✅ No high or critical findings');
-  }
-
+  console.info('Sending message...');
+  console.debug('Message', JSON.stringify(message.getSlackMessage()));
   await message.send('high');
 }
 
+function isContainerFinding(finding: AwsSecurityFinding): boolean {
+  return finding.Resources?.some(r => r.Type === 'AwsEcrContainerImage') ?? false;
+}
 
-async function getFindingsWithSeverity(severityLabel: 'CRITICAL' | 'HIGH') {
+function addFindingsSection(message: SlackMessage, header: string, findings: AwsSecurityFinding[]) {
+  if (findings.length === 0) return;
 
-  const command = new GetFindingsCommand({
-    Filters: {
-      SeverityLabel: [{
-        Comparison: 'EQUALS',
-        Value: severityLabel,
-      }],
-      WorkflowStatus: [ // Show new and notified findings
-        {
-          Comparison: 'EQUALS',
-          Value: 'NEW',
-        },
-        {
-          Comparison: 'EQUALS',
-          Value: 'NOTIFIED',
-        },
-      ],
-      RecordState: [{ // Only show active findings
-        Comparison: 'EQUALS',
-        Value: 'ACTIVE',
-      }],
-    },
-  });
+  const containerCount = findings.filter(isContainerFinding).length;
+  const otherFindings = findings.filter(f => !isContainerFinding(f));
 
-  try {
-    const resp = await securityHubClient.send(command);
-    return resp.Findings;
-  } catch (error) {
-    console.error(error);
-    throw Error('Could not get findings, check logs');
+  message.addSection(header);
+
+  // No findings
+  if (containerCount == 0 && otherFindings.length == 0) {
+    message.addSection('✅ No findings');
+    return;
+  }
+
+  // Compile all other findings into a string (truncate at 50 findings)
+  const otherFindingsMessage: string[] = [];
+  if (otherFindings.length > 0) {
+    otherFindings.splice(0, MAX_FINDINGS_PER_CRITICALITY).forEach(finding => {
+      const accountName = lookupAccountName(finding.AwsAccountId);
+      otherFindingsMessage.push(`- ${finding.Title} (${accountName}, ${finding.ProductName ?? 'unknown product'})`);
+    });
+
+    if (otherFindings.length > MAX_FINDINGS_PER_CRITICALITY) {
+      otherFindingsMessage.push(`... and ${otherFindings.length - MAX_FINDINGS_PER_CRITICALITY} more findings`);
+    }
+    message.addSection(otherFindingsMessage.join('\n'));
+  }
+
+  // Add container finding count
+  if (containerCount > 0) {
+    message.addSection(`There are ${containerCount} ${header.toLowerCase().replace(/[^a-z ]/g, '').trim()} in container images in ECR repositories.`);
   }
 }
 
-
 function lookupAccountName(account?: string) {
-  if (!account) { return 'undefined account';}
+  if (!account) { return 'undefined account'; }
   const configuration = deploymentEnvironments[process.env.BRANCH_NAME ?? 'main'];
   const accountConfig = configuration?.deployToEnvironments.find(config => config.env.account == account);
   return accountConfig?.accountName ?? account;

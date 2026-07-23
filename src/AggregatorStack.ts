@@ -5,8 +5,7 @@ import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
-import { getConfiguration } from './DeploymentEnvironments';
-import { LogQueryJob } from './LogQueryJob';
+import { HealthGroupingResources } from './healthGrouping/HealthGroupingResources';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
 import { Statics } from './statics';
@@ -49,14 +48,17 @@ interface NotifierProps {
   branchName: string;
 }
 class Notifier extends Construct {
+  private readonly monitoringTopics: ITopic[];
+
   constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
+    this.monitoringTopics = Statics.monitoringPriorities.map(criticality => this.topic(criticality));
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix, props.branchName);
-    this.setupLogQueryJob(props.prefix, props.branchName);
+    this.setupHealthGroupingResources(props.prefix, props.branchName);
   }
 
-  setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
+  private setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
 
     // Create the lambda and inject the webhook urls
     const lambda = new SecurityHubOverviewFunction(this, 'securityhub-lambda', {
@@ -95,7 +97,7 @@ class Notifier extends Construct {
 
   }
 
-  setupMonitoringFunction(prefix: string, branchName: string) {
+  private setupMonitoringFunction(prefix: string, branchName: string) {
     const lambda = new MonitoringFunction(this, 'slack-lambda', {
       environment: {
         BRANCH_NAME: branchName,
@@ -109,11 +111,11 @@ class Notifier extends Construct {
     this.subscribeLambda(lambda);
   }
 
-  setupLogQueryJob(prefix: string, branchName: string) {
-    new LogQueryJob(this, 'log-query-job', {
-      prefix: prefix,
-      branchName: branchName,
-      deployToEnvironments: getConfiguration(branchName).deployToEnvironments,
+  private setupHealthGroupingResources(prefix: string, branchName: string) {
+    return new HealthGroupingResources(this, 'health-grouping', {
+      prefix,
+      branchName,
+      topics: this.monitoringTopics,
     });
   }
 
@@ -123,8 +125,7 @@ class Notifier extends Construct {
    * @param lambda
    */
   private subscribeLambda(lambda: MonitoringFunction) {
-    const topics = Statics.monitoringPriorities.map(criticality => this.topic(criticality));
-    topics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
+    this.monitoringTopics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
   }
 
   private topic(criticality: string): ITopic {
