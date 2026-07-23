@@ -32,20 +32,56 @@ describe('SNS events', () => {
   const snsHandler = new SnsEventHandler(config);
   const logsHandler = new LogsEventHandler();
 
-  test('ecs task state change', async () => {
+  test('ecs task state change intermediate (one-off, PENDING) is suppressed', async () => {
     const event = await getEventFromFilePath('samples/ecs-task-state-change.json');
-
-    const handled = snsHandler.handle(event);
     expect(snsHandler.canHandle(event)).toBeTruthy();
     expect(logsHandler.canHandle(event)).toBeFalsy();
+    // One-off task in a non-STOPPED intermediate state — no alert
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('ecs scheduled task success is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-success.json');
+    expect(snsHandler.canHandle(event)).toBeTruthy();
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('ecs scheduled task failure on non-production is downgraded to medium', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
+    const handled = snsHandler.handle(event);
     expect(handled).not.toBeFalsy();
     if (handled == false) { return; }
+    // Account 12345678 is development → high downgraded to medium
     expect(handled.priority).toBe('medium');
-
     const json = JSON.stringify(handled.message.getSlackMessage());
-    expect(json).toContain('type: *ECS Task State Change, cluster joost-test*');
-    expect(json).toContain('ECS Task not in desired state (state PENDING, desired RUNNING)');
+    expect(json).toContain('Scheduled task failed');
+    expect(json).toContain('vac-container (exit 1)');
+  });
 
+  test('ecs scheduled task failure on production stays high', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
+    // Patch the embedded message to use the production account
+    const msg = JSON.parse(event.Records[0].Sns.Message);
+    msg.account = '87654321';
+    event.Records[0].Sns.Message = JSON.stringify(msg);
+
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    // Account 87654321 is production → high stays high
+    expect(handled.priority).toBe('high');
+  });
+
+  test('ecs scheduled task failed-to-start triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed-to-start.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    // Account 12345678 is development → high downgraded to medium
+    expect(handled.priority).toBe('medium');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Scheduled task failed');
+    expect(json).toContain('Task failed to start');
   });
 
   test('ec2 instance state change', async () => {
@@ -79,6 +115,107 @@ describe('SNS events', () => {
 
 });
 
+
+describe('ECS Service Task stops', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('crash stop (EssentialContainerExited) triggers medium alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-crash-stop.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('medium');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Service task stopped unexpectedly');
+    expect(json).toContain('objecttypes-main-service');
+  });
+
+  test('crash stop on production account is medium (not high)', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-crash-stop.json');
+    // Patch to production account — service task stops are intentionally medium, not high
+    const msg = JSON.parse(event.Records[0].Sns.Message);
+    msg.account = '87654321';
+    event.Records[0].Sns.Message = JSON.stringify(msg);
+
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('medium');
+  });
+
+  test('scheduler-initiated stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-scheduler-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('user-initiated stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-user-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('spot/TerminationNotice stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-spot-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
+
+describe('ECS Deployment State Change', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('SERVICE_DEPLOYMENT_FAILED triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-deployment-failed.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Deployment failed');
+    expect(json).toContain('servicetest');
+    expect(json).toContain('circuit breaker');
+  });
+
+  test('SERVICE_DEPLOYMENT_COMPLETED is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-deployment-completed.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
+
+describe('ECS Service Action', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('SERVICE_TASK_START_IMPAIRED triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-task-start-impaired.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('impaired');
+    expect(json).toContain('servicetest');
+  });
+
+  test('SERVICE_TASK_PLACEMENT_FAILURE triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-task-placement-failure.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('placement failed');
+    expect(json).toContain('servicetest');
+  });
+
+  test('SERVICE_STEADY_STATE is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-steady-state.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
 
 describe('Alarms via SNS events', () => {
 
