@@ -1,5 +1,5 @@
 import { HandledEvent, IHandler } from './IHandler';
-import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
+import { UnhandledEventFormatter, AlarmMessageFormatter, EcsMessageFormatter, EcsDeploymentStateChangeFormatter, EcsServiceActionFormatter, Ec2MessageFormatter, DevopsGuruMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, DriftDetectionStatusFormatter, SecurityHubFormatter, OrgTrailMessageFormatter, CustomSnsMessageFormatter } from './MessageFormatter';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 import { Configuration } from '../DeploymentEnvironments';
 import { Priority, Statics } from '../statics';
@@ -43,6 +43,16 @@ const events: Record<string, Event> = {
     shouldTriggerAlert: (message: any) => ecsTaskStateShouldTriggerAlert(message),
     formatter: (message, account, priority) => new EcsMessageFormatter(message, account, priority),
     resolvePriority: ecsTaskPriority,
+  },
+  'ECS Deployment State Change': {
+    shouldTriggerAlert: (message: any) => message?.detail?.eventName === 'SERVICE_DEPLOYMENT_FAILED',
+    formatter: (message, account, priority) => new EcsDeploymentStateChangeFormatter(message, account, priority),
+    priority: 'high',
+  },
+  'ECS Service Action': {
+    shouldTriggerAlert: (message: any) => ALERTED_SERVICE_ACTIONS.has(message?.detail?.eventName),
+    formatter: (message, account, priority) => new EcsServiceActionFormatter(message, account, priority),
+    priority: 'high',
   },
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
@@ -230,6 +240,8 @@ export function getEventType(message: any, event?: any): keyof typeof events {
   return 'unhandledEvent';
 }
 
+
+const ALERTED_SERVICE_ACTIONS = new Set(['SERVICE_TASK_START_IMPAIRED', 'SERVICE_TASK_PLACEMENT_FAILURE']);
 
 function ecsTaskPriority(message: any): Priority {
   // Service task unexpected stops are medium (a single stop is informational, not critical).

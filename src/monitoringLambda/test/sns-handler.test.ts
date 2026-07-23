@@ -161,6 +161,62 @@ describe('ECS Service Task stops', () => {
 
 });
 
+describe('ECS Deployment State Change', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('SERVICE_DEPLOYMENT_FAILED triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-deployment-failed.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Deployment failed');
+    expect(json).toContain('servicetest');
+    expect(json).toContain('circuit breaker');
+  });
+
+  test('SERVICE_DEPLOYMENT_COMPLETED is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-deployment-completed.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
+
+describe('ECS Service Action', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('SERVICE_TASK_START_IMPAIRED triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-task-start-impaired.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('impaired');
+    expect(json).toContain('servicetest');
+  });
+
+  test('SERVICE_TASK_PLACEMENT_FAILURE triggers high alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-task-placement-failure.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('high');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('placement failed');
+    expect(json).toContain('servicetest');
+  });
+
+  test('SERVICE_STEADY_STATE is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-steady-state.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
+
 describe('Alarms via SNS events', () => {
 
   const snsHandler = new SnsEventHandler(config);

@@ -89,7 +89,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
       let account = 'unknown';
       if (accountDimension) {
         account = accountDimension?.value;
-      } else if ( this.event.AWSAccountId ) {
+      } else if (this.event.AWSAccountId) {
         account = this.event.AWSAccountId;
       }
 
@@ -104,6 +104,12 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
     }
     return alarmInfo;
   }
+}
+
+/** Extracts cluster and service names from an ECS service resource ARN. */
+function ecsServiceFromArn(arn: string): { cluster: string; service: string } {
+  const parts = arn.split('/');
+  return { cluster: parts[1] ?? 'unknown', service: parts[2] ?? 'unknown' };
 }
 
 export class EcsMessageFormatter extends MessageFormatter<any> {
@@ -165,6 +171,48 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
       }
     }
 
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+}
+
+export class EcsDeploymentStateChangeFormatter extends MessageFormatter<any> {
+  constructMessage(message: Message): Message {
+    const { cluster, service } = ecsServiceFromArn(this.event?.resources?.[0] ?? '');
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${cluster}/services`;
+
+    message.addHeader(`❗️ Deployment failed: ${service}`);
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${cluster}`,
+      account: this.lookupAccountName(this.account),
+    });
+    if (this.event?.detail?.reason) {
+      message.addSection(this.event.detail.reason);
+    }
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+}
+
+export class EcsServiceActionFormatter extends MessageFormatter<any> {
+  constructMessage(message: Message): Message {
+    const clusterName = this.event?.detail?.clusterArn?.split('/').pop() ?? 'unknown';
+    const { service } = ecsServiceFromArn(this.event?.resources?.[0] ?? '');
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
+
+    if (this.event?.detail?.eventName === 'SERVICE_TASK_START_IMPAIRED') {
+      message.addHeader(`❗️ Service task start impaired: ${service}`);
+    } else {
+      message.addHeader(`❗️ Service down — task placement failed: ${service}`);
+    }
+
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${clusterName}`,
+      account: this.lookupAccountName(this.account),
+    });
+    if (this.event?.detail?.reason) {
+      message.addSection(`Reason: ${this.event.detail.reason}`);
+    }
     message.addLink('Bekijk cluster', target);
     return message;
   }
@@ -263,7 +311,7 @@ export class HealthDashboardFormatter extends MessageFormatter<any> {
       type: `${getEventType(this.event)}`,
       account: this.lookupAccountName(this.account),
     });
-    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n') }`)}`);
+    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n')}`)}`);
     message.addLink('Bekijk Health Dashboard', 'https://health.aws.amazon.com/health/home#/account/dashboard/');
     return message;
   }
