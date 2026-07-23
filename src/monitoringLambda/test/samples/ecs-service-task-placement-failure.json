@@ -1,0 +1,19 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high:00000000-0000-0000-0000-000000000000",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "00000000-0000-0000-0000-000000000000",
+                "TopicArn": "arn:aws:sns:eu-west-1:111122223333:monitoring-stack-monitoring-snstopic-high",
+                "Subject": null,
+                "Message": "{\"version\":\"0\",\"source\":\"aws.ecs\",\"account\":\"111122223333\",\"time\":\"2019-11-19T19:55:38Z\",\"region\":\"us-west-2\",\"resources\":[\"arn:aws:ecs:us-west-2:111122223333:service/default/servicetest\"],\"id\":\"ddca6449-b258-46c0-8653-e0e3a6d0468b\",\"detail-type\":\"ECS Service Action\",\"detail\":{\"eventType\":\"ERROR\",\"eventName\":\"SERVICE_TASK_PLACEMENT_FAILURE\",\"clusterArn\":\"arn:aws:ecs:us-west-2:111122223333:cluster/default\",\"capacityProviderArns\":[\"arn:aws:ecs:us-west-2:111122223333:capacity-provider/FARGATE_SPOT\"],\"reason\":\"RESOURCE:FARGATE\",\"createdAt\":\"2019-11-06T19:09:33.087Z\"}}",
+                "Timestamp": "2019-11-19T19:55:38Z",
+                "SignatureVersion": "1",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

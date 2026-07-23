@@ -22,12 +22,12 @@ describe('handler', () => {
 
   test('Can handle SNS event', async () => {
     axiosMock.onPost().reply(200, {});
-    const event = await getEventFromFilePath('samples/ecs-task-state-change.json');
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
 
     await handler(event);
     expect(axiosMock.history.post.length).toBe(1);
     const data = JSON.parse(axiosMock.history.post[0].data);
-    expect(data.blocks[0].text.text).toContain('ECS Task not in desired state');
+    expect(data.blocks[0].text.text).toContain('Scheduled task failed');
 
   });
 

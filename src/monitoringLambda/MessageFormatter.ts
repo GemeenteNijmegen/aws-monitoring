@@ -1,4 +1,5 @@
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
+import { classifyEcsTask } from './EcsTaskClassifier';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
@@ -88,7 +89,7 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
       let account = 'unknown';
       if (accountDimension) {
         account = accountDimension?.value;
-      } else if ( this.event.AWSAccountId ) {
+      } else if (this.event.AWSAccountId) {
         account = this.event.AWSAccountId;
       }
 
@@ -105,26 +106,112 @@ export class AlarmMessageFormatter extends MessageFormatter<any> {
   }
 }
 
+/** Extracts cluster and service names from an ECS service resource ARN. */
+function ecsServiceFromArn(arn: string): { cluster: string; service: string } {
+  const parts = arn.split('/');
+  return { cluster: parts[1] ?? 'unknown', service: parts[2] ?? 'unknown' };
+}
+
 export class EcsMessageFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {
-    const status = this.event?.detail?.lastStatus;
-    const desiredStatus = this.event?.detail?.desiredStatus;
-    const containerString = this.event?.detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\n - ');
-    const clusterName = this.event?.detail?.clusterArn.split('/').pop();
+    const detail = this.event?.detail;
+    const clusterName = detail?.clusterArn.split('/').pop();
+
+    if (classifyEcsTask(detail) !== 'service') {
+      return this.constructScheduledTaskFailureMessage(message, detail, clusterName);
+    }
+    return this.constructServiceTaskStopMessage(message, detail, clusterName);
+  }
+
+  private constructServiceTaskStopMessage(message: Message, detail: any, clusterName: string): Message {
+    const serviceName = detail?.group?.replace('service:', '') ?? 'unknown';
     const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
 
-    if (status != desiredStatus) {
-      message.addHeader(`❗️ ECS Task not in desired state (state ${status}, desired ${desiredStatus})`);
-    } else {
-      message.addHeader(`✅ ECS Task in desired state (${status})`);
-    }
+    message.addHeader(`❗️ Service task stopped unexpectedly: ${serviceName}`);
     message.addContext({
       type: `${getEventType(this.event)}, cluster ${clusterName}`,
       account: this.lookupAccountName(this.account),
     });
-    message.addSection(`Containers involved: \n - ${containerString}`);
-    if (this.event?.detail.stoppedReason) {
-      message.addSection(`Stopped for reason: \n - ${this.event?.detail.stoppedReason}`);
+
+    if (detail?.stopCode === 'TaskFailedToStart') {
+      message.addSection(`Task failed to start: ${detail?.stoppedReason ?? 'unknown reason'}`);
+    } else {
+      const containers: any[] = detail?.containers ?? [];
+      const failed = containers.filter((c: any) => c.exitCode !== 0);
+      const containerString = failed.map((c: any) => `${c.name} (exit ${c.exitCode})`).join('\n - ');
+      message.addSection(`Container(s) exited with error: \n - ${containerString}`);
+      if (detail?.stoppedReason) {
+        message.addSection(`Reason: ${detail.stoppedReason}`);
+      }
+    }
+
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+
+  private constructScheduledTaskFailureMessage(message: Message, detail: any, clusterName: string): Message {
+    const taskFamily = detail?.group?.replace('family:', '') ?? 'unknown';
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/tasks`;
+
+    message.addHeader(`❗️ Scheduled task failed: ${taskFamily}`);
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${clusterName}`,
+      account: this.lookupAccountName(this.account),
+    });
+
+    if (detail?.stopCode === 'TaskFailedToStart') {
+      message.addSection(`Task failed to start: ${detail?.stoppedReason ?? 'unknown reason'}`);
+    } else {
+      const containers: any[] = detail?.containers ?? [];
+      const failed = containers.filter((c: any) => c.exitCode !== 0);
+      const containerString = failed.map((c: any) => `${c.name} (exit ${c.exitCode})`).join('\n - ');
+      message.addSection(`Container(s) exited with error: \n - ${containerString}`);
+      if (detail?.stoppedReason) {
+        message.addSection(`Reason: ${detail.stoppedReason}`);
+      }
+    }
+
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+}
+
+export class EcsDeploymentStateChangeFormatter extends MessageFormatter<any> {
+  constructMessage(message: Message): Message {
+    const { cluster, service } = ecsServiceFromArn(this.event?.resources?.[0] ?? '');
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${cluster}/services`;
+
+    message.addHeader(`❗️ Deployment failed: ${service}`);
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${cluster}`,
+      account: this.lookupAccountName(this.account),
+    });
+    if (this.event?.detail?.reason) {
+      message.addSection(this.event.detail.reason);
+    }
+    message.addLink('Bekijk cluster', target);
+    return message;
+  }
+}
+
+export class EcsServiceActionFormatter extends MessageFormatter<any> {
+  constructMessage(message: Message): Message {
+    const clusterName = this.event?.detail?.clusterArn?.split('/').pop() ?? 'unknown';
+    const { service } = ecsServiceFromArn(this.event?.resources?.[0] ?? '');
+    const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
+
+    if (this.event?.detail?.eventName === 'SERVICE_TASK_START_IMPAIRED') {
+      message.addHeader(`❗️ Service task start impaired: ${service}`);
+    } else {
+      message.addHeader(`❗️ Service down — task placement failed: ${service}`);
+    }
+
+    message.addContext({
+      type: `${getEventType(this.event)}, cluster ${clusterName}`,
+      account: this.lookupAccountName(this.account),
+    });
+    if (this.event?.detail?.reason) {
+      message.addSection(`Reason: ${this.event.detail.reason}`);
     }
     message.addLink('Bekijk cluster', target);
     return message;
@@ -224,7 +311,7 @@ export class HealthDashboardFormatter extends MessageFormatter<any> {
       type: `${getEventType(this.event)}`,
       account: this.lookupAccountName(this.account),
     });
-    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n') }`)}`);
+    message.addSection(`${this.event?.detail?.eventDescription.map((event: { latestDescription: string }) => `${event.latestDescription.replace('\\n', '\n')}`)}`);
     message.addLink('Bekijk Health Dashboard', 'https://health.aws.amazon.com/health/home#/account/dashboard/');
     return message;
   }
