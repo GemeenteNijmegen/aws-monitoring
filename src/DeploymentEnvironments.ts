@@ -31,6 +31,16 @@ export interface DeploymentEnvironment {
   enableDevopsGuru?: boolean;
 
   /**
+   * Flag to enable the clock drift monitor lambda for this account.
+   *
+   * Checks, on a schedule, whether the lambda execution environment's clock
+   * matches real time, and alerts via slack when it doesn't (within a
+   * margin). Always records the measured drift as a CloudWatch metric.
+   * @default false
+   */
+  enableClockDriftMonitor?: boolean;
+
+  /**
    * Define key or role monitoring conditions on the OrgTrail
    * that apply to this specific account
    * @default none
@@ -64,6 +74,17 @@ export interface Configuration {
    * @default not deployed
    */
   deployAuditSlackbot?: boolean;
+
+  /**
+   * Feature flags for the separate AWS Health grouping flow
+   */
+  healthGrouping?: {
+    /**
+     * Enables the separate Health intake lambda
+     * @default false
+     */
+    enabled?: boolean;
+  };
 
   /**
    * Define key or role monitoring conditions on the OrgTrail
@@ -169,6 +190,9 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'production',
     pipelineStackCdkName: 'aws-monitoring-prod',
     deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: false,
+    },
     globalMonitoringRules: [
       {
         roleMonitoring: {
@@ -727,12 +751,16 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployAuditSlackbot: true,
+    healthGrouping: {
+      enabled: true,
+    },
     deployToEnvironments: [
       {
         accountName: 'workload-test',
         accountType: 'development',
         env: Statics.gnWorkloadTestEnvironment,
         enableDevopsGuru: true,
+        enableClockDriftMonitor: true,
         monitoringRules: [
           {
             roleMonitoring: {

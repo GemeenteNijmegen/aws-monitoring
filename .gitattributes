@@ -22,12 +22,16 @@
 /LICENSE linguist-generated
 /package-lock.json linguist-generated
 /package.json linguist-generated
+/projenrc/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
 /src/audit/archiver/archiver-function.ts linguist-generated
 /src/audit/slackbot/slackbot-function.ts linguist-generated
+/src/ClockDriftLambda/ClockDrift-function.ts linguist-generated
+/src/healthGrouping/healthEventLambda/healthEvent-function.ts linguist-generated
+/src/healthGrouping/healthTimerLambda/healthTimer-function.ts linguist-generated
 /src/monitoringLambda/monitoring-function.ts linguist-generated
 /src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts linguist-generated
 /src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts linguist-generated
 /src/SlackInteractivityLambda/SlackInteractivity-function.ts linguist-generated
 /src/TopdeskIntegrationLambda/TopdeskIntegration-function.ts linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
+/test/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
 /tsconfig.json linguist-generated linguist-language=JSON-with-Comments

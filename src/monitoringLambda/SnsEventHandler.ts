@@ -70,6 +70,7 @@ const events: Record<string, Event> = {
     formatter: (message, account, priority) => new CodePipelineFormatter(message, account, priority),
     priority: 'low',
   },
+  // Deze filter blijft aanstaan tot de healthGrouping goed blijkt te werken.
   'AWS Health Event': {
     shouldTriggerAlert: () => true,
     formatter: (message, account, priority) => new HealthDashboardFormatter(message, account, priority),

@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium:subscription-connectivity-a",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "message-connectivity-a",
+        "TopicArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium",
+        "Message": "{\"version\":\"0\",\"id\":\"event-connectivity-a\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"333333333333\",\"time\":\"2026-07-15T23:11:08Z\",\"region\":\"eu-central-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:eu-central-1::event/MULTIPLE_SERVICES/AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE/AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE_EXAMPLE_MULTI\",\"service\":\"MULTIPLE_SERVICES\",\"eventTypeCode\":\"AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-connectivity-1\",\"startTime\":\"Wed, 15 Jul 2026 23:11:07 GMT\",\"lastUpdatedTime\":\"Wed, 15 Jul 2026 23:11:07 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"eu-central-1\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nElevated connectivity issues with a single Availability Zone\\n\\n[04:11 PM PDT] Example public communication update for account A. We are investigating elevated connectivity issues in one Availability Zone in eu-central-1.\"}],\"affectedAccount\":\"333333333333\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}",
+        "Timestamp": "2026-07-15T23:11:17.040Z",
+        "SignatureVersion": "1",
+        "Signature": "example-signature-connectivity-a",
+        "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/example-cert.pem",
+        "Subject": "AWS Health Event",
+        "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=subscription-connectivity-a",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

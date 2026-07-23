@@ -5,6 +5,7 @@ import { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
+import { HealthGroupingResources } from './healthGrouping/HealthGroupingResources';
 import { MonitoringFunction } from './monitoringLambda/monitoring-function';
 import { SecurityHubOverviewFunction } from './SecurityHubOverviewLambda/SecurityHubOverview-function';
 import { Statics } from './statics';
@@ -47,10 +48,14 @@ interface NotifierProps {
   branchName: string;
 }
 class Notifier extends Construct {
+  private readonly monitoringTopics: ITopic[];
+
   constructor(scope: Construct, id: string, props: NotifierProps) {
     super(scope, id);
+    this.monitoringTopics = Statics.monitoringPriorities.map(criticality => this.topic(criticality));
     this.setupMonitoringFunction(props.prefix, props.branchName);
     this.setupSecurityHubOverviewFunction(props.prefix, props.branchName);
+    this.setupHealthGroupingResources(props.prefix, props.branchName);
   }
 
   private setupSecurityHubOverviewFunction(prefix: string, branchName: string) {
@@ -106,14 +111,21 @@ class Notifier extends Construct {
     this.subscribeLambda(lambda);
   }
 
+  private setupHealthGroupingResources(prefix: string, branchName: string) {
+    return new HealthGroupingResources(this, 'health-grouping', {
+      prefix,
+      branchName,
+      topics: this.monitoringTopics,
+    });
+  }
+
   /**
    *
    * @param priorities A list of SNS topic priorities to listen to
    * @param lambda
    */
   private subscribeLambda(lambda: MonitoringFunction) {
-    const topics = Statics.monitoringPriorities.map(criticality => this.topic(criticality));
-    topics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
+    this.monitoringTopics.forEach(topic => topic.addSubscription(new LambdaSubscription(lambda)));
   }
 
   private topic(criticality: string): ITopic {

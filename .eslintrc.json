@@ -14,7 +14,12 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": "./tsconfig.dev.json"
+    "projectService": {
+      "allowDefaultProject": [
+        ".projenrc.ts"
+      ],
+      "defaultProject": "./tsconfig.json"
+    }
   },
   "extends": [
     "plugin:import/typescript"
@@ -29,7 +34,7 @@
     "import/resolver": {
       "node": {},
       "typescript": {
-        "project": "./tsconfig.dev.json",
+        "project": "./tsconfig.json",
         "alwaysTryTypes": true
       }
     }
@@ -153,6 +158,7 @@
         "devDependencies": [
           "**/test/**",
           "**/build-tools/**",
+          "src/ClockDriftLambda/ClockDrift.lambda.ts",
           "src/OrgtrailMonitorLambda/OrgTrailMonitor.lambda.ts",
           "src/SecurityHubOverviewLambda/SecurityHubOverview.lambda.ts",
           "src/SlackInteractivityLambda/SlackInteractivity.lambda.ts",
@@ -160,6 +166,8 @@
           "src/monitoringLambda/monitoring.lambda.ts",
           "src/audit/archiver/archiver.lambda.ts",
           "src/audit/slackbot/slackbot.lambda.ts",
+          "src/healthGrouping/healthEventLambda/healthEvent.lambda.ts",
+          "src/healthGrouping/healthTimerLambda/healthTimer.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],

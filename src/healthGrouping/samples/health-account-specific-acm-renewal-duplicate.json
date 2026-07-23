@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium:subscription-acm-renewal-duplicate",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "message-acm-renewal-duplicate",
+        "TopicArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-medium",
+        "Message": "{\"version\":\"0\",\"id\":\"event-acm-renewal-duplicate\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"555555555555\",\"time\":\"2026-07-18T04:08:40Z\",\"region\":\"us-east-1\",\"resources\":[\"arn:aws:acm:us-east-1:555555555555:certificate/certificate-example-a\"],\"detail\":{\"eventArn\":\"arn:aws:health:us-east-1::event/ACM/AWS_ACM_RENEWAL_STATE_CHANGE/AWS_ACM_RENEWAL_STATE_CHANGE-example-a\",\"service\":\"ACM\",\"eventTypeCode\":\"AWS_ACM_RENEWAL_STATE_CHANGE\",\"eventTypeCategory\":\"scheduledChange\",\"eventScopeCode\":\"ACCOUNT_SPECIFIC\",\"communicationId\":\"health-communication-acm-renewal-1\",\"startTime\":\"Sat, 18 Jul 2026 04:07:38 GMT\",\"endTime\":\"Sat, 18 Jul 2026 04:07:38 GMT\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 04:08:38 GMT\",\"statusCode\":\"closed\",\"eventRegion\":\"us-east-1\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"AWS Certificate Manager (ACM) has completed the renewal of an SSL/TLS certificate for example-primary-domain-a.test and a total of 2 domains.\\\\n\\\\nAWS account ID: 555555555555\\\\nAWS Region name: us-east-1\\\\nCertificate identifier: arn:aws:acm:us-east-1:555555555555:certificate/certificate-example-a\\\\n\\\\nYour new certificate expires on Jan 31, 2027 at 23:59:59 UTC.\"}],\"affectedEntities\":[{\"entityValue\":\"arn:aws:acm:us-east-1:555555555555:certificate/certificate-example-a\",\"lastUpdatedTime\":\"Sat, 18 Jul 2026 04:08:38 GMT\"}],\"affectedAccount\":\"555555555555\",\"page\":\"1\",\"totalPages\":\"1\",\"backupEvent\":\"false\",\"actionability\":\"ACTION_REQUIRED\",\"personas\":[\"OPERATIONS\"]}}",
+        "Timestamp": "2026-07-18T04:08:41.374Z",
+        "SignatureVersion": "1",
+        "Signature": "example-signature-acm-renewal-duplicate",
+        "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/example-cert.pem",
+        "Subject": "AWS Health Event",
+        "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=subscription-acm-renewal-duplicate",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

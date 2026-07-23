@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-low:subscription-connectivity-update",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "message-connectivity-update",
+        "TopicArn": "arn:aws:sns:eu-central-1:111122223333:landingzone-central-platform-events-low",
+        "Message": "{\"version\":\"0\",\"id\":\"event-connectivity-update\",\"detail-type\":\"AWS Health Event\",\"source\":\"aws.health\",\"account\":\"555555555555\",\"time\":\"2026-07-15T23:36:02Z\",\"region\":\"eu-central-1\",\"resources\":[],\"detail\":{\"eventArn\":\"arn:aws:health:eu-central-1::event/MULTIPLE_SERVICES/AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE/AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE_EXAMPLE_MULTI\",\"service\":\"MULTIPLE_SERVICES\",\"eventTypeCode\":\"AWS_MULTIPLE_SERVICES_OPERATIONAL_ISSUE\",\"eventTypeCategory\":\"issue\",\"eventScopeCode\":\"PUBLIC\",\"communicationId\":\"health-communication-connectivity-2\",\"startTime\":\"Wed, 15 Jul 2026 23:11:07 GMT\",\"lastUpdatedTime\":\"Wed, 15 Jul 2026 23:36:01 GMT\",\"statusCode\":\"open\",\"eventRegion\":\"eu-central-1\",\"eventDescription\":[{\"language\":\"en_US\",\"latestDescription\":\"Current severity level: Impacted\\n\\nElevated connectivity issues with a single Availability Zone\\n\\n[04:36 PM PDT] Example follow-up communication. We are seeing early signs of recovery and continue to work toward full resolution. The following AWS services have been affected by this event: EC2, ELASTICACHE, RDS.\"}],\"affectedAccount\":\"555555555555\",\"page\":\"1\",\"totalPages\":\"1\",\"personas\":[\"OPERATIONS\"],\"backupEvent\":\"false\"}}",
+        "Timestamp": "2026-07-15T23:36:12.430Z",
+        "SignatureVersion": "1",
+        "Signature": "example-signature-connectivity-update",
+        "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/example-cert.pem",
+        "Subject": "AWS Health Event",
+        "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=subscription-connectivity-update",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
