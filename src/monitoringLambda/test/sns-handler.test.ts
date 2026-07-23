@@ -46,7 +46,7 @@ describe('SNS events', () => {
     expect(snsHandler.handle(event)).toBe(false);
   });
 
-  test('ecs scheduled task failure triggers high alert', async () => {
+  test('ecs scheduled task failure on non-production is downgraded to medium', async () => {
     const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
     const handled = snsHandler.handle(event);
     expect(handled).not.toBeFalsy();
@@ -56,6 +56,20 @@ describe('SNS events', () => {
     const json = JSON.stringify(handled.message.getSlackMessage());
     expect(json).toContain('Scheduled task failed');
     expect(json).toContain('vac-container (exit 1)');
+  });
+
+  test('ecs scheduled task failure on production stays high', async () => {
+    const event = await getEventFromFilePath('samples/ecs-scheduled-failed.json');
+    // Patch the embedded message to use the production account
+    const msg = JSON.parse(event.Records[0].Sns.Message);
+    msg.account = '87654321';
+    event.Records[0].Sns.Message = JSON.stringify(msg);
+
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    // Account 87654321 is production → high stays high
+    expect(handled.priority).toBe('high');
   });
 
   test('ecs scheduled task failed-to-start triggers high alert', async () => {
@@ -101,6 +115,51 @@ describe('SNS events', () => {
 
 });
 
+
+describe('ECS Service Task stops', () => {
+
+  const snsHandler = new SnsEventHandler(config);
+
+  test('crash stop (EssentialContainerExited) triggers medium alert', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-crash-stop.json');
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('medium');
+    const json = JSON.stringify(handled.message.getSlackMessage());
+    expect(json).toContain('Service task stopped unexpectedly');
+    expect(json).toContain('objecttypes-main-service');
+  });
+
+  test('crash stop on production account is medium (not high)', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-crash-stop.json');
+    // Patch to production account — service task stops are intentionally medium, not high
+    const msg = JSON.parse(event.Records[0].Sns.Message);
+    msg.account = '87654321';
+    event.Records[0].Sns.Message = JSON.stringify(msg);
+
+    const handled = snsHandler.handle(event);
+    expect(handled).not.toBeFalsy();
+    if (handled == false) { return; }
+    expect(handled.priority).toBe('medium');
+  });
+
+  test('scheduler-initiated stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-scheduler-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('user-initiated stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-user-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+  test('spot/TerminationNotice stop is suppressed', async () => {
+    const event = await getEventFromFilePath('samples/ecs-service-spot-stop.json');
+    expect(snsHandler.handle(event)).toBe(false);
+  });
+
+});
 
 describe('Alarms via SNS events', () => {
 

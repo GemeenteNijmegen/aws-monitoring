@@ -20,25 +20,18 @@ const excludedAlarms = [
 ];
 
 interface Event {
-  /**
-   * Function that returns if, given the message, it should be send to slack.
-   * @param message
-   * @returns
-   */
   shouldTriggerAlert: (message?: any) => boolean;
-  /**
-   * Function that should return an instance of MessageFormatter
-   * @param message
-   * @param account
-   * @param priority
-   * @returns
-   */
   formatter: (message: any, account: string, priority: string) => MessageFormatter<any>;
   /**
-   * Sets the priority of the message.
-   * @default - the sns topic priority is used (e.g. the priority of the topic receiving the event)
+   * Static priority for this event type. Overrides the SNS topic priority.
+   * Use resolvePriority instead when the priority depends on message content.
    */
   priority?: Priority;
+  /**
+   * Per-message priority resolver. Takes precedence over the static priority field.
+   * Use this when the same event type can produce different priorities depending on the message.
+   */
+  resolvePriority?: (message: any) => Priority;
 }
 
 const events: Record<string, Event> = {
@@ -49,7 +42,7 @@ const events: Record<string, Event> = {
   'ECS Task State Change': {
     shouldTriggerAlert: (message: any) => ecsTaskStateShouldTriggerAlert(message),
     formatter: (message, account, priority) => new EcsMessageFormatter(message, account, priority),
-    priority: 'high',
+    resolvePriority: ecsTaskPriority,
   },
   'EC2 Instance State-change Notification': {
     shouldTriggerAlert: () => true,
@@ -128,7 +121,7 @@ export class SnsEventHandler implements IHandler {
     const eventType = getEventType(message, event);
     const account = this.getAccount(message);
 
-    const priority = this.getPriority(event, eventType, account);
+    const priority = this.getPriority(event, eventType, account, message);
     const formatter = events[eventType].formatter(message, account, priority);
 
     return {
@@ -144,9 +137,10 @@ export class SnsEventHandler implements IHandler {
    * - priority of the event type of this notification
    * - maximum priority level for the originating account.
    */
-  getPriority(event: any, eventType: string, account: string) {
+  getPriority(event: any, eventType: string, account: string, message?: any) {
     const topicPriority = this.parsePriorityFromEvent(event);
-    let priority = events[eventType].priority ?? topicPriority;
+    const eventDef = events[eventType];
+    let priority = eventDef.resolvePriority?.(message) ?? eventDef.priority ?? topicPriority;
     priority = this.limitPriorityForNonProductionAccounts(priority, account);
     return priority;
   };
@@ -237,27 +231,44 @@ export function getEventType(message: any, event?: any): keyof typeof events {
 }
 
 
+function ecsTaskPriority(message: any): Priority {
+  // Service task unexpected stops are medium (a single stop is informational, not critical).
+  // Scheduled / one-off failures are high (the task is the unit of work — failure is the outcome).
+  return classifyEcsTask(message?.detail) === 'service' ? 'medium' : 'high';
+}
+
+const SUPPRESSED_SERVICE_STOP_CODES = new Set([
+  'ServiceSchedulerInitiated',
+  'UserInitiated',
+  'SpotInterruption',
+  'TerminationNotice',
+]);
+
 function ecsTaskStateShouldTriggerAlert(message: any): boolean {
   const detail = message?.detail;
-  if (classifyEcsTask(detail) === 'service') {
-    return true;
-  }
-  // Suppress intermediate transitions (PROVISIONING / PENDING / RUNNING / …)
+
+  // Suppress all intermediate transitions for every task type
   if (detail?.lastStatus !== 'STOPPED') {
     return false;
   }
-  // Alert on TaskFailedToStart
-  if (detail?.stopCode === 'TaskFailedToStart') {
-    return true;
-  }
-  // Suppress clean completions: all containers exited with code 0
-  if (detail?.stopCode === 'EssentialContainerExited') {
-    const containers: any[] = detail?.containers ?? [];
-    if (containers.every((c: any) => c.exitCode === 0)) {
+
+  const stopCode = detail?.stopCode;
+
+  if (classifyEcsTask(detail) === 'service') {
+    if (SUPPRESSED_SERVICE_STOP_CODES.has(stopCode)) {
       return false;
     }
+    return stopCode === 'EssentialContainerExited' || stopCode === 'TaskFailedToStart';
   }
-  // Any other stopped state (non-zero exit, etc.) is a failure
+
+  // Scheduled / one-off: alert on TaskFailedToStart or non-zero exit
+  if (stopCode === 'TaskFailedToStart') {
+    return true;
+  }
+  if (stopCode === 'EssentialContainerExited') {
+    const containers: any[] = detail?.containers ?? [];
+    return !containers.every((c: any) => c.exitCode === 0);
+  }
   return true;
 }
 

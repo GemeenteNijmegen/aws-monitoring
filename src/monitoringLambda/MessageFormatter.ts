@@ -114,25 +114,31 @@ export class EcsMessageFormatter extends MessageFormatter<any> {
     if (classifyEcsTask(detail) !== 'service') {
       return this.constructScheduledTaskFailureMessage(message, detail, clusterName);
     }
+    return this.constructServiceTaskStopMessage(message, detail, clusterName);
+  }
 
-    const status = detail?.lastStatus;
-    const desiredStatus = detail?.desiredStatus;
-    const containerString = detail?.containers.map((container: { name: any; lastStatus: any }) => `${container.name} (${container.lastStatus})`).join('\n - ');
+  private constructServiceTaskStopMessage(message: Message, detail: any, clusterName: string): Message {
+    const serviceName = detail?.group?.replace('service:', '') ?? 'unknown';
     const target = `https://${this.event?.region}.console.aws.amazon.com/ecs/home?region=${this.event?.region}#/clusters/${clusterName}/services`;
 
-    if (status != desiredStatus) {
-      message.addHeader(`❗️ ECS Task not in desired state (state ${status}, desired ${desiredStatus})`);
-    } else {
-      message.addHeader(`✅ ECS Task in desired state (${status})`);
-    }
+    message.addHeader(`❗️ Service task stopped unexpectedly: ${serviceName}`);
     message.addContext({
       type: `${getEventType(this.event)}, cluster ${clusterName}`,
       account: this.lookupAccountName(this.account),
     });
-    message.addSection(`Containers involved: \n - ${containerString}`);
-    if (detail?.stoppedReason) {
-      message.addSection(`Stopped for reason: \n - ${detail.stoppedReason}`);
+
+    if (detail?.stopCode === 'TaskFailedToStart') {
+      message.addSection(`Task failed to start: ${detail?.stoppedReason ?? 'unknown reason'}`);
+    } else {
+      const containers: any[] = detail?.containers ?? [];
+      const failed = containers.filter((c: any) => c.exitCode !== 0);
+      const containerString = failed.map((c: any) => `${c.name} (exit ${c.exitCode})`).join('\n - ');
+      message.addSection(`Container(s) exited with error: \n - ${containerString}`);
+      if (detail?.stoppedReason) {
+        message.addSection(`Reason: ${detail.stoppedReason}`);
+      }
     }
+
     message.addLink('Bekijk cluster', target);
     return message;
   }
