@@ -1,5 +1,4 @@
 import { SlackMessage } from './SlackMessage';
-import { TopDeskIncident } from './TopDeskIncident';
 
 export interface MessageProps {
   header?: string;
@@ -42,13 +41,8 @@ export class Message {
     this.message.link = { text, target };
   }
 
-
   getSlackMessage() {
     return SlackMessage.from(this.message);
-  }
-
-  getTopDeskIncident() {
-    return new TopDeskIncident(this.message);
   }
 
 }
