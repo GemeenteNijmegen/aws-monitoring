@@ -1,9 +1,9 @@
 import { CloudWatchLogsDecodedData } from 'aws-lambda';
+import { Configuration, getConfiguration } from '../DeploymentEnvironments';
 import { classifyEcsTask } from './EcsTaskClassifier';
 import { Message } from './Message';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
-import { Configuration, getConfiguration } from '../DeploymentEnvironments';
 
 /**
  * Abstract class for formatting differnt types of events
@@ -26,18 +26,10 @@ export abstract class MessageFormatter<T> {
   formattedMessage(): SlackMessage {
     const message = new Message();
     this.constructMessage(message);
-    return this.addMessageInteractions(message);
+    return message.getSlackMessage();
   }
 
   abstract constructMessage(message: Message): Message;
-
-  addMessageInteractions(message: Message) {
-    // Topdesk create ticket interaction
-    const topdeskMessage = message.getTopDeskIncident();
-    const slackMessage = message.getSlackMessage();
-    slackMessage.addButton('Create TopDesk ticket', 'create-topdesk-ticket', topdeskMessage.getIncident(this.priority));
-    return slackMessage;
-  }
 
   /**
    * Use the deployment environments in this project

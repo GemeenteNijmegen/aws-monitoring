@@ -84,11 +84,4 @@ export abstract class Statics {
   static readonly orgTrailLogGroupName = 'aws-controltower/CloudTrailLogs';
 
 
-  static readonly ssmTopDeskApiUrl = (env: string) => `/slack-integration/${env}/topdesk/api/url`;
-  static readonly ssmTopDeskUsername = (env: string) => `/slack-integration/${env}/topdesk/api/username`;
-  static readonly ssmTopDeskDeepLinkUrl = (env: string) => `/slack-integration/${env}/topdesk/deeplink/url`;
-
-  static readonly secretTopDeskPassword = (env: string) => `/slack-integration/${env}/topdesk/api/password`;
-  static readonly secretSlackSigningKey = (env: string) => `/slack-integration/${env}/slack/signing-key`;
-
 }
