@@ -356,31 +356,6 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
-        accountName: 'gn-webforms-dev',
-        accountType: 'development',
-        env: {
-          account: '033598396027',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-webforms-accp',
-        accountType: 'acceptance',
-        env: {
-          account: '338472043295',
-          region: 'eu-central-1',
-        },
-      },
-      {
-        accountName: 'gn-webforms-prod',
-        accountType: 'production',
-        enableDevopsGuru: true,
-        env: {
-          account: '147064197580',
-          region: 'eu-central-1',
-        },
-      },
-      {
         accountName: 'gn-static-websites-prod',
         accountType: 'production',
         env: {
