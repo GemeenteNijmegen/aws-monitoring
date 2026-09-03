@@ -648,6 +648,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-sandbox-indy',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '956966432757',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-ai-accp',
         accountType: 'acceptance',
         monitor: true,
