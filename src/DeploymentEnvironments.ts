@@ -656,7 +656,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
           region: 'eu-central-1',
         },
       },
-        {
+      {
         accountName: 'gn-ai-dev',
         accountType: 'development',
         monitor: true,
