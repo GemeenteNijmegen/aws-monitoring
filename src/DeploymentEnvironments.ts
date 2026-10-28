@@ -657,6 +657,15 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-ai-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '707071531549',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-ai-accp',
         accountType: 'acceptance',
         monitor: true,
