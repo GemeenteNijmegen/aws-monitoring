@@ -95,6 +95,12 @@
         },
         {
           "spawn": "bundle:healthGrouping/healthTimerLambda/healthTimer.lambda"
+        },
+        {
+          "spawn": "bundle:securityHubActions/receiver/securityHubActionsReceiver.lambda"
+        },
+        {
+          "spawn": "bundle:securityHubActions/worker/securityHubActionsWorker.lambda"
         }
       ]
     },
@@ -350,6 +356,80 @@
             "--target=node24",
             "--platform=node",
             "--outfile=assets/OrgtrailMonitorLambda/OrgTrailMonitor.lambda/index.js",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:securityHubActions/receiver/securityHubActionsReceiver.lambda": {
+      "name": "bundle:securityHubActions/receiver/securityHubActionsReceiver.lambda",
+      "description": "Create a JavaScript bundle from src/securityHubActions/receiver/securityHubActionsReceiver.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/securityHubActions/receiver/securityHubActionsReceiver.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/securityHubActions/receiver/securityHubActionsReceiver.lambda/index.js",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*"
+          ]
+        }
+      ]
+    },
+    "bundle:securityHubActions/receiver/securityHubActionsReceiver.lambda:watch": {
+      "name": "bundle:securityHubActions/receiver/securityHubActionsReceiver.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/securityHubActions/receiver/securityHubActionsReceiver.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/securityHubActions/receiver/securityHubActionsReceiver.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/securityHubActions/receiver/securityHubActionsReceiver.lambda/index.js",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:securityHubActions/worker/securityHubActionsWorker.lambda": {
+      "name": "bundle:securityHubActions/worker/securityHubActionsWorker.lambda",
+      "description": "Create a JavaScript bundle from src/securityHubActions/worker/securityHubActionsWorker.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/securityHubActions/worker/securityHubActionsWorker.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/securityHubActions/worker/securityHubActionsWorker.lambda/index.js",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*"
+          ]
+        }
+      ]
+    },
+    "bundle:securityHubActions/worker/securityHubActionsWorker.lambda:watch": {
+      "name": "bundle:securityHubActions/worker/securityHubActionsWorker.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/securityHubActions/worker/securityHubActionsWorker.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/securityHubActions/worker/securityHubActionsWorker.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/securityHubActions/worker/securityHubActionsWorker.lambda/index.js",
             "--tsconfig=test/tsconfig.json",
             "--external:@aws-sdk/*",
             "--watch"

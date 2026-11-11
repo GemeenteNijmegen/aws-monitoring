@@ -84,6 +84,8 @@ export class MonitoringTargetStage extends Stage {
       env: Statics.aggregatorEnvironment,
       prefix: parameterPrefix,
       deployAuditSlackbot: props.configuration.deployAuditSlackbot,
+      securityHubActionsUserGroupId: props.configuration.securityHubActionsUserGroupId,
+      branchName: props.branchName,
     }).addDependency(parameterStack);
 
   }
