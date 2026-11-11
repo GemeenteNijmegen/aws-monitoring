@@ -11,9 +11,10 @@ While it is unset no endpoint is deployed and no button is shown.
 - The button appears only on alerts with severity `CRITICAL` (for now). It is one constant in
   `src/monitoringLambda/SecurityHubView.ts` (`SUPPRESS_SEVERITY`).
 - For a critical alert the monitoring Lambda looks up the finding with `GetFindings`. The button is shown only when
-  exactly one finding matches and its workflow status is `NEW` or `NOTIFIED`. Otherwise (no match, several matches,
-  already handled, lookup error) the alert is posted without a button and says "Actions unavailable for this alert".
-  An alert is never lost because of the lookup.
+  exactly one finding matches and its workflow status is `NEW` or `NOTIFIED`. If the finding is found but already
+  handled (any other status) the full alert is posted without a button and without a notice. If the lookup finds no
+  match, several matches or fails, the alert is posted without a button and, when the user group is configured, says
+  "Actions unavailable for this alert". An alert is never lost because of the lookup.
 - Click: a modal asks for a reason. Submit: the reason is queued and a worker suppresses the finding, then redraws the
   Slack message with the new status, who did it and the reason.
 
@@ -43,6 +44,10 @@ For each environment:
 5. Put the Slack user group ID (starts with `S`) in `securityHubActionsUserGroupId` for the environment in
    `src/DeploymentEnvironments.ts` and deploy. Setting it without `deployAuditSlackbot` fails synthesis.
    Currently the key is unset in both `main` and `sandbox`, so the feature is off.
+
+The Suppress button is posted through the SSM incoming webhook (`/monitoring/slack-webhook-url-<prefix>-<priority>`).
+Slack sends the click to the Interactivity URL of the Slack app that owns that webhook, so each environment's
+webhooks must belong to that environment's Slack app (Monitoring for `main`, Sandbox monitoring for `sandbox`).
 
 Prod and dev both run in the audit account and read the same central findings. A click in the dev app changes real
 findings, so keep the dev user group limited to testers.
@@ -80,6 +85,10 @@ findings, so keep the dev user group limited to testers.
   the worker logs under "Suppress request handled".
 - **No button on a critical alert:** the user group ID is not configured, the lookup found zero or several
   findings, or the finding is not `NEW`/`NOTIFIED`.
+- **Clicking the button does nothing and nothing is logged:** the webhook that posted the alert belongs to another
+  Slack app than the one with this environment's Interactivity URL, or it is a legacy webhook. Slack then sends the
+  click elsewhere and this stack never sees it. Recreate the webhook in the environment's own Slack app and update
+  the SSM parameter.
 - **Slack says the request URL did not respond / dispatch_failed:** check the Interactivity URL ends in `/slack`
   and that the signing secret is filled in.
 
