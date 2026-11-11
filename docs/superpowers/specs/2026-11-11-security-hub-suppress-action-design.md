@@ -15,7 +15,7 @@ failure changes nothing and tells the user why.
 ## Decisions
 | Topic | Decision |
 |---|---|
-| Scope | Real-time alerts only |
+| Scope | Real-time alerts only. **Suppress button and `GetFindings` lookup: `CRITICAL` findings only, for now.** The richer format and bug fixes apply to all Security Hub alerts |
 | Information | Severity, control ID, region, compliance status, workflow status, standard, links, fix available, exploit available |
 | Action | **Suppress only**, per finding, reason required, stored as a Security Hub note. Resolving is done by fixing the finding; Security Hub sets `RESOLVED` itself once a control passes |
 | Permissions | Existing Slack user group, checked server-side, fails closed |
@@ -47,7 +47,9 @@ The receiver does only what must finish in Slack's 3 seconds. Authorization and 
 worker. Refusals reach the user as an ephemeral message through `response_url`.
 
 ### 1. Richer alert
-**Lookup: new `src/monitoringLambda/SecurityHubFindingLookup.ts`**
+**Severity gate.** The SNS payload has a top-level `Severity` string (`"HIGH"` in the samples). The lookup and the button are used only when it equals `CRITICAL` (case-insensitive). The gate is one constant, so widening the scope later is a one-line change. Non-critical alerts are rendered from the payload alone: severity, account, region, compliance status, workflow status, control ID and standard are all in the payload. They lack only what the lookup adds (fix/exploit availability, remediation URL, exact finding link), and show no "actions unavailable" note. This also keeps `GetFindings` volume low.
+
+**Lookup: new `src/monitoringLambda/SecurityHubFindingLookup.ts`** (critical alerts only)
 - `GetFindings` filtered on `AwsAccountId`, `ResourceId`, `RecordState=ACTIVE`, plus `ComplianceSecurityControlId` when `ControlId` is set, otherwise `Title`. If prerequisite 2 delivers `Id` and `ProductArn`, filter on those instead.
 - Buttons are attached only when exactly one finding matches and its workflow status is `NEW` or `NOTIFIED`. Otherwise, or on any lookup error, the alert is posted from the SNS payload without buttons and says actions are unavailable. An alert is never lost because of the lookup.
 - `GetFindings` is rate limited (about 3 requests per second). Use the SDK retry with backoff and limit concurrency; a throttled lookup falls back to the no-button alert.
@@ -73,7 +75,8 @@ worker. Refusals reach the user as an ephemeral message through `response_url`.
 - `worker/worker.lambda.ts`, in order:
   1. Check membership with `usergroups.users.list`. Any error counts as not allowed.
   2. Read the finding again with `GetFindings`.
-  3. If workflow status is not `NEW` or `NOTIFIED`: refuse and change nothing, with an ephemeral message ("Already <status> by <user> (reason)") and redraw the message without buttons. If it is already `SUPPRESSED`, report success without a write.
+  3. If `Severity.Label` is not `CRITICAL`: refuse and change nothing (defence in depth, same gate as the button).
+     If workflow status is not `NEW` or `NOTIFIED`: refuse and change nothing, with an ephemeral message ("Already <status> by <user> (reason)") and redraw the message without buttons. If it is already `SUPPRESSED`, report success without a write.
   4. `BatchUpdateFindings` with `Workflow.Status = SUPPRESSED` and `Note` (`Text`: Slack user and reason; `UpdatedBy`: `slack:<user id>`). Treat `UnprocessedFindings` as a failure. Note: `Note` replaces any existing note (earlier text remains only in finding history).
   5. Redraw through `response_url`: new status, who, reason, no buttons. The reason is escaped so `<!channel>` and `<@user>` do not notify anyone. Log the action with Powertools `Logger`.
 - Permissions: worker gets `securityhub:GetFindings` and `securityhub:BatchUpdateFindings`. Check that `PermissionsBoundaryAspect` (applied in `MonitoringTargetStage`) allows the latter.
@@ -99,10 +102,11 @@ Shared with the audit slackbot, so harden it without breaking `src/audit/slackbo
 ## Verification
 **Automated (`npx projen test`, `npx projen eslint`)**
 - Formatter: control, Inspector and minimal payloads (existing samples plus new ASFF samples); long descriptions; missing `Resources`.
+- Severity gate: `CRITICAL` (any case) triggers lookup and button; `HIGH`, `MEDIUM`, missing `Severity` do not and make no `GetFindings` call. Existing samples are all `HIGH`, so add a `CRITICAL` sample.
 - Lookup: one, zero and multiple matches, closed finding (no buttons), throttling and errors (`aws-sdk-client-mock`, as in `SecurityHubOverview.test.ts`).
 - Signature check: valid, tampered, expired, future, missing and non-numeric timestamp, lowercase headers (real tests, not mocked). The audit slackbot tests stay green.
 - Receiver: click, submit, unsigned request.
-- Worker: not in group, Slack error fails closed, stale status refused with no write, already `SUPPRESSED` reported as success, successful suppress, `UnprocessedFindings`, reason escaping, expired `response_url`.
+- Worker: not in group, Slack error fails closed, non-`CRITICAL` finding refused, stale status refused with no write, already `SUPPRESSED` reported as success, successful suppress, `UnprocessedFindings`, reason escaping, expired `response_url`.
 - CDK: route, permissions, nothing deployed when the config is unset, synthesis error when set without `deployAuditSlackbot`.
 - `enrich`: `sns-handler.test.ts` unchanged and green.
 
