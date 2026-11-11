@@ -3,6 +3,10 @@ import { Priority, Statics } from '../statics';
 import { classifyEcsTask } from './EcsTaskClassifier';
 import { HandledEvent, IHandler } from './IHandler';
 import { AlarmMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, CustomSnsMessageFormatter, DevopsGuruMessageFormatter, DriftDetectionStatusFormatter, Ec2MessageFormatter, EcsDeploymentStateChangeFormatter, EcsMessageFormatter, EcsServiceActionFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, OrgTrailMessageFormatter, SecurityHubFormatter, UnhandledEventFormatter } from './MessageFormatter';
+import { enrichSecurityHubMessage } from './SecurityHubEnrichment';
+import { accountNameFor } from './SecurityHubMessage';
+import { isSuppressEligibleSeverity } from './SecurityHubView';
+import { SlackMessage } from './SlackMessage';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
 /**
@@ -32,6 +36,11 @@ interface Event {
    * Use this when the same event type can produce different priorities depending on the message.
    */
   resolvePriority?: (message: any) => Priority;
+  /**
+   * Optional async enrichment of the formatted message. Returns undefined when
+   * this particular message needs no enrichment.
+   */
+  enrich?: (message: any, account: string, configuration: Configuration) => (() => Promise<SlackMessage>) | undefined;
 }
 
 const events: Record<string, Event> = {
@@ -94,6 +103,9 @@ const events: Record<string, Event> = {
     shouldTriggerAlert: () => true,
     formatter: (message, account, priority) => new SecurityHubFormatter(message, account, priority),
     priority: 'high',
+    enrich: (message, account, configuration) => isSuppressEligibleSeverity(message?.Severity)
+      ? () => enrichSecurityHubMessage(message, accountNameFor(configuration, account), configuration)
+      : undefined,
   },
   'OrgTrailFromMPA': {
     shouldTriggerAlert: () => true,
@@ -138,6 +150,7 @@ export class SnsEventHandler implements IHandler {
     return {
       priority: priority,
       message: formatter.formattedMessage(),
+      enrich: events[eventType].enrich?.(message, account, this.configuration),
     };
   }
 

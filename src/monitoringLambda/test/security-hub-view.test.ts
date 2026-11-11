@@ -12,6 +12,11 @@ describe('isSuppressEligibleSeverity', () => {
     expect(isSuppressEligibleSeverity('')).toBe(false);
     expect(isSuppressEligibleSeverity(undefined)).toBe(false);
   });
+  test('tolerates non-string input', () => {
+    expect(isSuppressEligibleSeverity(5 as any)).toBe(false);
+    expect(isSuppressEligibleSeverity({} as any)).toBe(false);
+    expect(isSuppressEligibleSeverity(null as any)).toBe(false);
+  });
 });
 
 describe('viewFromPayload', () => {

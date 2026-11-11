@@ -6,7 +6,7 @@ import { AwsSecurityFinding } from '@aws-sdk/client-securityhub';
 export const SUPPRESS_SEVERITY = 'CRITICAL';
 
 export function isSuppressEligibleSeverity(severity?: string): boolean {
-  return severity?.toUpperCase() === SUPPRESS_SEVERITY;
+  return typeof severity === 'string' && severity.toUpperCase() === SUPPRESS_SEVERITY;
 }
 
 /**

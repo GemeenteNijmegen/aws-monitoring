@@ -92,6 +92,13 @@ export interface Configuration {
    * @default none
    */
   globalMonitoringRules?: MonitoringRule[];
+
+  /**
+   * Slack user group ID whose members may use Security Hub actions (e.g. Suppress).
+   * Unset means no action buttons on alerts and no actions endpoint.
+   * @default unset
+   */
+  securityHubActionsUserGroupId?: string;
 }
 
 export interface Configurable {

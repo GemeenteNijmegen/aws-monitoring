@@ -1,9 +1,12 @@
+import { GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
+import { mockClient } from 'aws-sdk-client-mock';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { constructLogSubscriptionEvent, getEventFromFilePath } from './util';
 import { handler } from '../monitoring.lambda';
 
 let axiosMock: MockAdapter;
+const securityHubMock = mockClient(SecurityHubClient);
 
 beforeAll(() => {
   process.env.ACCOUNT_NAME = 'testing';
@@ -16,6 +19,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   axiosMock = new MockAdapter(axios);
+  securityHubMock.reset();
 });
 
 describe('handler', () => {
@@ -44,6 +48,33 @@ describe('handler', () => {
     expect(data.blocks[2].text.text).toContain(logStr1);
     expect(data.blocks[3].text.text).toContain(logStr2);
 
+  });
+
+  describe('security hub enrichment', () => {
+    const critical = { Id: 'f1', ProductArn: 'p', Title: 'T', Severity: { Label: 'CRITICAL' }, Workflow: { Status: 'NEW' }, Vulnerabilities: [{ FixAvailable: 'YES' }] };
+
+    test('CRITICAL finding is posted with the vulnerability line', async () => {
+      axiosMock.onPost().reply(200, {});
+      securityHubMock.on(GetFindingsCommand).resolves({ Findings: [critical as any] });
+      await handler(await getEventFromFilePath('samples/securityhub-critical.json'));
+      expect(axiosMock.history.post.length).toBe(1);
+      expect(axiosMock.history.post[0].data).toContain('Fix available');
+    });
+
+    test('lookup failure still posts the plain alert', async () => {
+      axiosMock.onPost().reply(200, {});
+      securityHubMock.on(GetFindingsCommand).rejects(new Error('boom'));
+      await handler(await getEventFromFilePath('samples/securityhub-critical.json'));
+      expect(axiosMock.history.post.length).toBe(1);
+      expect(axiosMock.history.post[0].data).not.toContain('Fix available');
+    });
+
+    test('HIGH finding never calls GetFindings', async () => {
+      axiosMock.onPost().reply(200, {});
+      await handler(await getEventFromFilePath('samples/securityhub-new-lz.json'));
+      expect(axiosMock.history.post.length).toBe(1);
+      expect(securityHubMock.commandCalls(GetFindingsCommand)).toHaveLength(0);
+    });
   });
 
 });
