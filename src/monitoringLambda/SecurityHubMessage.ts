@@ -33,6 +33,14 @@ export function accountNameFor(configuration: Configuration, accountId: string):
   return environment?.accountName ?? accountId;
 }
 
+/**
+ * Only https targets are linked; characters that Slack treats as link syntax are percent-encoded.
+ */
+function safeLinkTarget(target?: string): string | undefined {
+  if (!target || !target.startsWith('https://')) { return undefined; }
+  return target.replace(/[<>| ]/g, char => encodeURIComponent(char));
+}
+
 function truncate(text: string): string {
   return text.length > MAX_SECTION_LENGTH ? `${text.substring(0, MAX_SECTION_LENGTH - 1)}…` : text;
 }
@@ -76,8 +84,9 @@ export function renderSecurityHubView(message: Message, view: SecurityHubView, o
     message.addSection(vulnerability.join(' | '));
   }
 
-  if (view.remediationUrl) {
-    message.addLink('Remediation', view.remediationUrl);
+  const remediationTarget = safeLinkTarget(view.remediationUrl);
+  if (remediationTarget) {
+    message.addLink('Remediation', remediationTarget);
   }
   if (view.findingId && view.region) {
     message.addLink('View in Security Hub', findingConsoleUrl(view.region, view.findingId));

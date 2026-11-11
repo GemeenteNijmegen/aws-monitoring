@@ -31,8 +31,11 @@ export interface SecurityHubView {
   productArn?: string;
 }
 
-function stripStandardsPrefix(standardsId?: string): string | undefined {
-  return standardsId ? standardsId.replace(/^standards\//, '') : undefined;
+const str = (value: unknown): string | undefined => typeof value === 'string' ? value : undefined;
+
+function stripStandardsPrefix(standardsId?: unknown): string | undefined {
+  const id = str(standardsId);
+  return id ? id.replace(/^standards\//, '') : undefined;
 }
 
 /**
@@ -41,15 +44,15 @@ function stripStandardsPrefix(standardsId?: string): string | undefined {
 export function viewFromPayload(payload: any): SecurityHubView {
   const resources = Array.isArray(payload?.Resources) ? payload.Resources : [];
   return {
-    title: payload?.Title ?? '(no title)',
-    severity: payload?.Severity,
-    accountId: payload?.AccountId ?? '',
-    region: payload?.Region,
-    controlId: payload?.ControlId ?? payload?.Compliance?.SecurityControlId,
-    complianceStatus: payload?.Compliance?.Status,
-    workflowStatus: payload?.WorkflowState,
+    title: str(payload?.Title) ?? '(no title)',
+    severity: str(payload?.Severity),
+    accountId: str(payload?.AccountId) ?? '',
+    region: str(payload?.Region),
+    controlId: str(payload?.ControlId) ?? str(payload?.Compliance?.SecurityControlId),
+    complianceStatus: str(payload?.Compliance?.Status),
+    workflowStatus: str(payload?.WorkflowState),
     standard: stripStandardsPrefix(payload?.Compliance?.AssociatedStandards?.[0]?.StandardsId),
-    description: payload?.Description,
+    description: str(payload?.Description),
     resources: resources.map((r: any) => ({ type: String(r?.Type ?? ''), id: String(r?.Id ?? '') })),
   };
 }

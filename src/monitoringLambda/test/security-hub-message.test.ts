@@ -1,7 +1,7 @@
 import { SUPPRESS_ACTION_ID } from '../../securityHubActions/shared/ActionPayload';
 import { Message } from '../Message';
 import { accountNameFor, escapeSlackText, findingConsoleUrl, renderSecurityHubView } from '../SecurityHubMessage';
-import { SecurityHubView, viewFromPayload } from '../SecurityHubView';
+import { isSuppressEligibleSeverity, SecurityHubView, viewFromPayload } from '../SecurityHubView';
 import { getEventFromFilePath } from './util';
 
 async function payloadFrom(sample: string) {
@@ -127,5 +127,49 @@ describe('renderSecurityHubView', () => {
 
   test('renders notice', () => {
     expect(sectionTexts(render(baseView(), { notice: 'careful' }))).toContain('careful');
+  });
+});
+
+describe('non-string payload fields', () => {
+  const hostile = { Label: 'CRITICAL' };
+  const cases: [string, any][] = [
+    ['Severity object', { Severity: hostile }],
+    ['Severity number', { Severity: 9 }],
+    ['Description number', { Description: 5 }],
+    ['Title object', { Title: hostile }],
+    ['Region object', { Region: hostile }],
+    ['Compliance.Status object', { Compliance: { Status: hostile } }],
+    ['ControlId number', { ControlId: 5 }],
+    ['StandardsId number', { Compliance: { AssociatedStandards: [{ StandardsId: 5 }] } }],
+  ];
+
+  test.each(cases)('%s renders without throwing', (_name, extra) => {
+    const payload = { AccountId: '1', Resources: [{ Type: 'T', Id: 'r1' }], ...extra };
+    const view = viewFromPayload(payload);
+    const blocks = render(view);
+    expect(blocks.some(b => b.type === 'header')).toBe(true);
+    expect(sectionTexts(blocks).join('\n')).toContain('r1');
+    expect(isSuppressEligibleSeverity(view.severity)).toBe(false);
+  });
+});
+
+describe('remediation link targets', () => {
+  const links = (blocks: any[]) => JSON.stringify(blocks);
+
+  test('hostile url cannot inject mentions', () => {
+    const blocks = render(baseView({ remediationUrl: 'https://a> <!channel> <https://b' }));
+    expect(links(blocks)).not.toContain('<!channel>');
+  });
+
+  test('non-https url produces no link', () => {
+    const blocks = render(baseView({ remediationUrl: 'http://example.com/x' }));
+    expect(links(blocks)).not.toContain('Remediation');
+    const js = render(baseView({ remediationUrl: 'javascript:alert(1)' }));
+    expect(links(js)).not.toContain('Remediation');
+  });
+
+  test('normal https url is unchanged', () => {
+    const blocks = render(baseView({ remediationUrl: 'https://docs.aws.amazon.com/x?a=1' }));
+    expect(links(blocks)).toContain('<https://docs.aws.amazon.com/x?a=1|Remediation>');
   });
 });

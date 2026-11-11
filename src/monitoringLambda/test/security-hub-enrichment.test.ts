@@ -101,4 +101,15 @@ describe('SnsEventHandler enrich', () => {
     const critical = handler.handle(await getEventFromFilePath('samples/securityhub-critical.json'));
     expect(typeof (critical as any).enrich).toBe('function');
   });
+
+  test('does not throw on non-string payload fields', async () => {
+    const event = await getEventFromFilePath('samples/securityhub-critical.json');
+    const payload = JSON.parse(event.Records[0].Sns.Message);
+    payload.Severity = { Label: 'CRITICAL' };
+    payload.Description = 5;
+    payload.Title = { x: 1 };
+    event.Records[0].Sns.Message = JSON.stringify(payload);
+    expect(() => handler.handle(event)).not.toThrow();
+    expect(handler.handle(event)).not.toBe(false);
+  });
 });

@@ -8,6 +8,12 @@ import { SlackMessage } from './SlackMessage';
 const OPEN_WORKFLOW_STATUSES = ['NEW', 'NOTIFIED'];
 const UNAVAILABLE_NOTICE = 'Actions unavailable for this alert';
 
+let defaultLookup: SecurityHubFindingLookup | undefined;
+function getDefaultLookup(): SecurityHubFindingLookup {
+  defaultLookup ??= new SecurityHubFindingLookup();
+  return defaultLookup;
+}
+
 /**
  * Look up the full finding for a critical Security Hub alert and render a richer
  * message. A Suppress button is added only for a single open finding and when
@@ -17,7 +23,7 @@ export async function enrichSecurityHubMessage(
   payload: any,
   accountName: string,
   configuration: Configuration,
-  lookup: SecurityHubFindingLookup = new SecurityHubFindingLookup(),
+  lookup: SecurityHubFindingLookup = getDefaultLookup(),
 ): Promise<SlackMessage> {
   const actionsEnabled = !!configuration.securityHubActionsUserGroupId;
   const result = await lookup.lookup(payload);

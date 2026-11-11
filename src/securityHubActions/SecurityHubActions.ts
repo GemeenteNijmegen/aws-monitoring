@@ -83,7 +83,6 @@ export class SecurityHubActions extends Construct {
     worker.addEventSource(new SqsEventSource(queue, {
       batchSize: 1,
       maxConcurrency: 2,
-      reportBatchItemFailures: true,
     }));
     worker.addToRolePolicy(new PolicyStatement({
       actions: ['securityhub:GetFindings', 'securityhub:BatchUpdateFindings'],
