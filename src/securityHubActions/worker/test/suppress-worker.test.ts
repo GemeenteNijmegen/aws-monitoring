@@ -1,7 +1,7 @@
 import { BatchUpdateFindingsCommand, GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { mockClient } from 'aws-sdk-client-mock';
 import { SuppressJob } from '../../shared/ActionPayload';
-import { SuppressWorker } from '../SuppressWorker';
+import { handleRecords, SuppressWorker } from '../SuppressWorker';
 
 const securityHubMock = mockClient(SecurityHubClient);
 
@@ -214,5 +214,45 @@ describe('SuppressWorker', () => {
       expect(JSON.stringify(logger.warn.mock.calls)).not.toContain(url);
       securityHubMock.resetHistory();
     }
+  });
+
+  test('does not turn a hostile note author into markup', async () => {
+    for (const author of ['slack:U1> <!channel', 'slack:x|y> <https://evil|Click here', 'slack:U1>']) {
+      securityHubMock.on(GetFindingsCommand).resolves({
+        Findings: [finding({ Workflow: { Status: 'RESOLVED' }, Note: { UpdatedBy: author, Text: 't' } })],
+      });
+      const { worker, respond } = setup();
+      await worker.handle(job);
+      const text = JSON.stringify(respond.mock.calls);
+      expect(text).not.toContain('<!channel>');
+      expect(text).not.toContain('<https://evil');
+      expect(text).not.toContain('<@U1>');
+      expect(text).toMatch(/&(lt|gt);/);
+    }
+  });
+});
+
+describe('handleRecords', () => {
+  const record = (body: string, messageId = 'm') => ({ messageId, body });
+
+  test('isolates bad records and keeps processing', async () => {
+    const handle = jest.fn()
+      .mockRejectedValueOnce(new Error('boom reason-secret'))
+      .mockResolvedValue('suppressed');
+    const logger = { error: jest.fn() };
+    const { reason, ...noReason } = job;
+    await expect(handleRecords([
+      record('{not json', 'm1'),
+      record(JSON.stringify(noReason), 'm2'),
+      record(JSON.stringify(job), 'm3'),
+      record(JSON.stringify(job), 'm4'),
+    ], { handle }, logger)).resolves.toBeUndefined();
+    expect(handle).toHaveBeenCalledTimes(2);
+    expect(logger.error).toHaveBeenCalledTimes(3);
+    const logged = JSON.stringify(logger.error.mock.calls);
+    expect(logged).toContain('m1');
+    expect(logged).not.toContain(reason);
+    expect(logged).not.toContain('hooks.slack.com');
+    expect(logged).not.toContain('secret');
   });
 });

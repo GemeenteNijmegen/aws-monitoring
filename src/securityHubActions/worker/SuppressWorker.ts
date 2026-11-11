@@ -31,8 +31,61 @@ function isSlackResponseUrl(url: string): boolean {
 
 function displayName(author?: string): string {
   if (!author) { return 'unknown'; }
-  if (author.startsWith('slack:')) { return `<@${author.substring('slack:'.length)}>`; }
+  const match = /^slack:([UW][A-Z0-9]{2,})$/.exec(author);
+  if (match) { return `<@${match[1]}>`; }
   return escapeSlackText(author);
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+/**
+ * Parse and validate an SQS record body. Returns undefined when invalid.
+ */
+export function parseJob(body: string): SuppressJob | undefined {
+  let parsed: any;
+  try {
+    parsed = JSON.parse(body);
+  } catch {
+    return undefined;
+  }
+  if (!parsed || !isNonEmptyString(parsed.id) || !isNonEmptyString(parsed.productArn)
+    || !isNonEmptyString(parsed.responseUrl) || !isNonEmptyString(parsed.slackUserId)
+    || typeof parsed.reason !== 'string') {
+    return undefined;
+  }
+  return {
+    id: parsed.id,
+    productArn: parsed.productArn,
+    responseUrl: parsed.responseUrl,
+    slackUserId: parsed.slackUserId,
+    reason: parsed.reason,
+  };
+}
+
+/**
+ * Process every record independently. Invalid or failing records are logged
+ * (message id only) and dropped, never rethrown: expected failures already tell
+ * the user to click again, and a retry after a write only adds duplicate noise.
+ */
+export async function handleRecords(
+  records: { messageId: string; body: string }[],
+  worker: Pick<SuppressWorker, 'handle'>,
+  logger: Pick<Logger, 'error'>,
+): Promise<void> {
+  for (const record of records) {
+    try {
+      const job = parseJob(record.body);
+      if (!job) {
+        logger.error('Dropping invalid suppress job', { messageId: record.messageId });
+        continue;
+      }
+      await worker.handle(job);
+    } catch {
+      logger.error('Dropping record after unexpected error', { messageId: record.messageId });
+    }
+  }
 }
 
 export class SuppressWorker {

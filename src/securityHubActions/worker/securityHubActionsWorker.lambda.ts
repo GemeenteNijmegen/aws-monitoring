@@ -2,10 +2,9 @@ import { Logger } from '@aws-lambda-powertools/logger';
 import { SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { AWS } from '@gemeentenijmegen/utils';
 import { SQSEvent } from 'aws-lambda';
-import { SuppressWorker } from './SuppressWorker';
+import { handleRecords, SuppressWorker } from './SuppressWorker';
 import { getConfiguration } from '../../DeploymentEnvironments';
 import { accountNameFor } from '../../monitoringLambda/SecurityHubMessage';
-import { SuppressJob } from '../shared/ActionPayload';
 import { SlackApi } from '../shared/SlackApi';
 
 const logger = new Logger({ serviceName: 'security-hub-actions-worker' });
@@ -39,8 +38,5 @@ export async function handler(event: SQSEvent): Promise<void> {
     logger,
   });
 
-  for (const record of event.Records) {
-    const job = JSON.parse(record.body) as SuppressJob;
-    await worker.handle(job);
-  }
+  await handleRecords(event.Records, worker, logger);
 }
