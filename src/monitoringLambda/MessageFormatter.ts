@@ -2,6 +2,8 @@ import { CloudWatchLogsDecodedData } from 'aws-lambda';
 import { Configuration, getConfiguration } from '../DeploymentEnvironments';
 import { classifyEcsTask } from './EcsTaskClassifier';
 import { Message } from './Message';
+import { accountNameFor, renderSecurityHubView } from './SecurityHubMessage';
+import { viewFromPayload } from './SecurityHubView';
 import { SlackMessage } from './SlackMessage';
 import { getEventType } from './SnsEventHandler';
 
@@ -38,8 +40,7 @@ export abstract class MessageFormatter<T> {
    * @returns
    */
   lookupAccountName(account: string) {
-    const monitoringConfig = this.configuration.deployToEnvironments.find(deploymentEnv => deploymentEnv.env.account == account);
-    return monitoringConfig?.accountName ?? account;
+    return accountNameFor(this.configuration, account);
   }
 
 }
@@ -339,23 +340,9 @@ export class DriftDetectionStatusFormatter extends MessageFormatter<any> {
 
 export class SecurityHubFormatter extends MessageFormatter<any> {
   constructMessage(message: Message): Message {
-    message.addHeader(`SecurityHub: ${this.event?.Title}`);
-    message.addContext({
-      type: 'securityhub',
-      account: this.lookupAccountName(this.account),
-      state: `${this.event?.WorkflowState}`,
+    return renderSecurityHubView(message, viewFromPayload(this.event), {
+      accountName: this.lookupAccountName(this.account),
     });
-    if (this.event?.Description) {
-      message.addSection(`${this.event?.Description}`);
-    }
-
-    let resourceString = '';
-    for (const resource of this.event?.Resources) {
-      resourceString = resourceString.concat(`- *${resource.Type}*: ${resource.Id}`);
-    }
-    if (resourceString != '') { message.addSection(resourceString); }
-
-    return message;
   }
 }
 

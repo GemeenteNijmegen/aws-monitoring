@@ -4,10 +4,19 @@ export interface MessageProps {
   header?: string;
   context?: { [name: string]: string };
   sections?: string[];
-  link?: {
+  links?: {
     text: string;
     target: string;
+  }[];
+  button?: {
+    text: string;
+    actionId: string;
+    payload: any;
   };
+  /**
+   * Insertion order of sections, links and the button
+   */
+  order?: ('section' | 'link' | 'button')[];
 }
 
 export class Message {
@@ -35,10 +44,27 @@ export class Message {
       this.message.sections = [];
     }
     this.message.sections.push(text);
+    this.recordOrder('section');
   }
 
   addLink(text: string, target: string) {
-    this.message.link = { text, target };
+    if (!this.message.links) {
+      this.message.links = [];
+    }
+    this.message.links.push({ text, target });
+    this.recordOrder('link');
+  }
+
+  addButton(text: string, actionId: string, payload: any) {
+    this.message.button = { text, actionId, payload };
+    this.recordOrder('button');
+  }
+
+  private recordOrder(kind: 'section' | 'link' | 'button') {
+    if (!this.message.order) {
+      this.message.order = [];
+    }
+    this.message.order.push(kind);
   }
 
   getSlackMessage() {

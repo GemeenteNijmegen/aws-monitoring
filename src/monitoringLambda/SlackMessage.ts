@@ -14,11 +14,17 @@ export class SlackMessage {
     if (message.context) {
       slack.addContext(message.context);
     }
-    if (message.sections) {
-      message.sections.forEach(section => slack.addSection(section));
-    }
-    if (message.link) {
-      slack.addLink(message.link.text, message.link.target);
+    const sections = [...(message.sections ?? [])];
+    const links = [...(message.links ?? [])];
+    for (const kind of message.order ?? []) {
+      if (kind === 'section') {
+        slack.addSection(sections.shift()!);
+      } else if (kind === 'link') {
+        const link = links.shift()!;
+        slack.addLink(link.text, link.target);
+      } else if (message.button) {
+        slack.addButton(message.button.text, message.button.actionId, message.button.payload);
+      }
     }
     return slack;
   }
