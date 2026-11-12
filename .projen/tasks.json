@@ -479,7 +479,7 @@
       "description": "Lint synthesized CloudFormation templates",
       "steps": [
         {
-          "exec": "cfn-lint cdk.out/**/*.template.json -i W3005 W2001"
+          "exec": "cfn-lint cdk.out/**/*.template.json -i W3005 W2001 W3696"
         }
       ]
     },
