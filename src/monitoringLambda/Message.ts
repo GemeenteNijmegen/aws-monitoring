@@ -3,21 +3,16 @@ import { SlackMessage } from './SlackMessage';
 export interface MessageProps {
   header?: string;
   context?: { [name: string]: string };
-  sections?: string[];
-  links?: {
-    text: string;
-    target: string;
-  }[];
-  button?: {
-    text: string;
-    actionId: string;
-    payload: any;
-  };
   /**
-   * Insertion order of sections, links and the button
+   * Sections, links and buttons in the order they are rendered
    */
-  order?: ('section' | 'link' | 'button')[];
+  parts?: MessagePart[];
 }
+
+export type MessagePart =
+  { kind: 'section'; text: string } |
+  { kind: 'link'; text: string; target: string } |
+  { kind: 'button'; text: string; actionId: string; payload: any };
 
 export class Message {
 
@@ -40,31 +35,19 @@ export class Message {
   }
 
   addSection(text: string) {
-    if (!this.message.sections) {
-      this.message.sections = [];
-    }
-    this.message.sections.push(text);
-    this.recordOrder('section');
+    this.addPart({ kind: 'section', text });
   }
 
   addLink(text: string, target: string) {
-    if (!this.message.links) {
-      this.message.links = [];
-    }
-    this.message.links.push({ text, target });
-    this.recordOrder('link');
+    this.addPart({ kind: 'link', text, target });
   }
 
   addButton(text: string, actionId: string, payload: any) {
-    this.message.button = { text, actionId, payload };
-    this.recordOrder('button');
+    this.addPart({ kind: 'button', text, actionId, payload });
   }
 
-  private recordOrder(kind: 'section' | 'link' | 'button') {
-    if (!this.message.order) {
-      this.message.order = [];
-    }
-    this.message.order.push(kind);
+  private addPart(part: MessagePart) {
+    (this.message.parts ??= []).push(part);
   }
 
   getSlackMessage() {

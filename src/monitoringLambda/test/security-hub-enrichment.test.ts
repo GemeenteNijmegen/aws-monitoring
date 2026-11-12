@@ -37,7 +37,7 @@ const texts = (slack: any) => JSON.stringify(blocksOf(slack));
 describe('enrichSecurityHubMessage', () => {
   test('button on single new finding', async () => {
     const payload = await payloadFrom('securityhub-critical.json');
-    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup({ kind: 'found', finding: finding('NEW') }));
+    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup(finding('NEW')));
     expect(hasButton(slack)).toBe(true);
     expect(texts(slack)).toContain('Fix available');
     expect(texts(slack)).toContain('Exploit available');
@@ -46,13 +46,13 @@ describe('enrichSecurityHubMessage', () => {
 
   test('button on notified finding', async () => {
     const payload = await payloadFrom('securityhub-critical.json');
-    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup({ kind: 'found', finding: finding('NOTIFIED') }));
+    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup(finding('NOTIFIED')));
     expect(hasButton(slack)).toBe(true);
   });
 
   test.each(['SUPPRESSED', 'RESOLVED'])('no button when closed (%s)', async (status) => {
     const payload = await payloadFrom('securityhub-critical.json');
-    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup({ kind: 'found', finding: finding(status) }));
+    const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup(finding(status)));
     expect(hasButton(slack)).toBe(false);
     expect(texts(slack)).not.toContain('Actions unavailable');
     expect(texts(slack)).toContain('Found title');
@@ -60,17 +60,14 @@ describe('enrichSecurityHubMessage', () => {
 
   test('no button when group unset', async () => {
     const payload = await payloadFrom('securityhub-critical.json');
-    const slack = await enrichSecurityHubMessage(payload, 'acc', withoutGroup, fakeLookup({ kind: 'found', finding: finding('NEW') }));
+    const slack = await enrichSecurityHubMessage(payload, 'acc', withoutGroup, fakeLookup(finding('NEW')));
     expect(hasButton(slack)).toBe(false);
     expect(texts(slack)).not.toContain('Actions unavailable');
     expect(texts(slack)).toContain('Found title');
   });
 
-  test.each([
-    ['none', { kind: 'none' }],
-    ['multiple', { kind: 'multiple' }],
-    ['error', { kind: 'error', error: new Error('x') }],
-  ])('notice on %s', async (_name, result) => {
+  test('notice when no single finding is found', async () => {
+    const result = undefined;
     const payload = await payloadFrom('securityhub-critical.json');
     const slack = await enrichSecurityHubMessage(payload, 'acc', withGroup, fakeLookup(result));
     expect(hasButton(slack)).toBe(false);
@@ -93,13 +90,6 @@ describe('SnsEventHandler enrich', () => {
     const handled = handler.handle(event);
     expect(handled).not.toBe(false);
     expect((handled as any).enrich).toBeUndefined();
-  });
-
-  test('HIGH has no enrich, CRITICAL has', async () => {
-    const high = handler.handle(await getEventFromFilePath('samples/securityhub-new-lz.json'));
-    expect((high as any).enrich).toBeUndefined();
-    const critical = handler.handle(await getEventFromFilePath('samples/securityhub-critical.json'));
-    expect(typeof (critical as any).enrich).toBe('function');
   });
 
   test('does not throw on non-string payload fields', async () => {

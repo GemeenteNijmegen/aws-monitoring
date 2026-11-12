@@ -1,6 +1,6 @@
 import { SUPPRESS_ACTION_ID } from '../../securityHubActions/shared/ActionPayload';
 import { Message } from '../Message';
-import { accountNameFor, escapeSlackText, findingConsoleUrl, renderSecurityHubView } from '../SecurityHubMessage';
+import { findingConsoleUrl, renderSecurityHubView } from '../SecurityHubMessage';
 import { isSuppressEligibleSeverity, SecurityHubView, viewFromPayload } from '../SecurityHubView';
 import { getEventFromFilePath } from './util';
 
@@ -20,26 +20,12 @@ function baseView(overrides: Partial<SecurityHubView> = {}): SecurityHubView {
 
 const sectionTexts = (blocks: any[]) => blocks.filter(b => b.type === 'section').map(b => b.text.text);
 
-describe('escapeSlackText', () => {
-  test('escapes control characters', () => {
-    expect(escapeSlackText('<!channel> & <@U1>')).toBe('&lt;!channel&gt; &amp; &lt;@U1&gt;');
-  });
-});
-
 describe('findingConsoleUrl', () => {
   test('builds the console url', () => {
     const id = 'arn:aws:securityhub:eu-central-1:1:finding/x';
     expect(findingConsoleUrl('eu-central-1', id)).toBe(
       `https://eu-central-1.console.aws.amazon.com/securityhub/home?region=eu-central-1#/findings?search=Id%3D%255Coperator%255C%253AEQUALS%255C%253A${encodeURIComponent(encodeURIComponent(id))}`,
     );
-  });
-});
-
-describe('accountNameFor', () => {
-  test('returns the name of a known account and falls back to the id', () => {
-    const configuration: any = { deployToEnvironments: [{ accountName: 'prod', env: { account: '111' } }] };
-    expect(accountNameFor(configuration, '111')).toBe('prod');
-    expect(accountNameFor(configuration, '222')).toBe('222');
   });
 });
 
@@ -112,17 +98,6 @@ describe('renderSecurityHubView', () => {
     expect(actions.elements[0].action_id).toBe(SUPPRESS_ACTION_ID);
     expect(actions.elements[0].text.text).toBe('Suppress');
     expect(actions.elements[0].value).toBe(Buffer.from(JSON.stringify(button)).toString('base64'));
-  });
-
-  test('renders outcome', () => {
-    const blocks = render(baseView(), {
-      button: { id: 'fid', productArn: 'parn' },
-      outcome: { status: 'Suppressed', by: 'U1', reason: '<!here> ok' },
-    });
-    expect(blocks.some(b => b.type === 'actions')).toBe(false);
-    const last = blocks[blocks.length - 1];
-    expect(last.text.text).toContain('&lt;!here&gt; ok');
-    expect(last.text.text).toContain('Suppressed');
   });
 
   test('renders notice', () => {

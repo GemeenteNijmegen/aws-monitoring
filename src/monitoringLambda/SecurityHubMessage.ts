@@ -10,7 +10,6 @@ export interface RenderOptions {
   accountName: string;
   button?: FindingRef;
   notice?: string;
-  outcome?: { status: string; by?: string; reason?: string };
 }
 
 /**
@@ -96,12 +95,7 @@ export function renderSecurityHubView(message: Message, view: SecurityHubView, o
     message.addSection(truncate(escapeSlackText(opts.notice)));
   }
 
-  if (opts.outcome) {
-    const { status, by, reason } = opts.outcome;
-    const byText = by ? ` by ${escapeSlackText(by)}` : '';
-    const reasonText = reason ? `: ${escapeSlackText(reason)}` : '';
-    message.addSection(truncate(`*${escapeSlackText(status)}*${byText}${reasonText}`));
-  } else if (opts.button) {
+  if (opts.button) {
     message.addButton('Suppress', SUPPRESS_ACTION_ID, opts.button);
   }
 

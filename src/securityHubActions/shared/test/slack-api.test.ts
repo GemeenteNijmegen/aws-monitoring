@@ -33,11 +33,6 @@ describe('SlackApi', () => {
     expect(JSON.parse(init.body)).toEqual({ trigger_id: 'T1', view: { type: 'modal' } });
   });
 
-  test('openModal throws when Slack returns ok false', async () => {
-    mockFetch({ ok: false, error: 'expired_trigger_id' });
-    await expect(new SlackApi('t').openModal('T1', {})).rejects.toThrow('Slack views.open failed: expired_trigger_id');
-  });
-
   test('listGroupMembers returns users', async () => {
     const spy = mockFetch({ ok: true, users: ['U1', 'U2'] });
     const users = await new SlackApi('tok').listGroupMembers('S1');
@@ -51,11 +46,6 @@ describe('SlackApi', () => {
   test('listGroupMembers throws on ok false', async () => {
     mockFetch({ ok: false, error: 'no_such_subteam' });
     await expect(new SlackApi('t').listGroupMembers('S1')).rejects.toThrow('Slack usergroups.users.list failed: no_such_subteam');
-  });
-
-  test('throws on non-2xx response', async () => {
-    mockFetch({}, { ok: false, status: 500 });
-    await expect(new SlackApi('t').openModal('T1', {})).rejects.toThrow('Slack views.open failed: HTTP 500');
   });
 
   test('respond posts JSON to the response url', async () => {

@@ -8,11 +8,7 @@ import { SlackMessage } from './SlackMessage';
 const OPEN_WORKFLOW_STATUSES = ['NEW', 'NOTIFIED'];
 const UNAVAILABLE_NOTICE = 'Actions unavailable for this alert';
 
-let defaultLookup: SecurityHubFindingLookup | undefined;
-function getDefaultLookup(): SecurityHubFindingLookup {
-  defaultLookup ??= new SecurityHubFindingLookup();
-  return defaultLookup;
-}
+const defaultLookup = new SecurityHubFindingLookup();
 
 /**
  * Look up the full finding for a critical Security Hub alert and render a richer
@@ -23,14 +19,14 @@ export async function enrichSecurityHubMessage(
   payload: any,
   accountName: string,
   configuration: Configuration,
-  lookup: SecurityHubFindingLookup = getDefaultLookup(),
+  lookup: SecurityHubFindingLookup = defaultLookup,
 ): Promise<SlackMessage> {
   const actionsEnabled = !!configuration.securityHubActionsUserGroupId;
-  const result = await lookup.lookup(payload);
+  const finding = await lookup.lookup(payload);
   const message = new Message();
 
-  if (result.kind === 'found') {
-    const view = viewFromFinding(result.finding);
+  if (finding) {
+    const view = viewFromFinding(finding);
     const open = OPEN_WORKFLOW_STATUSES.includes(view.workflowStatus ?? '');
     const button = actionsEnabled && open && view.findingId && view.productArn
       ? { id: view.findingId, productArn: view.productArn }

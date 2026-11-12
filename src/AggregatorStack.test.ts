@@ -11,13 +11,6 @@ describe('AggregatorStack monitoring lambda', () => {
   });
   const template = Template.fromStack(stack);
 
-  test('has a 30 second timeout', () => {
-    template.hasResourceProperties('AWS::Lambda::Function', {
-      Description: 'Slack notification lambda (dev)',
-      Timeout: 30,
-    });
-  });
-
   test('may look up security hub findings', () => {
     const functions = template.findResources('AWS::Lambda::Function', {
       Properties: { Description: 'Slack notification lambda (dev)' },

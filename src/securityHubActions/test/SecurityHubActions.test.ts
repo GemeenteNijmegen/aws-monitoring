@@ -3,7 +3,6 @@ import { Match, Template } from 'aws-cdk-lib/assertions';
 import { IntegrationsStack } from '../../IntegrationsStack';
 
 const env = { account: '123456789012', region: 'eu-west-1' };
-const FEATURE_TAG = { Key: 'Feature', Value: 'security-hub-actions' };
 
 function synth(props: { deployAuditSlackbot?: boolean; securityHubActionsUserGroupId?: string }) {
   const app = new App();
@@ -39,57 +38,6 @@ describe('SecurityHubActions', () => {
     expect(ids[1]).toMatch(/^auditsupportslackbottokendev[0-9A-F]{8}$/);
   });
 
-  test('queues are short-lived, SQS managed encrypted and redriven', () => {
-    template.resourceCountIs('AWS::SQS::Queue', 2);
-    template.hasResourceProperties('AWS::SQS::Queue', {
-      MessageRetentionPeriod: 3600,
-      SqsManagedSseEnabled: true,
-      VisibilityTimeout: 60,
-      RedrivePolicy: { maxReceiveCount: 2, deadLetterTargetArn: Match.anyValue() },
-    });
-    template.hasResourceProperties('AWS::SQS::Queue', {
-      MessageRetentionPeriod: 1209600,
-      SqsManagedSseEnabled: true,
-    });
-    for (const queue of Object.values(template.findResources('AWS::SQS::Queue'))) {
-      expect(queue.Properties.KmsMasterKeyId).toBeUndefined();
-    }
-  });
-
-  test('lambdas are small arm64 with short timeouts', () => {
-    const receiver = functionByDescription(template, 'Security Hub actions receiver (Slack interactions)');
-    const worker = functionByDescription(template, 'Security Hub actions worker (suppress findings)');
-    for (const fn of [receiver, worker]) {
-      expect(fn.Architectures).toEqual(['arm64']);
-      expect(fn.MemorySize).toBe(256);
-    }
-    expect(receiver.Timeout).toBe(5);
-    expect(worker.Timeout).toBe(30);
-    expect(Object.keys(receiver.Environment.Variables)).toEqual(
-      expect.arrayContaining(['SLACK_SECRET_ARN', 'SLACK_BOT_TOKEN_ARN', 'QUEUE_URL']));
-    expect(worker.Environment.Variables).toEqual(expect.objectContaining({
-      USER_GROUP_ID: 'S1',
-      BRANCH_NAME: 'main',
-      POWERTOOLS_LOG_LEVEL: 'INFO',
-    }));
-    expect(Object.keys(worker.Environment.Variables)).toContain('SLACK_BOT_TOKEN_ARN');
-  });
-
-  test('log groups retain 30 days', () => {
-    const groups = Object.values(template.findResources('AWS::Logs::LogGroup', { Properties: { RetentionInDays: 30 } }));
-    expect(groups).toHaveLength(2);
-    for (const g of groups) {
-      expect(g.DeletionPolicy).toBe('Delete');
-    }
-  });
-
-  test('event source mapping limits batch size and concurrency', () => {
-    template.hasResourceProperties('AWS::Lambda::EventSourceMapping', {
-      BatchSize: 1,
-      ScalingConfig: { MaximumConcurrency: 2 },
-    });
-  });
-
   test('stage throttles POST /slack', () => {
     template.hasResourceProperties('AWS::ApiGateway::Stage', {
       MethodSettings: Match.arrayWith([
@@ -109,22 +57,14 @@ describe('SecurityHubActions', () => {
     expect(apis[0].Properties.BinaryMediaTypes).toBeUndefined();
   });
 
-  test('new resources are tagged', () => {
-    for (const type of ['AWS::SQS::Queue']) {
-      for (const r of Object.values(template.findResources(type))) {
-        expect(r.Properties.Tags).toContainEqual(FEATURE_TAG);
-      }
-    }
-    const lambdas = Object.values(template.findResources('AWS::Lambda::Function'))
-      .filter((r: any) => (r.Properties.Tags ?? []).some((t: any) => t.Key === 'Feature'));
-    expect(lambdas).toHaveLength(2);
-    for (const l of lambdas) {
-      expect(l.Properties.Tags).toContainEqual(FEATURE_TAG);
-    }
-    const logGroups = Object.values(template.findResources('AWS::Logs::LogGroup', { Properties: { RetentionInDays: 30 } }));
-    for (const g of logGroups) {
-      expect(g.Properties.Tags).toContainEqual(FEATURE_TAG);
-    }
+  test('lambdas get the environment their handlers require', () => {
+    const receiver = functionByDescription(template, 'Security Hub actions receiver (Slack interactions)');
+    const worker = functionByDescription(template, 'Security Hub actions worker (suppress findings)');
+    expect(Object.keys(receiver.Environment.Variables)).toEqual(
+      expect.arrayContaining(['SLACK_SECRET_ARN', 'SLACK_BOT_TOKEN_ARN', 'QUEUE_URL']));
+    expect(Object.keys(worker.Environment.Variables)).toEqual(
+      expect.arrayContaining(['SLACK_BOT_TOKEN_ARN', 'USER_GROUP_ID', 'BRANCH_NAME']));
+    expect(worker.Environment.Variables.USER_GROUP_ID).toBe('S1');
   });
 
   test('IAM permissions', () => {

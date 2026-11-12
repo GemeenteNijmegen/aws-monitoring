@@ -15,7 +15,7 @@ describe('SecurityHubFindingLookup', () => {
   test('one match', async () => {
     securityHubMock.on(GetFindingsCommand).resolves({ Findings: [{ Id: 'f1' } as any] });
     const result = await lookup.lookup(payload());
-    expect(result).toEqual({ kind: 'found', finding: { Id: 'f1' } });
+    expect(result).toEqual({ Id: 'f1' });
     const input = securityHubMock.commandCalls(GetFindingsCommand)[0].args[0].input;
     expect(input.MaxResults).toBe(2);
     expect(input.Filters).toEqual({
@@ -37,26 +37,20 @@ describe('SecurityHubFindingLookup', () => {
     expect(filters.Title).toEqual([{ Comparison: 'EQUALS', Value: p.Title }]);
   });
 
-  test('zero matches', async () => {
-    securityHubMock.on(GetFindingsCommand).resolves({ Findings: [] });
-    expect(await lookup.lookup(payload())).toEqual({ kind: 'none' });
+  test.each([
+    ['zero matches', () => securityHubMock.on(GetFindingsCommand).resolves({ Findings: [] })],
+    ['multiple matches', () => securityHubMock.on(GetFindingsCommand).resolves({ Findings: [{ Id: 'a' } as any, { Id: 'b' } as any] })],
+    ['api error', () => securityHubMock.on(GetFindingsCommand).rejects(new Error('boom'))],
+  ])('%s gives undefined', async (_name, arrange) => {
+    jest.spyOn(console, 'error').mockImplementation();
+    arrange();
+    expect(await lookup.lookup(payload())).toBeUndefined();
   });
 
-  test('multiple matches', async () => {
-    securityHubMock.on(GetFindingsCommand).resolves({ Findings: [{ Id: 'a' } as any, { Id: 'b' } as any] });
-    expect(await lookup.lookup(payload())).toEqual({ kind: 'multiple' });
-  });
-
-  test('api error', async () => {
-    const error = new Error('boom');
-    securityHubMock.on(GetFindingsCommand).rejects(error);
-    expect(await lookup.lookup(payload())).toEqual({ kind: 'error', error });
-  });
-
-  test('no resources', async () => {
+  test('no resources gives undefined without calling the api', async () => {
     const p = payload();
     p.Resources = [];
-    expect(await lookup.lookup(p)).toEqual({ kind: 'none' });
+    expect(await lookup.lookup(p)).toBeUndefined();
     expect(securityHubMock.commandCalls(GetFindingsCommand)).toHaveLength(0);
   });
 });

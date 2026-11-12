@@ -14,16 +14,13 @@ export class SlackMessage {
     if (message.context) {
       slack.addContext(message.context);
     }
-    const sections = [...(message.sections ?? [])];
-    const links = [...(message.links ?? [])];
-    for (const kind of message.order ?? []) {
-      if (kind === 'section') {
-        slack.addSection(sections.shift()!);
-      } else if (kind === 'link') {
-        const link = links.shift()!;
-        slack.addLink(link.text, link.target);
-      } else if (message.button) {
-        slack.addButton(message.button.text, message.button.actionId, message.button.payload);
+    for (const part of message.parts ?? []) {
+      if (part.kind === 'section') {
+        slack.addSection(part.text);
+      } else if (part.kind === 'link') {
+        slack.addLink(part.text, part.target);
+      } else {
+        slack.addButton(part.text, part.actionId, part.payload);
       }
     }
     return slack;

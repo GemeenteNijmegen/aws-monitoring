@@ -1,11 +1,5 @@
 import { AwsSecurityFinding, GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
 
-export type LookupResult =
-  { kind: 'found'; finding: AwsSecurityFinding } |
-  { kind: 'none' } |
-  { kind: 'multiple' } |
-  { kind: 'error'; error: unknown };
-
 export class SecurityHubFindingLookup {
   private client: SecurityHubClient;
 
@@ -16,13 +10,16 @@ export class SecurityHubFindingLookup {
     });
   }
 
-  async lookup(payload: any): Promise<LookupResult> {
+  /**
+   * The single matching finding, or undefined when there is none, more than one, or the lookup fails.
+   */
+  async lookup(payload: any): Promise<AwsSecurityFinding | undefined> {
     try {
       const resourceIds: string[] = (payload?.Resources ?? [])
         .map((r: any) => r?.Id)
         .filter((id: unknown): id is string => typeof id === 'string' && id.length > 0);
       if (resourceIds.length === 0) {
-        return { kind: 'none' };
+        return undefined;
       }
       const equals = (value: string) => ({ Comparison: 'EQUALS' as const, Value: value });
       const response = await this.client.send(new GetFindingsCommand({
@@ -38,15 +35,10 @@ export class SecurityHubFindingLookup {
         },
       }));
       const findings = response.Findings ?? [];
-      if (findings.length === 0) {
-        return { kind: 'none' };
-      }
-      if (findings.length > 1) {
-        return { kind: 'multiple' };
-      }
-      return { kind: 'found', finding: findings[0] };
+      return findings.length === 1 ? findings[0] : undefined;
     } catch (error) {
-      return { kind: 'error', error };
+      console.error('Security Hub finding lookup failed', error);
+      return undefined;
     }
   }
 }

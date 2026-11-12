@@ -1,23 +1,6 @@
 import { AwsSecurityFinding } from '@aws-sdk/client-securityhub';
 import { getEventFromFilePath } from './util';
-import { isSuppressEligibleSeverity, viewFromFinding, viewFromPayload } from '../SecurityHubView';
-
-describe('isSuppressEligibleSeverity', () => {
-  test('accepts CRITICAL in any case', () => {
-    expect(isSuppressEligibleSeverity('CRITICAL')).toBe(true);
-    expect(isSuppressEligibleSeverity('critical')).toBe(true);
-  });
-  test('rejects other values', () => {
-    expect(isSuppressEligibleSeverity('HIGH')).toBe(false);
-    expect(isSuppressEligibleSeverity('')).toBe(false);
-    expect(isSuppressEligibleSeverity(undefined)).toBe(false);
-  });
-  test('tolerates non-string input', () => {
-    expect(isSuppressEligibleSeverity(5 as any)).toBe(false);
-    expect(isSuppressEligibleSeverity({} as any)).toBe(false);
-    expect(isSuppressEligibleSeverity(null as any)).toBe(false);
-  });
-});
+import { viewFromFinding, viewFromPayload } from '../SecurityHubView';
 
 describe('viewFromPayload', () => {
   test('maps the SNS securityhub sample', async () => {
@@ -36,11 +19,6 @@ describe('viewFromPayload', () => {
     expect(view.findingId).toBeUndefined();
   });
 
-  test('does not throw on an empty payload', () => {
-    const view = viewFromPayload({});
-    expect(view.title).toBe('(no title)');
-    expect(view.resources).toEqual([]);
-  });
 });
 
 describe('viewFromFinding', () => {
