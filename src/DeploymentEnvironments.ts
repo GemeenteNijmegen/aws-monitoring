@@ -92,6 +92,13 @@ export interface Configuration {
    * @default none
    */
   globalMonitoringRules?: MonitoringRule[];
+
+  /**
+   * Slack user group ID whose members may use Security Hub actions (e.g. Suppress).
+   * Unset means no action buttons on alerts and no actions endpoint.
+   * @default unset
+   */
+  securityHubActionsUserGroupId?: string;
 }
 
 export interface Configurable {
@@ -648,6 +655,24 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
         },
       },
       {
+        accountName: 'gn-sandbox-indy',
+        accountType: 'sandbox',
+        monitor: false,
+        env: {
+          account: '956966432757',
+          region: 'eu-central-1',
+        },
+      },
+      {
+        accountName: 'gn-ai-dev',
+        accountType: 'development',
+        monitor: true,
+        env: {
+          account: '707071531549',
+          region: 'eu-central-1',
+        },
+      },
+      {
         accountName: 'gn-ai-accp',
         accountType: 'acceptance',
         monitor: true,
@@ -726,6 +751,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployAuditSlackbot: true,
+    securityHubActionsUserGroupId: 'S0CH951QEAY',
     healthGrouping: {
       enabled: true,
     },

@@ -4,6 +4,11 @@ import { Priority } from '../statics';
 export interface HandledEvent {
   priority: Priority;
   message: SlackMessage;
+  /**
+   * Optionally produces a richer version of the message (e.g. after an API lookup).
+   * Callers should fall back to `message` when this throws.
+   */
+  enrich?: () => Promise<SlackMessage>;
 }
 
 export interface IHandler {

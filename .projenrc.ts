@@ -44,4 +44,5 @@ const project = new GemeenteNijmegenCdkApp({
     },
   },
 });
+project.tasks.tryFind('cfn-lint')?.reset('cfn-lint cdk.out/**/*.template.json -i W3005 W2001 W3696');
 project.synth();
