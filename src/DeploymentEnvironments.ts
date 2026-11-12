@@ -751,6 +751,7 @@ export const deploymentEnvironments: { [key: string]: Configuration } = {
     environmentName: 'development',
     pipelineStackCdkName: 'aws-monitoring-sandbox',
     deployAuditSlackbot: true,
+    securityHubActionsUserGroupId: 'S0CH951QEAY',
     healthGrouping: {
       enabled: true,
     },
