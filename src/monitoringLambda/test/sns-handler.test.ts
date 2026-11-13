@@ -310,7 +310,7 @@ describe('Security hub event from Subject', () => {
     }
     const json = JSON.stringify(handled.message.getSlackMessage());
     console.debug(json);
-    expect(json).toContain('state: *NEW*');
+    expect(json).toContain('workflow: *NEW*');
     expect(handled).not.toBeFalsy();
   });
 });

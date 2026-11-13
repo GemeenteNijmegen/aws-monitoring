@@ -18,7 +18,8 @@
         "im:history",
         "mpim:history",
         "users:read",
-        "files:read"
+        "files:read",
+        "usergroups:read"
       ]
     }
   },
@@ -28,6 +29,10 @@
       "bot_events": [
         "app_mention"
       ]
+    },
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://apigatewayurl.example.com/prod/slack"
     },
     "org_deploy_enabled": false,
     "socket_mode_enabled": false,
