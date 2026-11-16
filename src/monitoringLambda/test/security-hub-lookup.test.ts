@@ -22,7 +22,6 @@ describe('SecurityHubFindingLookup', () => {
       AwsAccountId: [{ Comparison: 'EQUALS', Value: '836443378780' }],
       ResourceId: [{ Comparison: 'EQUALS', Value: 'arn:aws:codebuild:eu-central-1:836443378780:project/geostoragemainPipelineBuild-fc35zxwLlDEN' }],
       RecordState: [{ Comparison: 'EQUALS', Value: 'ACTIVE' }],
-      SeverityLabel: [{ Comparison: 'EQUALS', Value: 'CRITICAL' }],
       ComplianceSecurityControlId: [{ Comparison: 'EQUALS', Value: 'CodeBuild.5' }],
     });
   });

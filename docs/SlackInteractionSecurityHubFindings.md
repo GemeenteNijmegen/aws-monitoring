@@ -10,8 +10,7 @@ Until then no endpoint is deployed and no button is shown.
 ![Slack integration dataflow](./slack-integration-dataflow.drawio.png)
 
 ## When the button appears
-Only on `CRITICAL` alerts for now (`SUPPRESS_SEVERITY` in `src/monitoringLambda/SecurityHubView.ts`). The monitoring
-Lambda looks up the finding with `GetFindings` and shows the button when exactly one finding matches and its workflow
+On Security Hub alerts of any severity. The monitoring Lambda looks up the finding with `GetFindings` and shows the button when exactly one finding matches and its workflow
 status is `NEW` or `NOTIFIED`.
 
 If the finding is already handled, the alert is posted without a button. If the lookup finds nothing, finds several

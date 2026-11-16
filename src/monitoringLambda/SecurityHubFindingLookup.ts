@@ -28,7 +28,6 @@ export class SecurityHubFindingLookup {
           AwsAccountId: [equals(payload.AccountId)],
           ResourceId: resourceIds.map(equals),
           RecordState: [equals('ACTIVE')],
-          SeverityLabel: [equals('CRITICAL')],
           ...(payload.ControlId
             ? { ComplianceSecurityControlId: [equals(payload.ControlId)] }
             : { Title: [equals(payload.Title)] }),

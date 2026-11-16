@@ -97,11 +97,11 @@ describe('SuppressWorker', () => {
     });
   });
 
-  test('refuses non-critical', async () => {
+  test('also works for non-critical', async () => {
     securityHubMock.on(GetFindingsCommand).resolves({ Findings: [finding({ Severity: { Label: 'HIGH' } })] });
     const { worker } = setup();
-    expect(await worker.handle(job)).toBe('not-critical');
-    expect(writes()).toHaveLength(0);
+    expect(await worker.handle(job)).toBe('suppressed');
+    expect(writes()).toHaveLength(1);
   });
 
   test('refuses stale finding', async () => {

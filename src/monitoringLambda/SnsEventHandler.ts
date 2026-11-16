@@ -5,7 +5,6 @@ import { HandledEvent, IHandler } from './IHandler';
 import { AlarmMessageFormatter, CertificateExpiryFormatter, CodePipelineFormatter, CustomSnsMessageFormatter, DevopsGuruMessageFormatter, DriftDetectionStatusFormatter, Ec2MessageFormatter, EcsDeploymentStateChangeFormatter, EcsMessageFormatter, EcsServiceActionFormatter, HealthDashboardFormatter, InspectorFindingFormatter, MessageFormatter, OrgTrailMessageFormatter, SecurityHubFormatter, UnhandledEventFormatter } from './MessageFormatter';
 import { enrichSecurityHubMessage } from './SecurityHubEnrichment';
 import { accountNameFor } from './SecurityHubMessage';
-import { isSuppressEligibleSeverity } from './SecurityHubView';
 import { SlackMessage } from './SlackMessage';
 import { patternMatchesString, stringMatchesPatternInArray, stringMatchingPatternInArray } from './utils';
 
@@ -103,9 +102,7 @@ const events: Record<string, Event> = {
     shouldTriggerAlert: () => true,
     formatter: (message, account, priority) => new SecurityHubFormatter(message, account, priority),
     priority: 'high',
-    enrich: (message, account, configuration) => isSuppressEligibleSeverity(message?.Severity)
-      ? () => enrichSecurityHubMessage(message, accountNameFor(configuration, account), configuration)
-      : undefined,
+    enrich: (message, account, configuration) => () => enrichSecurityHubMessage(message, accountNameFor(configuration, account), configuration),
   },
   'OrgTrailFromMPA': {
     shouldTriggerAlert: () => true,

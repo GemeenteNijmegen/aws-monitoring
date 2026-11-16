@@ -2,11 +2,11 @@ import { Logger } from '@aws-lambda-powertools/logger';
 import { BatchUpdateFindingsCommand, GetFindingsCommand, SecurityHubClient } from '@aws-sdk/client-securityhub';
 import { Message } from '../../monitoringLambda/Message';
 import { escapeSlackText, renderSecurityHubView } from '../../monitoringLambda/SecurityHubMessage';
-import { isSuppressEligibleSeverity, viewFromFinding } from '../../monitoringLambda/SecurityHubView';
+import { viewFromFinding } from '../../monitoringLambda/SecurityHubView';
 import { SuppressJob } from '../shared/ActionPayload';
 import { SlackApi } from '../shared/SlackApi';
 
-export type SuppressOutcome = 'suppressed' | 'already-suppressed' | 'not-allowed' | 'not-critical' | 'stale' | 'not-found' | 'failed';
+export type SuppressOutcome = 'suppressed' | 'already-suppressed' | 'not-allowed' | 'stale' | 'not-found' | 'failed';
 
 export interface SuppressWorkerDeps {
   slack: Pick<SlackApi, 'listGroupMembers'>;
@@ -141,19 +141,13 @@ export class SuppressWorker {
       return 'not-found';
     }
 
-    // 3. Severity.
-    if (!isSuppressEligibleSeverity(finding.Severity?.Label)) {
-      await this.ephemeral(job, 'Only critical findings can be suppressed from Slack.');
-      return 'not-critical';
-    }
-
     const view = viewFromFinding(finding);
     const accountName = this.deps.accountNameFor(view.accountId);
     const status = finding.Workflow?.Status ?? '';
     const noteAuthor = displayName(finding.Note?.UpdatedBy);
     const noteText = escapeSlackText(finding.Note?.Text ?? '');
 
-    // 4. Workflow status.
+    // 3. Workflow status.
     if (!OPEN_STATUSES.includes(status)) {
       const alreadySuppressed = status === 'SUPPRESSED';
       const details = finding.Note ? ` Last note by ${noteAuthor}: ${noteText}` : '';
@@ -164,7 +158,7 @@ export class SuppressWorker {
       return alreadySuppressed ? 'already-suppressed' : 'stale';
     }
 
-    // 5. Write.
+    // 4. Write.
     const noteTextOut = `Suppressed via Slack by ${job.slackUserId}: ${job.reason}`.substring(0, MAX_NOTE_LENGTH);
     try {
       const result = await this.deps.securityHub.send(new BatchUpdateFindingsCommand({
@@ -181,7 +175,7 @@ export class SuppressWorker {
       return 'failed';
     }
 
-    // 6. Redraw.
+    // 5. Redraw.
     await this.redraw(job, { ...view, workflowStatus: 'SUPPRESSED' }, accountName, 'SUPPRESSED', `<@${job.slackUserId}>: ${escapeSlackText(job.reason)}`);
     return 'suppressed';
   }
