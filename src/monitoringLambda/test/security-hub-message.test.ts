@@ -1,7 +1,7 @@
 import { SUPPRESS_ACTION_ID } from '../../securityHubActions/shared/ActionPayload';
 import { Message } from '../Message';
 import { findingConsoleUrl, renderSecurityHubView } from '../SecurityHubMessage';
-import { isSuppressEligibleSeverity, SecurityHubView, viewFromPayload } from '../SecurityHubView';
+import { SecurityHubView, viewFromPayload } from '../SecurityHubView';
 import { getEventFromFilePath } from './util';
 
 async function payloadFrom(sample: string) {
@@ -124,7 +124,6 @@ describe('non-string payload fields', () => {
     const blocks = render(view);
     expect(blocks.some(b => b.type === 'header')).toBe(true);
     expect(sectionTexts(blocks).join('\n')).toContain('r1');
-    expect(isSuppressEligibleSeverity(view.severity)).toBe(false);
   });
 });
 

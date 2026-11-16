@@ -82,16 +82,6 @@ describe('enrichSecurityHubMessage', () => {
 describe('SnsEventHandler enrich', () => {
   const handler = new SnsEventHandler(withoutGroup);
 
-  test('sends plain alert when severity is missing', async () => {
-    const event = await getEventFromFilePath('samples/securityhub-critical.json');
-    const payload = JSON.parse(event.Records[0].Sns.Message);
-    delete payload.Severity;
-    event.Records[0].Sns.Message = JSON.stringify(payload);
-    const handled = handler.handle(event);
-    expect(handled).not.toBe(false);
-    expect((handled as any).enrich).toBeUndefined();
-  });
-
   test('does not throw on non-string payload fields', async () => {
     const event = await getEventFromFilePath('samples/securityhub-critical.json');
     const payload = JSON.parse(event.Records[0].Sns.Message);

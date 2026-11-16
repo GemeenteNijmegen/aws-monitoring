@@ -69,11 +69,13 @@ describe('handler', () => {
       expect(axiosMock.history.post[0].data).not.toContain('Fix available');
     });
 
-    test('HIGH finding never calls GetFindings', async () => {
+    test('HIGH finding is enriched as well', async () => {
       axiosMock.onPost().reply(200, {});
+      securityHubMock.on(GetFindingsCommand).resolves({ Findings: [{ ...critical, Severity: { Label: 'HIGH' } } as any] });
       await handler(await getEventFromFilePath('samples/securityhub-new-lz.json'));
       expect(axiosMock.history.post.length).toBe(1);
-      expect(securityHubMock.commandCalls(GetFindingsCommand)).toHaveLength(0);
+      expect(securityHubMock.commandCalls(GetFindingsCommand)).toHaveLength(1);
+      expect(axiosMock.history.post[0].data).toContain('Fix available');
     });
   });
 

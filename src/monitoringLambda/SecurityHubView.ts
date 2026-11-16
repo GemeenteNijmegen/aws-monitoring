@@ -1,15 +1,6 @@
 import { AwsSecurityFinding } from '@aws-sdk/client-securityhub';
 
 /**
- * Only findings with this severity can be suppressed from Slack.
- */
-export const SUPPRESS_SEVERITY = 'CRITICAL';
-
-export function isSuppressEligibleSeverity(severity?: string): boolean {
-  return typeof severity === 'string' && severity.toUpperCase() === SUPPRESS_SEVERITY;
-}
-
-/**
  * Normalized view on a Security Hub finding, independent of whether it
  * originates from the (flattened) SNS payload or a full ASFF finding.
  */

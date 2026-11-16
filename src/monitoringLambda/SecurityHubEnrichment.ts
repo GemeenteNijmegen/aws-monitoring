@@ -11,7 +11,7 @@ const UNAVAILABLE_NOTICE = 'Actions unavailable for this alert';
 const defaultLookup = new SecurityHubFindingLookup();
 
 /**
- * Look up the full finding for a critical Security Hub alert and render a richer
+ * Look up the full finding for a Security Hub alert and render a richer
  * message. A Suppress button is added only for a single open finding and when
  * the actions user group is configured.
  */
