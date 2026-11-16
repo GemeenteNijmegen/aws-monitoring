@@ -87,8 +87,8 @@ describe('renderSecurityHubView', () => {
     expect(one).toHaveLength(1);
     expect(one[0]).toContain('https://fix.example');
     const two = sectionTexts(render(baseView({ remediationUrl: 'https://fix.example', findingId: id, region: 'eu-central-1' })));
-    expect(two).toHaveLength(2);
-    expect(two[1]).toContain(findingConsoleUrl('eu-central-1', id));
+    expect(two).toHaveLength(1);
+    expect(two[0]).toBe(`<https://fix.example|Remediation> | <${findingConsoleUrl('eu-central-1', id)}|View in Security Hub>`);
   });
 
   test('renders button', () => {

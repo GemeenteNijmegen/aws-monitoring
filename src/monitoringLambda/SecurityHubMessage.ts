@@ -83,12 +83,16 @@ export function renderSecurityHubView(message: Message, view: SecurityHubView, o
     message.addSection(vulnerability.join(' | '));
   }
 
+  const links: string[] = [];
   const remediationTarget = safeLinkTarget(view.remediationUrl);
   if (remediationTarget) {
-    message.addLink('Remediation', remediationTarget);
+    links.push(`<${remediationTarget}|Remediation>`);
   }
   if (view.findingId && view.region) {
-    message.addLink('View in Security Hub', findingConsoleUrl(view.region, view.findingId));
+    links.push(`<${findingConsoleUrl(view.region, view.findingId)}|View in Security Hub>`);
+  }
+  if (links.length > 0) {
+    message.addSection(links.join(' | '));
   }
 
   if (opts.notice) {
