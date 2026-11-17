@@ -3,12 +3,16 @@ import { SlackMessage } from './SlackMessage';
 export interface MessageProps {
   header?: string;
   context?: { [name: string]: string };
-  sections?: string[];
-  link?: {
-    text: string;
-    target: string;
-  };
+  /**
+   * Sections, links and buttons in the order they are rendered
+   */
+  parts?: MessagePart[];
 }
+
+export type MessagePart =
+  { kind: 'section'; text: string } |
+  { kind: 'link'; text: string; target: string } |
+  { kind: 'button'; text: string; actionId: string; payload: any };
 
 export class Message {
 
@@ -31,14 +35,19 @@ export class Message {
   }
 
   addSection(text: string) {
-    if (!this.message.sections) {
-      this.message.sections = [];
-    }
-    this.message.sections.push(text);
+    this.addPart({ kind: 'section', text });
   }
 
   addLink(text: string, target: string) {
-    this.message.link = { text, target };
+    this.addPart({ kind: 'link', text, target });
+  }
+
+  addButton(text: string, actionId: string, payload: any) {
+    this.addPart({ kind: 'button', text, actionId, payload });
+  }
+
+  private addPart(part: MessagePart) {
+    (this.message.parts ??= []).push(part);
   }
 
   getSlackMessage() {

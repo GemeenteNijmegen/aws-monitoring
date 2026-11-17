@@ -67,6 +67,8 @@ junit.xml
 !/src/audit/slackbot/slackbot-function.ts
 !/src/healthGrouping/healthEventLambda/healthEvent-function.ts
 !/src/healthGrouping/healthTimerLambda/healthTimer-function.ts
+!/src/securityHubActions/receiver/securityHubActionsReceiver-function.ts
+!/src/securityHubActions/worker/securityHubActionsWorker-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
 !/.nvmrc

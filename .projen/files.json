@@ -25,6 +25,8 @@
     "src/healthGrouping/healthTimerLambda/healthTimer-function.ts",
     "src/monitoringLambda/monitoring-function.ts",
     "src/OrgtrailMonitorLambda/OrgTrailMonitor-function.ts",
+    "src/securityHubActions/receiver/securityHubActionsReceiver-function.ts",
+    "src/securityHubActions/worker/securityHubActionsWorker-function.ts",
     "src/SecurityHubOverviewLambda/SecurityHubOverview-function.ts",
     "test/tsconfig.json",
     "tsconfig.json"

@@ -4,7 +4,7 @@ import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 import { ArchiverFunction } from './archiver/archiver-function';
 import { SlackbotFunction } from './slackbot/slackbot-function';
@@ -19,9 +19,9 @@ export interface AuditSupportProps {
 
 export class AuditSupport extends Construct {
 
-  private readonly slackSecret;
+  public readonly slackSecret: ISecret;
   private readonly messageTable;
-  private readonly slackBotToken;
+  public readonly slackBotToken: ISecret;
 
   constructor(scope: Construct, id: string, private readonly props: AuditSupportProps) {
     super(scope, id);

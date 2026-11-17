@@ -103,12 +103,22 @@ class Notifier extends Construct {
         BRANCH_NAME: branchName,
       },
       description: `Slack notification lambda (${prefix})`,
+      timeout: Duration.seconds(30),
     });
     for (const priority of Statics.monitoringPriorities) {
       const paramValue = StringParameter.valueForStringParameter(this, `${Statics.ssmSlackWebhookUrlPriorityPrefix}-${prefix}-${priority}`);
       lambda.addEnvironment(`SLACK_WEBHOOK_URL_${priority.toUpperCase()}`, paramValue);
     }
     this.subscribeLambda(lambda);
+
+    // Allow the monitoring lambda to look up the finding behind a critical alert (no resource-level permissions supported)
+    lambda.addToRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'securityhub:GetFindings',
+      ],
+      resources: ['*'],
+    }));
   }
 
   private setupHealthGroupingResources(prefix: string, branchName: string) {

@@ -166,6 +166,8 @@
           "src/audit/slackbot/slackbot.lambda.ts",
           "src/healthGrouping/healthEventLambda/healthEvent.lambda.ts",
           "src/healthGrouping/healthTimerLambda/healthTimer.lambda.ts",
+          "src/securityHubActions/receiver/securityHubActionsReceiver.lambda.ts",
+          "src/securityHubActions/worker/securityHubActionsWorker.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],

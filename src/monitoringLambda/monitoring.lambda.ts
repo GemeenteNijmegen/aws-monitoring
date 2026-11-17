@@ -28,7 +28,15 @@ export async function handler(event: any) {
   try {
     const handled = matchedHandler.handle(event);
     if (handled) {
-      await handled.message.send(handled.priority);
+      let message = handled.message;
+      if (handled.enrich) {
+        try {
+          message = await handled.enrich();
+        } catch (e) {
+          console.error('enrichment failed, sending plain alert', e);
+        }
+      }
+      await message.send(handled.priority);
       console.log('sent message');
       return;
     }

@@ -1,5 +1,18 @@
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+
+/**
+ * Case-insensitive header lookup (API Gateway may deliver any casing)
+ */
+function getHeader(headers: APIGatewayProxyEvent['headers'] | null | undefined, name: string): string {
+  const wanted = name.toLowerCase();
+  for (const [key, value] of Object.entries(headers ?? {})) {
+    if (key.toLowerCase() === wanted) {
+      return value ?? '';
+    }
+  }
+  return '';
+}
 
 /**
  * Authenticates the event
@@ -9,26 +22,31 @@ import { APIGatewayProxyEvent } from 'aws-lambda';
  * @param event
  * @returns
  */
-export async function slackAuthenticate(event: APIGatewayProxyEvent, secret: string) {
+export async function slackAuthenticate(event: APIGatewayProxyEvent, secret: string): Promise<boolean> {
 
-  let body = event.body;
-  const slackTimestamp = event.headers['X-Slack-Request-Timestamp'] ?? '';
-  const slackSignature = event.headers['X-Slack-Signature'] ?? '';
+  const body = event.body;
+  const slackTimestamp = getHeader(event.headers, 'X-Slack-Request-Timestamp');
+  const slackSignature = getHeader(event.headers, 'X-Slack-Signature');
 
-  const request = `v0:${slackTimestamp}:${body}`;
-  const signature = 'v0=' + createHmac('sha256', secret).update(request).digest('hex');
-  console.log(`Generated signature (to match): ${signature} (${slackSignature})`);
-
-
-  // If the request is > 1 minute old ignore it (replay attack)
-  if ((Date.now() / 1000) - parseInt(slackTimestamp) > 60 * 1) {
-    console.log('Replay attack', slackTimestamp);
+  const timestamp = slackTimestamp.trim() === '' ? NaN : Number(slackTimestamp);
+  if (!Number.isFinite(timestamp)) {
     return false;
   }
 
-  console.debug('Calculated signature:', signature);
-  console.debug('Provided signature:', slackSignature);
+  // If the request is more than 1 minute away from now, ignore it (replay attack)
+  if (Math.abs((Date.now() / 1000) - timestamp) > 60 * 1) {
+    console.log('Replay attack');
+    return false;
+  }
 
-  return signature == slackSignature;
+  const request = `v0:${slackTimestamp}:${body}`;
+  const signature = 'v0=' + createHmac('sha256', secret).update(request).digest('hex');
+
+  const expected = Buffer.from(signature);
+  const provided = Buffer.from(slackSignature);
+  if (expected.length !== provided.length) {
+    return false;
+  }
+  return timingSafeEqual(expected, provided);
 
 }
