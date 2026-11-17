@@ -38,6 +38,16 @@ const project = new GemeenteNijmegenCdkApp({
     'axios-mock-adapter',
     'aws-sdk-client-mock',
   ],
+  jestOptions: {
+    jestConfig: {
+      globals: {
+        'ts-jest': {
+          tsconfig: 'test/tsconfig.json',
+          isolatedModules: true,
+        },
+      },
+    },
+  },
   tsconfig: {
     compilerOptions: {
       isolatedModules: true,
