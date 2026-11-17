@@ -1,7 +1,7 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { getNodeVersion } from '@gemeentenijmegen/projen-project-type';
 import { Aspects, CfnParameter, Stack, StackProps, Tags, pipelines } from 'aws-cdk-lib';
-import { BuildSpec } from 'aws-cdk-lib/aws-codebuild';
+import { BuildSpec, ComputeType } from 'aws-cdk-lib/aws-codebuild';
 import { PipelineType } from 'aws-cdk-lib/aws-codepipeline';
 import { Construct } from 'constructs';
 import { Configurable, DeploymentEnvironment } from './DeploymentEnvironments';
@@ -84,6 +84,9 @@ export class PipelineStack extends Stack {
       synth: synthStep,
       pipelineType: PipelineType.V1,
       synthCodeBuildDefaults: {
+        buildEnvironment: {
+          computeType: ComputeType.MEDIUM,
+        },
         partialBuildSpec: BuildSpec.fromObject({
           phases: {
             install: {
